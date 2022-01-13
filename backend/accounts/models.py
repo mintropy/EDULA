@@ -9,7 +9,7 @@ class User(AbstractUser):
         STUDENT = 'ST', _('Student')
         TEACHER = 'TE', _('Teacher')
         SCHOOLADMIN = 'SA', _('SchoolAdmin')
-
+    
     status = models.CharField(
         max_length=2,
         choices=Status.choices,
@@ -23,9 +23,8 @@ class Student(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='student',
-        primary_key=True,
+        primary_key=True
     )
-    student_ID = models.IntegerField()
 
 
 class Teacher(models.Model):
@@ -33,9 +32,8 @@ class Teacher(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='teacher',
-        primary_key=True,
+        primary_key=True
     )
-    teacher_ID = models.IntegerField()
 
 
 class SchoolAdmin(models.Model):
@@ -43,6 +41,5 @@ class SchoolAdmin(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='school_admin',
-        primary_key=True,
+        primary_key=True
     )
-    school_admin_ID = models.IntegerField()
