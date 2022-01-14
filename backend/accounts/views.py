@@ -36,4 +36,3 @@ class SchoolAdminView(APIView):
     
     def get(self, request):
         pass
-
