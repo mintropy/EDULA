@@ -5,9 +5,15 @@ from .models import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .serializers import StudentSerializer
 
 # Create your views here.
+def decode_JWT():
+    pass
+
+
 class UserView(APIView):
     
     def get(self, request):
@@ -36,3 +42,18 @@ class SchoolAdminView(APIView):
     
     def get(self, request):
         pass
+
+
+class PasswordChangeView(APIView):
+    model = User
+    
+    def post(self, request):
+        print('request: ', request.data['jwt-tokenAuthorization'])
+        JWT_token = request.data['jwt-tokenAuthorization']
+        JWT_object = JWTAuthentication()
+        validate_token = JWT_object.get_validated_token(JWT_token)
+        user = JWT_object.get_user(validate_token)
+        print('user: ', user)
+        print('user pk: ', user.pk)
+        pass
+    

@@ -15,3 +15,10 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+
+
+class PasswordChangeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        
