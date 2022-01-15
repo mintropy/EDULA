@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from .models import (
@@ -49,7 +50,7 @@ class SchoolAdminView(APIView):
 class PasswordChangeView(APIView):
     model = User
     
-    def post(self, request):
+    def put(self, request):
         # JWT 토큰 받고 처리하는 과정 확인 필요
         JWT_object = JWTAuthentication()
         header = JWT_object.get_header(request)
@@ -93,4 +94,21 @@ class PasswordChangeView(APIView):
             pass
         
         return Response()
+
+
+class PasswordResetView(APIView):
     
+    def post(self, request):
+        
+        user = []
+        data = request.data
+        
+        uesrname = data.get('username')
+        email = data.get('email')
+        
+        # 1. email이 잘못된 경우
+        # 2. 정확한 유저 정보일 때
+        # 2-1. 새로운 비밀번호 생성 >> db 저장
+        # 2-2. 이메일로 새로운 비밀번호 보내기
+        
+        pass
