@@ -18,7 +18,10 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    new_password_confirmation = serializers.CharField(write_only=True, required=True)
     
     class Meta:
         model = User
-        
+        fields = ('old_password', 'new_password', 'new_password_confirmation')
