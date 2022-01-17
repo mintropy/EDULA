@@ -4,32 +4,6 @@ import styled, { css } from 'styled-components';
 import theme from '../styles/theme';
 import { useDetectOutsideClick } from './useDetecOutsideClick';
 
-const StyledDropdown = styled.ul`
-	-webkit-appearance: button;
-	-webkit-border-radius: 2px;
-	-webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-	-webkit-padding-end: 20px;
-	-webkit-padding-start: 2px;
-	-webkit-user-select: none;
-	background-image: url(https://picsum.photos/200/300.jpg),
-		-webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-	background-position: 97% center;
-	background-repeat: no-repeat;
-	border: 1px solid #aaa;
-	border-radius: 70%;
-	color: #555;
-	font-size: inherit;
-	margin: 20px;
-	overflow: hidden;
-	padding: 5px 10px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 1.5em;
-	color: transparent;
-	background-color: #779126;
-	padding-left: 15px;
-`;
-
 const StyledContainer = styled.div`
 	box-sizing: border-box;
 `;
@@ -58,13 +32,6 @@ const StyledMenuTrigger = styled.button`
 		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 	}
 
-	span {
-		font-weight: 700;
-		vertical-align: middle;
-		font-size: 14px;
-		margin: 0 10px;
-	}
-
 	img {
 		border-radius: 90px;
 	}
@@ -78,9 +45,9 @@ const StyledMenu = styled.nav<MenuProp>`
 	background: #ffffff;
 	border-radius: 8px;
 	position: absolute;
-	top: 60px;
+	top: 3.5rem;
 	right: 0;
-	width: 300px;
+	width: 18rem;
 	box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 	opacity: 0;
 	visibility: hidden;
@@ -105,6 +72,7 @@ const StyledMenu = styled.nav<MenuProp>`
 	}
 
 	li a {
+		font-size: 1rem;
 		text-decoration: none;
 		color: #333333;
 		padding: 0.4rem 1rem;
@@ -121,7 +89,6 @@ function NavbarDropdown() {
 		<StyledContainer>
 			<StyledMenuContainer>
 				<StyledMenuTrigger type='button' onClick={onClick}>
-					<span>User</span>
 					<img src='https://picsum.photos/50/50.jpg' alt='User avatar' />
 				</StyledMenuTrigger>
 				<StyledMenu ref={dropdownRef} isactive={isActive ? 'active' : 'inactive'}>
