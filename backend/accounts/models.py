@@ -2,7 +2,7 @@ from operator import mod
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-from schools.models import School, Class, Lecture
+from schools.models import School, Classroom, Lecture
 
 # Create your models here.
 class User(AbstractUser):
@@ -12,7 +12,7 @@ class User(AbstractUser):
         TEACHER = 'TE', _('Teacher')
         SCHOOLADMIN = 'SA', _('SchoolAdmin')
     
-    phone_number = models.CharField(
+    phone = models.CharField(
         max_length=13,
         null=True,
         blank=True,
@@ -26,7 +26,7 @@ class User(AbstractUser):
 
 
 class Student(models.Model):
-    guardian_phone_number = models.CharField(
+    guardian_phone = models.CharField(
         max_length=13,
         null=True,
         blank=True,
@@ -44,10 +44,10 @@ class Student(models.Model):
         null=True,
         blank=True,
     )
-    schoolclass = models.ForeignKey(
-        Class, 
+    classroom = models.ForeignKey(
+        Classroom, 
         related_name="student_list",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -67,10 +67,10 @@ class Teacher(models.Model):
         null=True,
         blank=True,
     )
-    schoolclass = models.OneToOneField(
-        Class, 
+    classroom = models.OneToOneField(
+        Classroom, 
         related_name="teacher",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
