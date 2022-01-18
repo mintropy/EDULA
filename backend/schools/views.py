@@ -11,13 +11,13 @@ from .serializers import LectureSerializer
 class LectureView(APIView):
     model = Lecture
     
-    def get(self, request):
-        articles = Lecture.objects.filter(active=True)
-        serializer = LectureSerializer(articles, many=True)  
-        # many => queryset에 대응. many 없으면 instance 1개가 올 것으로 기대하고 있어 에러 발생함.
-        return Response(serializer.data)
+    # def get(self, request):
+    #     articles = Lecture.objects.filter(active=True)
+    #     serializer = LectureSerializer(articles, many=True)  
+    #     # many => queryset에 대응. many 없으면 instance 1개가 올 것으로 기대하고 있어 에러 발생함.
+    #     return Response(serializer.data)
     
-    def post(self, request):
+    def post(self, request,*arg, **kwargs):
         serializer = LectureSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
