@@ -1,5 +1,12 @@
+import PageTitle from '../components/PageTitle';
+
 function Main() {
-	return <div>Main</div>;
+	return (
+		<div>
+			<PageTitle title='main' />
+			<h1>Main</h1>
+		</div>
+	);
 }
 
 export default Main;

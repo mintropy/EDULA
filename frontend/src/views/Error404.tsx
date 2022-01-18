@@ -1,5 +1,12 @@
+import PageTitle from '../components/PageTitle';
+
 function Error404() {
-	return <div>Error 404: Page Not Found</div>;
+	return (
+		<div>
+			<PageTitle title='Page Not Found' />
+			<h1>Error 404: Page Not Found</h1>
+		</div>
+	);
 }
 
 export default Error404;
