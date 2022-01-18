@@ -1,5 +1,5 @@
-import PageTitle from '../components/PageTitle';
-import TopNavBar from '../components/TopNavBar';
+import PageTitle from '../components/Navbar/PageTitle';
+import TopNavBar from '../components/Navbar/TopNavBar';
 
 function Main() {
 	return (

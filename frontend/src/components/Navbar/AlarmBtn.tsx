@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillBell } from 'react-icons/ai';
 import styled, { css } from 'styled-components';
-import theme from '../styles/theme';
+import theme from '../../styles/theme';
 
 interface InnerAlarm {
 	alarmCnt: string;

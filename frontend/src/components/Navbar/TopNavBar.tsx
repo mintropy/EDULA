@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Logo from './LogoBtn';
 import Alert from './AlarmBtn';
 import Profile from './ProfileBtn';
-import theme from '../styles/theme';
+import theme from '../../styles/theme';
 
 const StyledNav = styled.nav`
 	display: flex;

@@ -1,4 +1,4 @@
-import TopNavBar from '../components/TopNavBar';
+import TopNavBar from '../components/Navbar/TopNavBar';
 
 function Setting() {
 	return (

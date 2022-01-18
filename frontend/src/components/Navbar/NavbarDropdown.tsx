@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useDetectOutsideClick } from './useDetecOutsideClick';
+import { useDetectOutsideClick } from '../useDetecOutsideClick';
 
 const StyledContainer = styled.div`
 	box-sizing: border-box;
