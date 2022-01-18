@@ -1,6 +1,5 @@
 import re
 from django.shortcuts import get_list_or_404, get_object_or_404
-from django.contrib.auth.hashers import check_password
 from .models import (
     User, Student, Teacher, SchoolAdmin
 )
@@ -13,8 +12,12 @@ from rest_framework import status
 from .serializers import PasswordChangeSerializer, StudentSerializer
 
 # Create your views here.
-def decode_JWT():
-    pass
+def decode_JWT(request) -> User:
+    JWT = JWTAuthentication()
+    header = JWT.get_header(request).split()[1]
+    validate_token = JWT.get_validated_token(header)
+    user = JWT.get_user(validate_token)
+    return user
 
 
 class UserView(APIView):
@@ -51,23 +54,14 @@ class PasswordChangeView(APIView):
     model = User
     
     def put(self, request):
-        # JWT 토큰 받고 처리하는 과정 확인 필요
-        JWT_object = JWTAuthentication()
-        header = JWT_object.get_header(request)
-        print(header)
-        raw_token = JWT_object.get_raw_token(header)
-        print(raw_token)
-        validated_token = JWT_object.get_validated_token(header)
-        print(validated_token)
-        user = JWT_object.get_user(validated_token)
-        print(user)
-        
+        user = decode_JWT(request)
         data = request.data
+        print(data)
         old_password = data.get('oldPassword')
         new_password = data.get('newPassword')
         new_password_confirmation = data.get('newPasswordConfirmation')
         
-        if check_password(old_password, user.password):
+        if user.check_password(old_password):
             serializer = PasswordChangeSerializer(
                 data={
                     'old_password': old_password,
@@ -75,6 +69,10 @@ class PasswordChangeView(APIView):
                     'new_password_confirmation': new_password_confirmation,
                 }
             )
+            if new_password != new_password_confirmation:
+                return Response(
+                    {'error': '새로운 비밀번호가 틀렸습니다'}
+                )
             if serializer.is_valid():
                 user.set_password(new_password)
                 user.save()
@@ -88,12 +86,10 @@ class PasswordChangeView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
         else:
-            response = {
-                'error': 'wrong password'
-            }
-            pass
-        
-        return Response()
+            return Response(
+                {'error': '비밀번호가 틀렸습니다'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class PasswordResetView(APIView):
@@ -103,7 +99,7 @@ class PasswordResetView(APIView):
         user = []
         data = request.data
         
-        uesrname = data.get('username')
+        username = data.get('username')
         email = data.get('email')
         
         # 1. email이 잘못된 경우
