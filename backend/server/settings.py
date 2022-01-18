@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'corsheaders',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -138,6 +138,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Edula API',
+    'DESCRIPTION': 'Edula API page',
+    'VERSION': '1.0.0',
+    # OTHER SETTINGS
+}
