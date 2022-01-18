@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillBell } from 'react-icons/ai';
 import styled, { css } from 'styled-components';

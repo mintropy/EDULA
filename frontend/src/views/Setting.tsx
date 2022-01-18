@@ -1,7 +1,12 @@
-import React from 'react';
+import TopNavBar from '../components/TopNavBar';
 
 function Setting() {
-	return <h1>Setting.. 😎👀✨</h1>;
+	return (
+		<>
+			<TopNavBar />
+			<h1>Setting.. 😎👀✨</h1>
+		</>
+	);
 }
 
 export default Setting;

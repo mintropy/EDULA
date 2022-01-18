@@ -1,7 +1,12 @@
-import React from 'react';
+import TopNavBar from '../components/TopNavBar';
 
 function Profile() {
-	return <h1>Profile✨🐸🐔🐲🦄</h1>;
+	return (
+		<div>
+			<TopNavBar />
+			<h1>Profile✨🐸🐔🐲🦄</h1>
+		</div>
+	);
 }
 
 export default Profile;

@@ -1,7 +1,12 @@
-import React from 'react';
+import TopNavBar from '../components/TopNavBar';
 
 function Alarm() {
-	return <h1>Alarm 🤠😺👻😻</h1>;
+	return (
+		<div>
+			<TopNavBar />
+			<h1>Alarm 🤠😺👻😻</h1>
+		</div>
+	);
 }
 
 export default Alarm;
