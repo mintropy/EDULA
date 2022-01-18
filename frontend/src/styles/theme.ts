@@ -5,11 +5,15 @@ export type ThemeType = 'base' | 'dark';
 const theme = {
 	base: {
 		fontColor: _.realBlack,
-		bgColor: _.white,
+		bgColor: _.skyblue,
+		subBgColor: _.white,
+		warningColor: _.red,
 	},
 	dark: {
 		fontColor: _.white,
 		bgColor: _.realBlack,
+		subBgColor: _.skyblue,
+		warningColor: _.red,
 	},
 };
 
