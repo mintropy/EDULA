@@ -24,7 +24,7 @@ class Classroom(models.Model):
     
 class Lecture(models.Model):
     name = models.CharField(max_length=10)
-    time_list = models.JSONField(max_length=10)
+    time_list = models.JSONField()
     school = models.ForeignKey(
         School, 
         related_name="lecture_list",
