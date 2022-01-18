@@ -2,8 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 function SettingTheme() {
-	const StyledContainer = styled.div`
+	const StyledTitle = styled.h3`
+		font-size: 1.5em;
 		text-align: center;
+		margin: 1em 1em;
+	`;
+	const StyledContainer = styled.div`
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	`;
 	const StyledSelect = styled.select`
 		width: 150px;
@@ -26,11 +33,12 @@ function SettingTheme() {
 	`;
 	return (
 		<StyledContainer>
+			<StyledTitle>테마 :</StyledTitle>
 			<StyledSelect>
 				<StyledOption>Select Type</StyledOption>
-				<StyledOption value='base'>Base</StyledOption>
-				<StyledOption value='dark'>Dark</StyledOption>
-				<StyledOption value='colorful'>Colorful</StyledOption>
+				<StyledOption value='base'>밝은 테마</StyledOption>
+				<StyledOption value='dark'>어두운 테마</StyledOption>
+				<StyledOption value='colorful'>알록달록</StyledOption>
 			</StyledSelect>
 		</StyledContainer>
 	);
