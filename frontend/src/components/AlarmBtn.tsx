@@ -61,7 +61,7 @@ function Alarm() {
 			<button onClick={addAlarm} type='button'>
 				test
 			</button>
-			<Link to='/'>
+			<Link to='/alarm'>
 				<StyledAlarmBtn alarmCnt={alarmCnt > 9 ? '9+' : alarmCnt.toString()}>
 					<AiFillBell />
 				</StyledAlarmBtn>

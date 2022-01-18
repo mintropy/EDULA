@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 function Setting() {
-    return (
-        <div>
-            Setting.. 😎👀✨
-        </div>
-    )
+	return <h1>Setting.. 😎👀✨</h1>;
 }
 
-export default Setting
+export default Setting;

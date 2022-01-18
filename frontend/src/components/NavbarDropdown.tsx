@@ -85,6 +85,10 @@ function NavbarDropdown() {
 	const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
 	const onClick = () => setIsActive(!isActive);
 
+	function logout() {
+		console.log('logout');
+	}
+
 	return (
 		<StyledContainer>
 			<StyledMenuContainer>
@@ -94,13 +98,15 @@ function NavbarDropdown() {
 				<StyledMenu ref={dropdownRef} isactive={isActive ? 'active' : 'inactive'}>
 					<ul>
 						<li>
-							<a href='/'>My Profile</a>
+							<Link to='/profile'>My Profile</Link>
 						</li>
 						<li>
-							<a href='/'>Settings</a>
+							<Link to='/setting'>Settings</Link>
 						</li>
 						<li>
-							<a href='/'>Log out</a>
+							<button type='button' onClick={logout}>
+								Log out
+							</button>
 						</li>
 					</ul>
 				</StyledMenu>
