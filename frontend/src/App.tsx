@@ -19,7 +19,6 @@ function App() {
 					<Route path={routes.login} element={<Login />} />
 					<Route path={routes.setting} element={<Setting />} />
 					<Route path={routes.profile} element={<Profile />} />
-					<Route path={routes.setting} element={<Setting />} />
 					<Route path={routes.alarm} element={<Alarm />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
