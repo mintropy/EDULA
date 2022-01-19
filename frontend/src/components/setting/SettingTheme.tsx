@@ -43,14 +43,6 @@ function SettingTheme() {
 		}
 	}, []);
 
-	const setTheme = (theme: string) => {
-		if (theme === 'dark') {
-			localStorage.setItem('theme', 'dark');
-		} else {
-			localStorage.setItem('theme', 'base');
-		}
-	};
-
 	const { changeTheme } = useContext(ThemeContext);
 
 	const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
