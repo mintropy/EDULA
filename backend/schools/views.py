@@ -2,11 +2,12 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from .models import (
     School, Classroom, Lecture
 )
+from accounts.models import User, Student, Teacher
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import LectureSerializer
+from .serializers import LectureSerializer, StudentSerializer, TeacherSerializer
 
 class LectureView(APIView):
     model = Lecture
@@ -45,3 +46,19 @@ class LectureDetailView(APIView):
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class StudentView(APIView):
+    model = Student
+    def get(self, request,school_pk):
+        articles = Student.objects.filter(school_id=school_pk)
+        serializer = StudentSerializer(articles, many=True)  
+        return Response(serializer.data)
+    
+
+class TeacherView(APIView):
+    model = Teacher
+    
+    def get(self, request,school_pk):
+        articles = Teacher.objects.filter(school_id=school_pk)
+        serializer = TeacherSerializer(articles, many=True)  
+        return Response(serializer.data)

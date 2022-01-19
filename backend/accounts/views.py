@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
 
-from .serializers import PasswordChangeSerializer, StudentSerializer
+from .serializers import PasswordChangeSerializer, StudentSerializer, TeacherSerializer
 
 # Create your views here.
 def decode_JWT(request) -> User:
@@ -26,7 +26,7 @@ class UserView(APIView):
         pass
 
 
-class StudentView(APIView):
+class StudentDetailView(APIView):
     model = Student
     
     def get(self, request, student_pk):
@@ -36,7 +36,7 @@ class StudentView(APIView):
         return Response(serializer.data)
 
 
-class TeacherView(APIView):
+class TeacherDetailView(APIView):
     model = Teacher
     
     def get(self, request):
