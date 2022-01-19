@@ -52,7 +52,8 @@ const StyledContainer = styled.p<Type>`
 			:before {
 				content: '과';
 				background-color: ${props.theme.pointColor};
-			}
+			border-color: ${props => props.theme.pointColor};
+		
 		`}
 
 	${props =>
@@ -62,7 +63,8 @@ const StyledContainer = styled.p<Type>`
 			:before {
 				content: '쪽';
 				background-color: ${props.theme.iconColorActive};
-			}
+			border-color: ${props => props.theme.iconColorActive};
+		
 		`}
 `;
 
@@ -99,6 +101,8 @@ function AlarmItem() {
 						<StyledContent>
 							{alarm.author}, {alarm.created_at}
 						</StyledContent>
+						<StyledTitle>{alarm.title}</StyledTitle>
+						<StyledContent>{alarm.author}</StyledContent>
 						<StyledContent>{alarm.content}</StyledContent>
 					</StyledContainer>
 				))}
