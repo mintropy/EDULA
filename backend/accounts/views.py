@@ -1,15 +1,44 @@
-import re
 from django.shortcuts import get_list_or_404, get_object_or_404
 from .models import (
     User, Student, Teacher, SchoolAdmin
 )
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
+from rest_framework import serializers
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import PasswordChangeSerializer, StudentSerializer
+
+from drf_spectacular.utils import (
+    extend_schema, extend_schema_field, extend_schema_view, extend_schema_serializer,
+    OpenApiExample, OpenApiParameter, OpenApiSchemaBase, OpenApiResponse, inline_serializer
+)
+from drf_spectacular.extensions import (
+    OpenApiAuthenticationExtension
+)
+from drf_spectacular.contrib.rest_framework_simplejwt import SimpleJWTScheme
+from rest_framework_simplejwt.authentication import JWTAuthentication as JWTA
+
+
+class CustomJWTAuthentication(JWTA):
+    pass
+
+class SimpleJWTTokenUserScheme(SimpleJWTScheme):
+    name = 'customJWTAuth'
+    target_class = CustomJWTAuthentication
+    
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+
 
 # Create your views here.
 def decode_JWT(request) -> User:
@@ -28,6 +57,7 @@ class UserView(APIView):
 
 class StudentView(APIView):
     model = Student
+    serializer_class = StudentSerializer
     
     def get(self, request, student_pk):
         student = get_object_or_404(Student, pk=student_pk)
@@ -50,13 +80,75 @@ class SchoolAdminView(APIView):
         pass
 
 
+class AuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = 'accounts.PasswordChangeView'
+    name = 'Authentication'
+    
+    def get_security_definition(self, auto_schema):
+        return {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+
+
 class PasswordChangeView(APIView):
     model = User
+    queryset = User.objects.all()
+    serializer_class = PasswordChangeSerializer
     
-    def put(self, request):
+    @permission_classes([IsAuthenticated])
+    @extend_schema(
+        tags=['password'],
+        description='password change',
+        # request={
+        #     'Header': 'JWT',
+        #     # Body: [
+        #     #     'oldPassword', 'newPassword', 'newPasswordConfirmation'
+        #     # ]
+        # }
+        parameters=[
+            # OpenApiParameter(
+            #     name='JWT',
+            #     type=str,
+            #     location=OpenApiParameter.HEADER,
+            #     required=True,
+            #     description='JWT token',
+            # ),
+            # OpenApiParameter(
+            #     name='oldPassword',
+            #     type=str,
+            #     required=True,
+            #     description='password now',
+            # ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                response=PasswordChangeSerializer,
+                description='Password Changed'
+                ),
+            401: OpenApiResponse(
+                response={'error': '비밀번호가 틀렸습니다'},
+                description='Unauthorized, Password is wrong'
+            ),
+            400: {
+                'properties': {
+                    'message': {
+                        'type': 'string'
+                    },
+                },
+                'example': {
+                    'message': 'error: wrong password'
+                }
+            }
+        },
+        auth=[
+        ],
+    )
+    def patch(self, request, *args, **kwargs):
+        print(request)
         user = decode_JWT(request)
         data = request.data
-        print(data)
         old_password = data.get('oldPassword')
         new_password = data.get('newPassword')
         new_password_confirmation = data.get('newPasswordConfirmation')
@@ -88,13 +180,13 @@ class PasswordChangeView(APIView):
         else:
             return Response(
                 {'error': '비밀번호가 틀렸습니다'},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_401_UNAUTHORIZED
             )
 
 
 class PasswordResetView(APIView):
     
-    def post(self, request):
+    def put(self, request):
         
         user = []
         data = request.data
