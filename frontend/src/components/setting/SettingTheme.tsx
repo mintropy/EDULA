@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
+import ThemeContext from '../../context/theme';
 
 const StyledTitle = styled.h3`
 	font-size: 1.5em;
@@ -50,9 +51,11 @@ function SettingTheme() {
 		}
 	};
 
+	const { changeTheme } = useContext(ThemeContext);
+
 	const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		setSelected(event.target.value);
-		setTheme(event.target.value);
+		changeTheme(event.target.value);
 	};
 
 	return (

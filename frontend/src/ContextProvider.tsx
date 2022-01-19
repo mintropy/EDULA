@@ -12,8 +12,8 @@ function ContextProvider({ children }: PropType) {
 		(localStorage.getItem('theme') as ThemeType) || 'base';
 	const [mainTheme, setMainTheme] = useState(theme[storedTheme] || theme.base);
 
-	const changeTheme = (): void => {
-		if (mainTheme === theme.base) {
+	const changeTheme = (themename: string): void => {
+		if (themename === 'dark') {
 			setMainTheme(theme.dark);
 			localStorage.setItem('theme', 'dark');
 		} else {
