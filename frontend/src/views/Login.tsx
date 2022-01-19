@@ -10,7 +10,7 @@ import FormBtn from '../components/auth/FormBtn';
 import EmptyMsg from '../components/auth/EmptyMsg';
 import routes from '../routes';
 import { apiLogin } from '../api/user';
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../components/navbar/PageTitle';
 
 const HeaderContainer = styled.div`
 	display: flex;

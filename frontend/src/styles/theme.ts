@@ -8,7 +8,7 @@ const theme = {
 		bgColor: _.skyblue,
 		subBgColor: _.white,
 		warningColor: _.red,
-		// bgColor: _.white,
+
 		mainBlue: _.mainBlue,
 		borderColor: _.lightGrey,
 		iconColor: _.darkerWhite,
