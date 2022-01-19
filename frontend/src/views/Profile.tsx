@@ -1,4 +1,4 @@
-import TopNavBar from '../components/Navbar/TopNavBar';
+import TopNavBar from '../components/navbar/TopNavBar';
 
 function Profile() {
 	return (
