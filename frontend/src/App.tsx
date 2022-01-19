@@ -8,6 +8,8 @@ import GlobalStyles from './styles/GlobalStyles';
 import ContextProvider from './ContextProvider';
 import routes from './routes';
 import Login from './views/Login';
+import Findid from './views/Findid';
+import Findpw from './views/Findpw';
 
 function App() {
 	return (
@@ -20,6 +22,8 @@ function App() {
 					<Route path={routes.setting} element={<Setting />} />
 					<Route path={routes.profile} element={<Profile />} />
 					<Route path={routes.alarm} element={<Alarm />} />
+					<Route path={routes.findid} element={<Findid />} />
+					<Route path={routes.findpw} element={<Findpw />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>

@@ -10,7 +10,9 @@ import FormBtn from '../components/auth/FormBtn';
 import EmptyMsg from '../components/auth/EmptyMsg';
 import routes from '../routes';
 import { apiLogin } from '../api/user';
-import PageTitle from '../components/navbar/PageTitle';
+import PageTitle from '../components/PageTitle';
+import FormInput from '../components/auth/FormInput';
+import LinkBox from '../components/auth/LinkBox';
 
 const HeaderContainer = styled.div`
 	display: flex;
@@ -24,38 +26,6 @@ const HeaderContainer = styled.div`
 
 	svg {
 		margin-right: 10px;
-	}
-`;
-
-const InputContainer = styled.label`
-	display: flex;
-
-	& > * {
-		box-sizing: border-box;
-		border: 1px solid black;
-		padding: 8px;
-		font-size: 1rem;
-	}
-
-	input {
-		width: 100%;
-	}
-`;
-
-const LinkContainer = styled.div`
-	width: 100%;
-	padding-top: 10px;
-	display: flex;
-	align-items: center;
-`;
-
-const SLink = styled(Link)`
-	text-decoration: none;
-	margin: 0px 3px;
-	font-size: 0.8rem;
-	color: ${props => props.theme.fontColor};
-	&:hover {
-		text-decoration: underline;
 	}
 `;
 
@@ -111,7 +81,7 @@ function Login() {
 			</HeaderContainer>
 			<FormBox>
 				<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
-					<InputContainer htmlFor='id'>
+					<FormInput htmlFor='id'>
 						<span>
 							<BiUser />
 						</span>
@@ -134,9 +104,9 @@ function Login() {
 							type='text'
 							placeholder='ID'
 						/>
-					</InputContainer>
+					</FormInput>
 					{idError}
-					<InputContainer htmlFor='password'>
+					<FormInput htmlFor='password'>
 						<div>
 							<BiKey />
 						</div>
@@ -155,17 +125,17 @@ function Login() {
 							type='password'
 							placeholder='Password'
 						/>
-					</InputContainer>
+					</FormInput>
 					{pwError}
 					<FormBtn value='로그인' disabled={!isValid} />
 				</form>
 			</FormBox>
-			<LinkContainer>
+			<LinkBox>
 				<BiLock />
-				<SLink to='/'>아이디</SLink>
+				<Link to={routes.findid}>아이디</Link>
 				<span>|</span>
-				<SLink to='/'>비밀번호 찾기</SLink>
-			</LinkContainer>
+				<Link to={routes.findpw}>비밀번호 찾기</Link>
+			</LinkBox>
 		</AuthLayout>
 	);
 }
