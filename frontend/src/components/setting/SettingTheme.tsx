@@ -18,12 +18,12 @@ function SettingTheme() {
 		padding: 5px 30px 5px 10px;
 		border-radius: 4px;
 		outline: 0 none;
-		background: ${props => props.theme.mainBlue};
+		background: ${props => props.theme.subBgColor};
 		color: ${props => props.theme.bgColor};
 		font-size: 16px;
 	`;
 	const StyledOption = styled.option`
-		background: ${props => props.theme.mainBlue};
+		background: ${props => props.theme.subBgColor};
 		color: ${props => props.theme.bgColor};
 		padding: 3px 0;
 
