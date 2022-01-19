@@ -52,7 +52,7 @@ const StyledContainer = styled.p<Type>`
 			:before {
 				content: '과';
 				background-color: ${props.theme.pointColor};
-			border-color: ${props => props.theme.pointColor};
+			border-color: ${props.theme.pointColor};
 		
 		`}
 
@@ -63,7 +63,7 @@ const StyledContainer = styled.p<Type>`
 			:before {
 				content: '쪽';
 				background-color: ${props.theme.iconColorActive};
-			border-color: ${props => props.theme.iconColorActive};
+			border-color: ${props.theme.iconColorActive};
 		
 		`}
 `;
@@ -73,7 +73,7 @@ const StyledContent = styled.div`
 `;
 
 function AlarmItem() {
-	const [alarms, setAlarms] = useState([
+	const [alarms] = useState([
 		{
 			type: '과제',
 			title: '수학 익힘책 19-20 페이지',
