@@ -12,6 +12,11 @@ const StyledTitle = styled.h1`
 	margin: 1em 1em;
 `;
 
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 2em;
+`;
+
 const StyledContainer = styled.p<Type>`
 	font-size: 1em;
 	text-align: center;
@@ -90,7 +95,7 @@ function AlarmItem() {
 			<ul>
 				{alarms.map(alarm => (
 					<StyledContainer type={alarm.type} key={alarm.title}>
-						<StyledTitle>{alarm.title}</StyledTitle>
+						<StyledLink to='/'>{alarm.title}</StyledLink>
 						<StyledContent>
 							{alarm.author}, {alarm.created_at}
 						</StyledContent>
