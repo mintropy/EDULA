@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface Type {
+	type: String;
+}
 
 const StyledTitle = styled.h1`
 	font-size: 2em;
@@ -7,10 +11,57 @@ const StyledTitle = styled.h1`
 	margin: 1em 1em;
 `;
 
-const StyledContent = styled.p`
+const StyledContainer = styled.p<Type>`
 	font-size: 1em;
 	text-align: center;
-	margin: 1em 1em;
+	position: relative;
+	margin: 2em;
+	background: ${props => props.theme.subBgColor};
+	padding: 1em 1em 1em 2em;
+	border-left: 4px solid #ddd;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
+	border-radius: 10px;
+
+	:before {
+		position: absolute;
+		top: 50%;
+		margin-top: -17px;
+		left: -17px;
+		background-color: #ddd;
+		color: ${props => props.theme.subBgColor};
+		width: 30px;
+		height: 30px;
+		border-radius: 100%;
+		text-align: center;
+		line-height: 30px;
+		font-weight: bold;
+		font-family: Georgia;
+		text-shadow: 1px 1px ${props => props.theme.fontColor};
+	}
+
+	${props =>
+		props.type === '과제' &&
+		css`
+			border-color: ${props => props.theme.pointColor};
+			:before {
+				content: '과';
+				background-color: ${props => props.theme.pointColor};
+			}
+		`}
+
+	${props =>
+		props.type === '쪽지' &&
+		css`
+			border-color: ${props => props.theme.iconColorActive};
+			:before {
+				content: '쪽';
+				background-color: ${props => props.theme.iconColorActive};
+			}
+		`}
+`;
+
+const StyledContent = styled.div`
+	margin: 1em;
 `;
 
 function AlarmItem() {
@@ -35,12 +86,11 @@ function AlarmItem() {
 		<div>
 			<ul>
 				{alarms.map(alarm => (
-					<li key={alarm.title}>
-						<StyledContent>{alarm.type}</StyledContent>
+					<StyledContainer type={alarm.type} key={alarm.title}>
 						<StyledTitle>{alarm.title}</StyledTitle>
 						<StyledContent>{alarm.author}</StyledContent>
 						<StyledContent>{alarm.content}</StyledContent>
-					</li>
+					</StyledContainer>
 				))}
 			</ul>
 		</div>
