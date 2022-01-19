@@ -11,11 +11,10 @@ from .serializers import LectureSerializer
 class LectureView(APIView):
     model = Lecture
     
-    # def get(self, request):
-    #     articles = Lecture.objects.filter(active=True)
-    #     serializer = LectureSerializer(articles, many=True)  
-    #     # many => queryset에 대응. many 없으면 instance 1개가 올 것으로 기대하고 있어 에러 발생함.
-    #     return Response(serializer.data)
+    def get(self, request,school_pk):
+        articles = Lecture.objects.filter(school_id=school_pk)
+        serializer = LectureSerializer(articles, many=True)  
+        return Response(serializer.data)
     
     def post(self, request,*arg, **kwargs):
         serializer = LectureSerializer(data=request.data)
@@ -27,14 +26,22 @@ class LectureView(APIView):
 class LectureDetailView(APIView):
     model = Lecture
     
-    def get(self, request, lecture_pk):
-        student = get_object_or_404(Lecture, pk=lecture_pk)
+    def get(self, request, lecture_pk, school_pk):
+        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
         # student = Student.objects.get(pk=student_pk)
-        serializer = LectureSerializer(student)
+        serializer = LectureSerializer(lecture)
         return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = LectureSerializer(data=request.data)
+
+    def put(self, request, lecture_pk, school_pk):
+        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
+        serializer = LectureSerializer(instance=lecture, data=request.data)
+        print(serializer)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, lecture_pk, school_pk):
+        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
+        lecture.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
