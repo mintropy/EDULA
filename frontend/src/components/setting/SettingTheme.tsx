@@ -1,44 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-function SettingTheme() {
-	const StyledTitle = styled.h3`
-		font-size: 1.5em;
-		text-align: center;
-		margin: 1em 1em;
-	`;
-	const StyledContainer = styled.div`
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	`;
-	const StyledSelect = styled.select`
-		width: 150px;
-		height: 35px;
-		padding: 5px 30px 5px 10px;
-		border-radius: 4px;
-		outline: 0 none;
-		background: ${props => props.theme.subBgColor};
-		color: ${props => props.theme.bgColor};
-		font-size: 16px;
-	`;
-	const StyledOption = styled.option`
-		background: ${props => props.theme.subBgColor};
-		color: ${props => props.theme.bgColor};
-		padding: 3px 0;
+const StyledTitle = styled.h3`
+	font-size: 1.5em;
+	text-align: center;
+	margin: 1em 1em;
+`;
+const StyledContainer = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`;
 
-		:hover {
-			background: ${props => props.theme.fontColor};
+const StyledSelect = styled.select`
+	width: 150px;
+	height: 35px;
+	padding: 5px 30px 5px 10px;
+	border-radius: 4px;
+	outline: 0 none;
+	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.bgColor};
+	font-size: 16px;
+`;
+const StyledOption = styled.option`
+	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.bgColor};
+	padding: 3px 0;
+
+	:hover {
+		background: ${props => props.theme.fontColor};
+	}
+`;
+
+function SettingTheme() {
+	const [Selected, setSelected] = useState('');
+
+	useEffect(() => {
+		const theme = window.localStorage.getItem('theme');
+		if (theme === 'dark') {
+			document.getElementsByTagName('html')[0].classList.add('dark');
 		}
-	`;
+	}, []);
+
+	const setTheme = (theme: string) => {
+		if (theme === 'dark') {
+			localStorage.setItem('theme', 'dark');
+		} else {
+			localStorage.setItem('theme', 'base');
+		}
+	};
+
+	const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		setSelected(event.target.value);
+		setTheme(event.target.value);
+	};
+
 	return (
 		<StyledContainer>
 			<StyledTitle>테마 :</StyledTitle>
-			<StyledSelect>
-				<StyledOption>Select Type</StyledOption>
+			<StyledSelect value={Selected} onChange={event => handleChangeSelect(event)}>
+				<StyledOption value='none'>Select Type</StyledOption>
 				<StyledOption value='base'>밝은 테마</StyledOption>
-				<StyledOption value='dark'>어두운 테마</StyledOption>
 				<StyledOption value='colorful'>알록달록</StyledOption>
+				<StyledOption value='dark'>어두운 테마</StyledOption>
 			</StyledSelect>
 		</StyledContainer>
 	);
