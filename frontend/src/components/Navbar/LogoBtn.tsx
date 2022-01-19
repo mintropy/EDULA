@@ -22,7 +22,7 @@ const StyledLink = styled(Link)`
 	align-items: center;
 	padding: 0.375rem 0.75rem;
 	line-height: 1.5;
-	border: 1px solid lightgray;
+	border: 1px solid ${props => props.theme.iconColor};
 	font-size: 3rem;
 	text-decoration: none;
 `;

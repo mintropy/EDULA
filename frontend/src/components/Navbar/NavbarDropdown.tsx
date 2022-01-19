@@ -14,21 +14,21 @@ const StyledMenuContainer = styled.div`
 `;
 
 const StyledMenuTrigger = styled.button`
-	background: #ffffff;
+	background: ${props => props.theme.subBgColor};
 	border-radius: 90px;
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 4px 6px;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px ${props => props.theme.fontColor};
 	border: none;
 	vertical-align: middle;
 	transition: box-shadow 0.4s ease;
 	margin-left: auto; /* Strictly for positioning */
 
 	:hover {
-		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 1px 8px ${props => props.theme.fontColor};
 	}
 
 	img {
@@ -41,13 +41,13 @@ interface MenuProp {
 }
 
 const StyledMenu = styled.nav<MenuProp>`
-	background: #ffffff;
+	background: ${props => props.theme.subBgColor};
 	border-radius: 8px;
 	position: absolute;
 	top: 3.5rem;
 	right: 0;
 	width: 18rem;
-	box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 8px ${props => props.theme.fontColor};
 	opacity: 0;
 	visibility: hidden;
 	transform: translateY(-20px);
@@ -67,13 +67,13 @@ const StyledMenu = styled.nav<MenuProp>`
 	}
 
 	li {
-		border-bottom: 1px solid #dddddd;
+		border-bottom: 1px solid ${props => props.theme.subBgColor};
 	}
 
 	li a {
 		font-size: 1rem;
 		text-decoration: none;
-		color: #333333;
+		color: ${props => props.theme.fontColor};
 		padding: 0.4rem 1rem;
 		display: block;
 	}
