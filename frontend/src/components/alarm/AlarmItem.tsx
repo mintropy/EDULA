@@ -51,7 +51,7 @@ const StyledContainer = styled.p<Type>`
 			border-color: ${props.theme.pointColor};
 			:before {
 				content: '과';
-				background-color: $props.theme.pointColor};
+				background-color: ${props.theme.pointColor};
 			}
 		`}
 
