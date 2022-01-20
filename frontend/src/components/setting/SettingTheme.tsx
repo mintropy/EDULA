@@ -6,11 +6,13 @@ const StyledTitle = styled.h3`
 	font-size: 1.5em;
 	text-align: center;
 	margin: 1em 1em;
+	color: ${props => props.theme.fontColor};
 `;
 const StyledContainer = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	color: ${props => props.theme.fontColor};
 `;
 
 const StyledSelect = styled.select`
