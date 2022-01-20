@@ -19,6 +19,9 @@ function ContextProvider({ children }: PropType) {
 		} else if (themename === 'nature') {
 			setMainTheme(theme.nature);
 			localStorage.setItem('theme', 'nature');
+		} else if (themename === 'twilight') {
+			setMainTheme(theme.twilight);
+			localStorage.setItem('theme', 'twilight');
 		} else {
 			setMainTheme(theme.base);
 			localStorage.setItem('theme', 'base');
