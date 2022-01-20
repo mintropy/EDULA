@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Board from '../components/class/board';
+import TopNavBar from '../components/navbar/TopNavBar';
 import HomeworkViewer from '../components/class/homeworkViewer';
 import Intro from '../components/class/intro';
 
@@ -29,11 +30,14 @@ const StyledIntro = styled(Intro)`
 
 function Class() {
 	return (
-		<StyledContainer>
-			<StyledHomeworkViewer />
-			<StyledBoard />
-			<StyledIntro />
-		</StyledContainer>
+		<>
+			<TopNavBar />
+			<StyledContainer>
+				<StyledHomeworkViewer />
+				<StyledBoard />
+				<StyledIntro />
+			</StyledContainer>
+		</>
 	);
 }
 
