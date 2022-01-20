@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from . models import Lecture
+from . models import Lecture, Classroom
 from accounts.models import User, Student, Teacher
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -35,4 +35,11 @@ class TeacherSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Teacher
+        fields = '__all__'
+
+
+class ClassroomSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Classroom
         fields = '__all__'
