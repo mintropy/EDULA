@@ -3,7 +3,8 @@ const routes = {
 	login: '/login',
 	setting: '/setting',
 	profile: '/profile',
-	alarm:'/alarm'
+	alarm: '/alarm',
+	class: '/class',
 };
 
 export default routes;

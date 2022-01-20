@@ -4,6 +4,7 @@ import Main from './views/Main';
 import Profile from './views/Profile';
 import Alarm from './views/Alarm';
 import Setting from './views/Setting';
+import Class from './views/Class';
 import GlobalStyles from './styles/GlobalStyles';
 import ContextProvider from './ContextProvider';
 import routes from './routes';
@@ -20,6 +21,7 @@ function App() {
 					<Route path={routes.setting} element={<Setting />} />
 					<Route path={routes.profile} element={<Profile />} />
 					<Route path={routes.alarm} element={<Alarm />} />
+					<Route path={routes.class} element={<Class />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>
