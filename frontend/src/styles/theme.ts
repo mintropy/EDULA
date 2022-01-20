@@ -26,6 +26,17 @@ const theme = {
 		iconColorActive: _.yellow,
 		pointColor: _.pink,
 	},
+	nature: {
+		fontColor: _.realBlack,
+		bgColor: _.natureGreen,
+		subBgColor: _.natureGreyBlue,
+		warningColor: _.red,
+		mainBlue: _.natureBrownGreen,
+		borderColor: _.lightGrey,
+		iconColor: _.darkerWhite,
+		iconColorActive: _.natureGreen,
+		pointColor: _.naturePink,
+	},
 };
 
 export default theme;
