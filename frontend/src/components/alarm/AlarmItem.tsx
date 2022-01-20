@@ -6,12 +6,6 @@ interface Type {
 	type: String;
 }
 
-const StyledTitle = styled.h1`
-	font-size: 2em;
-	text-align: center;
-	margin: 1em 1em;
-`;
-
 const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 2em;
