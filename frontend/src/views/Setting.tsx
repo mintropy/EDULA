@@ -7,11 +7,12 @@ function Setting() {
 		font-size: 2em;
 		text-align: center;
 		margin: 1em 0;
+		color: ${props => props.theme.fontColor};
 	`;
 
 	return (
 		<>
-			<TopNavBar/>
+			<TopNavBar />
 			<StyledTitle>설정</StyledTitle>
 			<SettingTheme />
 		</>

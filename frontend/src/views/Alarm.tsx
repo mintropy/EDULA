@@ -6,13 +6,13 @@ const StyledTitle = styled.h1`
 	font-size: 2em;
 	text-align: center;
 	margin: 1em 1em;
+	color: ${props => props.theme.fontColor};
 `;
 
 function Alarm() {
-
 	return (
 		<>
-			<TopNavBar/>
+			<TopNavBar />
 			<StyledTitle>새 소식</StyledTitle>
 			<AlarmItem />
 		</>
