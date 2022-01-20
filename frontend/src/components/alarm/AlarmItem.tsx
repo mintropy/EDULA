@@ -101,8 +101,6 @@ function AlarmItem() {
 						<StyledContent>
 							{alarm.author}, {alarm.created_at}
 						</StyledContent>
-						<StyledTitle>{alarm.title}</StyledTitle>
-						<StyledContent>{alarm.author}</StyledContent>
 						<StyledContent>{alarm.content}</StyledContent>
 					</StyledContainer>
 				))}
