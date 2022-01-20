@@ -59,9 +59,9 @@ function SettingTheme() {
 				<StyledOption value='none'>Select Type</StyledOption>
 				<StyledOption value='base'>밝은 테마</StyledOption>
 				<StyledOption value='colorful'>알록달록</StyledOption>
-				<StyledOption value='nature'>자연</StyledOption>
-				<StyledOption value='twilight'>노을</StyledOption>
-				<StyledOption value='dark'>어두운 테마</StyledOption>
+				<StyledOption value='nature'>숲</StyledOption>
+				<StyledOption value='twilight'>보랏빛 하늘</StyledOption>
+				<StyledOption value='dark'>깜깜한 밤</StyledOption>
 			</StyledSelect>
 		</StyledContainer>
 	);
