@@ -4,15 +4,20 @@ from rest_framework_simplejwt.views import (
 )
 
 from django.urls import path
-from . import views
+from .views import user, student, teacher, school_admin
 
 
 urlpatterns = [
-    path('api/token/', TokenObtainPairView.as_view()),
-    path('api/token/refresh/', TokenRefreshView.as_view()),
+    # JWT token
+    path('token/', TokenObtainPairView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view()),
+    # User Information
+    path('', user.UserView.as_view()),
+    path('student/<int:student_pk>/', student.StudentView.as_view()),
+    path('teacher/<int:teacher_pk>/', teacher.TeacherView.as_view()),
+    path('school-admin/<int:school_admin_pk>/', school_admin.SchoolAdminView.as_view()),
     
-    path('student/<int:student_pk>/', views.StudentDetailView.as_view()),
-    
-    path('profile/password/change/', views.PasswordChangeView.as_view()),
-    path('profile/password/reset/', views.PasswordResetView.as_view()),
+    # Password
+    path('profile/password/change/', user.PasswordChangeView.as_view()),
+    path('profile/password/reset/', user.PasswordResetView.as_view()),
 ]

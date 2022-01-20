@@ -1,53 +1,58 @@
-import re
-from django.shortcuts import get_list_or_404, get_object_or_404
-from .models import (
-    User, Student, Teacher, SchoolAdmin
-)
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import status
 
-from .serializers import PasswordChangeSerializer, StudentSerializer, TeacherSerializer
+from ..models import User
+from ..serializers import UserDetailSerializer, PasswordChangeSerializer
 
-# Create your views here.
+
 def decode_JWT(request) -> User:
     JWT = JWTAuthentication()
-    header = JWT.get_header(request).split()[1]
-    validate_token = JWT.get_validated_token(header)
-    user = JWT.get_user(validate_token)
-    return user
+    try:
+        header = JWT.get_header(request).split()[1]
+        validate_token = JWT.get_validated_token(header)
+        user = JWT.get_user(validate_token)
+        return user
+    except:
+        return None
 
 
 class UserView(APIView):
+    """About user
+    
+    """
+    model = User
+    serializer_class = UserDetailSerializer
     
     def get(self, request):
-        pass
-
-
-class StudentDetailView(APIView):
-    model = Student
-    
-    def get(self, request, student_pk):
-        student = get_object_or_404(Student, pk=student_pk)
-        # student = Student.objects.get(pk=student_pk)
-        serializer = StudentSerializer(student)
+        """Get user information.
+        
+        Decode JWT token, return user infromation
+        
+        Request Head
+        ------------
+        JWT : int
+        
+        Returns
+        -------
+        200 OK<br>
+        id : int,
+            user primary key based on DB<br>
+        status : str,
+            weather user is student, teacher or school admin<br>
+        
+        401 Unauthorized
+        """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        serializer = UserDetailSerializer(user)
         return Response(serializer.data)
-
-
-class TeacherDetailView(APIView):
-    model = Teacher
-    
-    def get(self, request):
-        pass
-
-
-class SchoolAdminView(APIView):
-    model = SchoolAdmin
-    
-    def get(self, request):
-        pass
 
 
 class PasswordChangeView(APIView):

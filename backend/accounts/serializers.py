@@ -1,6 +1,21 @@
 from rest_framework import serializers
 
-from . models import User, Student, Teacher
+from .models import SchoolAdmin, Teacher, User, Student
+from schools.models import Classroom, School
+
+
+class UserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'status')
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'status')
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -8,27 +23,107 @@ class StudentSerializer(serializers.ModelSerializer):
     class UserSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('id', 'username', 'email', 'status')
+            fields = ('id', 'username', 'email', 'phone')
+            read_only_fields = ('id', 'username')
     
-    user = UserSerializer(read_only=True)
+    class ClassroomSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Classroom
+            fields = ('id', 'class_grade', 'class_num')
+    
+    class SchoolSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = School
+            fields = '__all__'
+    
+    user = UserSerializer()
+    classroom = ClassroomSerializer(read_only=True)
+    school = SchoolSerializer(read_only=True)
     
     class Meta:
         model = Student
         fields = '__all__'
-        
-        
+    
+    def update(self, instance, validated_data):
+        if 'user' in validated_data:
+            nested_serializer = self.fields['user']
+            nested_instance = instance.user
+            nested_data = validated_data.pop('user')
+            nested_serializer.update(nested_instance, nested_data)
+            pass
+        return super(StudentSerializer, self).update(instance, validated_data)
+
+
 class TeacherSerializer(serializers.ModelSerializer):
     
     class UserSerializer(serializers.ModelSerializer):
         class Meta:
             model = User
-            fields = ('id', 'username', 'email', 'status')
+            fields = ('id', 'username', 'email', 'phone')
+            read_only_fields = ('id', 'username')
     
-    user = UserSerializer(read_only=True)
+    class ClassroomSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Classroom
+            fields = ('id', 'class_grade', 'class_num')
+    
+    class SchoolSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = School
+            fields = '__all__'
+    
+    user = UserSerializer()
+    classroom = ClassroomSerializer(read_only=True)
+    school = SchoolSerializer(read_only=True)
     
     class Meta:
         model = Teacher
         fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        if 'user' in validated_data:
+            nested_serializer = self.fields['user']
+            nested_instance = instance.user
+            nested_data = validated_data.pop('user')
+            nested_serializer.update(nested_instance, nested_data)
+            pass
+        return super(StudentSerializer, self).update(instance, validated_data)
+
+
+class SchoolAdminSerializer(serializers.ModelSerializer):
+    
+    class UserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id', 'username', 'email', 'phone')
+            read_only_fields = ('id', 'username')
+    
+    class ClassroomSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Classroom
+            fields = ('id', 'class_grade', 'class_num')
+    
+    class SchoolSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = School
+            fields = '__all__'
+    
+    user = UserSerializer()
+    classroom = ClassroomSerializer(read_only=True)
+    school = SchoolSerializer(read_only=True)
+    
+    class Meta:
+        model = SchoolAdmin
+        fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        if 'user' in validated_data:
+            nested_serializer = self.fields['user']
+            nested_instance = instance.user
+            nested_data = validated_data.pop('user')
+            nested_serializer.update(nested_instance, nested_data)
+            pass
+        return super(StudentSerializer, self).update(instance, validated_data)
 
 
 class PasswordChangeSerializer(serializers.ModelSerializer):

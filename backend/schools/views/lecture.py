@@ -1,19 +1,18 @@
-from django.shortcuts import get_list_or_404, get_object_or_404
-from .models import (
-    School, Classroom, Lecture
-)
-from accounts.models import User, Student, Teacher
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
-from .serializers import LectureSerializer, StudentSerializer, TeacherSerializer, ClassroomSerializer
+from ..models import Lecture
+from ..serializers import LectureSerializer
+
 
 class LectureView(APIView):
-    """Get total lecture information.
-    
-    """
     model = Lecture
+    serializer_class = LectureSerializer
+    permission_classes  = [IsAuthenticated]
     
     def get(self, request,school_pk):
         """Get total lecture of school information
@@ -68,13 +67,12 @@ class LectureView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        
 
 class LectureDetailView(APIView):
-    """Lecture get, update, delete
-    
-    """
     model = Lecture
+    serializer_class = LectureSerializer
+    permission_classes  = [IsAuthenticated]
     
     def get(self, request, lecture_pk, school_pk):
         """Get lecture information
@@ -158,134 +156,3 @@ class LectureDetailView(APIView):
         lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class StudentView(APIView):
-    """Get student information.
-    
-    """
-    model = Student
-    def get(self, request,school_pk):
-        """Get total student of school information
-        
-        Use school_pk, return total student of school infromation
-        
-        Request Head
-        ------------
-        school_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        students : list,
-            total student list of school<br>
-        """
-        students = Student.objects.filter(school_id=school_pk)
-        serializer = StudentSerializer(students, many=True)  
-        return Response(serializer.data)
-    
-
-class TeacherView(APIView):
-    """Get teacher information.
-    
-    """
-    model = Teacher
-    
-    def get(self, request,school_pk):
-        """Get total teacher of school information
-        
-        Use school_pk, return total teacher of school infromation
-        
-        Request Head
-        ------------
-        school_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        teachers : list,
-            total teacher list of school<br>
-        """
-        teachers = Teacher.objects.filter(school_id=school_pk)
-        serializer = TeacherSerializer(teachers, many=True)  
-        return Response(serializer.data)
-
-
-class ClassroomView(APIView):
-    """Get total classroom information.
-    
-    """
-    model = Classroom
-    serializer_class = ClassroomSerializer
-    
-    def get(self, request,school_pk):
-        """Get total classroom of school information
-        
-        Use school_pk, return total classroom of school infromation
-        
-        Request Head
-        ------------
-        school_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        classroom : list,
-            total classroom list of school<br>
-        """
-        classrooms = Classroom.objects.filter(school_id=school_pk)
-        serializer = ClassroomSerializer(classrooms, many=True)  
-        return Response(serializer.data)
-    
-    def post(self, request,*arg, **kwargs):
-        """Post classroom of school information
-        
-        Save classroom of school infromation
-        
-        Request Head
-        ------------
-        class_grade : int,
-            학년<br>
-        class_num : int,
-            반<br>
-        school : int,
-            학교<br>
-        
-        Returns
-        -------
-        201 Created<br>
-        classroomS : list,
-            classrooms list of school<br>
-        
-        400 Bad Request
-        """
-        serializer = ClassroomSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-
-class ClassroomStudentView(APIView):
-    """Get classroom student information.
-    
-    """
-    model = Student
-    def get(self, request,school_pk,classroom_pk):
-        """Get classroom student information
-        
-        Use school_pk and classroom_pk, return classroom student infromation
-        
-        Request Head
-        ------------
-        school_pk : int<br>
-        classroom_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        students : list,
-            classroom student list<br>
-        """
-        students = Student.objects.filter(school_id=school_pk,classroom_id=classroom_pk)
-        serializer = StudentSerializer(students, many=True)  
-        return Response(serializer.data)
