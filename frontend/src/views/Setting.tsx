@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import SettingTheme from '../components/setting/SettingTheme';
+import TopNavBar from '../components/navbar/TopNavBar';
 
 function Setting() {
 	const StyledTitle = styled.h1`
@@ -10,6 +11,7 @@ function Setting() {
 
 	return (
 		<>
+			<TopNavBar/>
 			<StyledTitle>설정</StyledTitle>
 			<SettingTheme />
 		</>
