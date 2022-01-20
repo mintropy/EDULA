@@ -33,9 +33,10 @@ function Class() {
 		<>
 			<TopNavBar />
 			<StyledContainer>
+				<div>g</div>
+				<StyledIntro />
 				<StyledHomeworkViewer />
 				<StyledBoard />
-				<StyledIntro />
 			</StyledContainer>
 		</>
 	);
