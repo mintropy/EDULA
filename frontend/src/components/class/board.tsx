@@ -1,27 +1,61 @@
 import { useState } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import StyledTitle from './styledTitle';
+
+const StyledListItem = styled.li`
+	font-size: 1em;
+	text-align: center;
+	margin: 1em;
+	background: ${props => props.theme.subBgColor};
+	padding: 1em 1em 1em 2em;
+	border-left: 4px solid #ddd;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
+	border-radius: 10px;
+`;
+
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+`;
 
 function Board() {
-	const [게시글] = useState([
+	const [articles] = useState([
 		{
-			subject: '수학',
-			title: '수학 익힘책 19-20 페이지',
-			content: '친구들 ^^ 수학 익힘책 풀어오세요~ ',
-			author: '나담임',
-			deadline: '2021.1.9',
+			type: 'Q&A',
+			title: '다큐멘터리 소감문 과제',
+			content: '꼭 들어가야 하는 내용이 무엇인가요?',
+			author: '김하루',
+			deadline: '2021.1.7',
 			link: '',
 		},
 		{
-			subject: '과학',
-			title: '식초에 달걀 담그기 실험',
+			type: '자유게시판',
+			title: '마야의 도시에 관한 재미있는 기사~~ ^^',
 			content:
-				'과학책 10 페이지 참고해서 식초에 달걀 담그기 실험을 해보세요~ 보호자와 함께 하는 거 알죠??',
-			author: '사이언',
+				'신문에서 재미있는 기사를 봐서 추천해! http://www.handmk.com/news/articleView.html?idxno=12000 ',
+			author: '서지산',
 			deadline: '2021.1.15',
 			link: '',
 		},
 	]);
 
-	return <div>board</div>;
+	return (
+		<div>
+			<StyledTitle>게시판</StyledTitle>
+			<ul>
+				{articles.map(article => (
+					<StyledLink to='/'>
+						<StyledListItem>
+							<p>{article.type}</p>
+							<h1>{article.title}</h1>
+							<p>{article.author}</p>
+						</StyledListItem>
+					</StyledLink>
+				))}
+			</ul>
+		</div>
+	);
 }
 
 export default Board;
