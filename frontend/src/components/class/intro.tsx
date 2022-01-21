@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const StyledTitle = styled.h1`
 	font-size: 2em;
 	text-align: center;
-	margin: 1em 1em;
+	padding: 1em;
 	color: ${props => props.theme.fontColor};
 `;
 

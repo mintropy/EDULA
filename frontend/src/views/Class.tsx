@@ -5,36 +5,34 @@ import HomeworkViewer from '../components/class/homeworkViewer';
 import Intro from '../components/class/intro';
 
 const StyledContainer = styled.section`
-	width: 1366px;
-	height: 768px;
+	/* width: 100%;
 	display: grid;
-	grid:
+	/* grid:
 		'homework board' auto
 		'. intro' 1fr
-		/ auto 1fr;
-	gap: 8px;
-	align-content: center;
-`;
+		/ auto 1fr; */
 
-const StyledHomeworkViewer = styled(HomeworkViewer)`
-	grid-area: homework;
-`;
-
-const StyledBoard = styled(Board)`
-	grid-area: board;
+	display: grid;
+	grid-template-columns: 1fr 3fr;
+	grid-gap: 20px;
 `;
 
 const StyledIntro = styled(Intro)`
-	grid-area: intro;
+	
+`;
+const StyledBoard = styled(Board)`
+	grid-column: 2;
+`;
+const StyledHomeworkViewer = styled(HomeworkViewer)`
+	grid-column: 1;
 `;
 
 function Class() {
 	return (
 		<>
 			<TopNavBar />
+			<StyledIntro />
 			<StyledContainer>
-				<div>g</div>
-				<StyledIntro />
 				<StyledHomeworkViewer />
 				<StyledBoard />
 			</StyledContainer>
