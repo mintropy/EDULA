@@ -5,6 +5,7 @@ const routes = {
 	profile: '/profile',
 	alarm: '/alarm',
 	class: '/class',
+	articleform: '/articleform',
 };
 
 export default routes;

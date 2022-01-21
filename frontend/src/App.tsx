@@ -9,6 +9,7 @@ import GlobalStyles from './styles/GlobalStyles';
 import ContextProvider from './ContextProvider';
 import routes from './routes';
 import Login from './views/Login';
+import ArticleForm from './views/ArticleForm';
 
 function App() {
 	return (
@@ -22,6 +23,7 @@ function App() {
 					<Route path={routes.profile} element={<Profile />} />
 					<Route path={routes.alarm} element={<Alarm />} />
 					<Route path={routes.class} element={<Class />} />
+					<Route path={routes.articleform} element={<ArticleForm />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>
