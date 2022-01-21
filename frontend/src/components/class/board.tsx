@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from './styledTitle';
+import StyledButton from './styledButton';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -54,6 +55,7 @@ function Board() {
 					</StyledLink>
 				))}
 			</ul>
+			<StyledButton>글쓰기</StyledButton>
 		</div>
 	);
 }
