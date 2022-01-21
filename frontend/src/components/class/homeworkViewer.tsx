@@ -27,18 +27,18 @@ const HomeworkContent = styled.div`
 function HomeworkViewer() {
 	const [homeworks] = useState([
 		{
-			subject: '수학',
-			title: '수학 익힘책 19-20 페이지',
-			content: '친구들 ^^ 수학 익힘책 풀어오세요~ ',
+			subject: '서양사',
+			title: '@@ 다큐멘터리',
+			content: '친구들 ^^ @@ 다큐멘터리 보고 1페이지 감상문 써오세요 ^^ ',
 			author: '나담임',
 			deadline: '2021.1.9',
 			link: '',
 		},
 		{
-			subject: '과학',
-			title: '식초에 달걀 담그기 실험',
+			subject: '서양사',
+			title: '세계사 여행 - 일본 에도시대 편 책 읽기',
 			content:
-				'과학책 10 페이지 참고해서 식초에 달걀 담그기 실험을 해보세요~ 보호자와 함께 하는 거 알죠??',
+				'세계사 여행- 일본 에도 시대 편 책 읽고, 다섯 줄 감상문 써오세요. ^^ 학교 온라인 도서관에 있어요. ',
 			author: '사이언',
 			deadline: '2021.1.15',
 			link: '',
@@ -51,7 +51,6 @@ function HomeworkViewer() {
 			{homeworks.map(homework => (
 				<HomeworkContainer key={homework.title}>
 					<StyledLink to='/'>{homework.title}</StyledLink>
-					<HomeworkContent>{homework.subject}</HomeworkContent>
 					<HomeworkContent>마감일: {homework.deadline}</HomeworkContent>
 				</HomeworkContainer>
 			))}
