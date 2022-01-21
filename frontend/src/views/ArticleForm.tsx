@@ -1,7 +1,7 @@
-import React from 'react';
+import Form from '../components/class/articleForm';
 
 function ArticleForm() {
-	return <div>폼폼</div>;
+	return <Form />;
 }
 
 export default ArticleForm;
