@@ -55,7 +55,9 @@ function Board() {
 					</StyledLink>
 				))}
 			</ul>
-			<StyledButton>글쓰기</StyledButton>
+			<Link to='/articleform/'>
+				<StyledButton>글쓰기</StyledButton>
+			</Link>
 		</div>
 	);
 }

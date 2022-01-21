@@ -11,6 +11,7 @@ import routes from './routes';
 import Login from './views/Login';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
+import ArticleForm from './views/ArticleForm';
 
 function App() {
 	return (
@@ -26,6 +27,7 @@ function App() {
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
 					<Route path={routes.class} element={<Class />} />
+					<Route path={routes.articleform} element={<ArticleForm />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>
