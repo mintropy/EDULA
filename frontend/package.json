@@ -66,6 +66,7 @@
 		"eslint-plugin-react-hooks": "^4.3.0",
 		"prettier-eslint": "^13.0.0",
 		"prettier-eslint-cli": "^5.0.1",
-		"prettier": "^2.5.1"
+		"prettier": "^2.5.1",
+		"mini-css-extract-plugin": "2.4.5"
 	}
 }

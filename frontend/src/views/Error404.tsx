@@ -1,4 +1,4 @@
-import PageTitle from '../components/navbar/PageTitle';
+import PageTitle from '../components/PageTitle';
 
 function Error404() {
 	return (
