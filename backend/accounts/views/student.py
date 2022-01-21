@@ -89,15 +89,11 @@ class StudentView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        email = request.data['user']['email']
-        phone = request.data['user']['phone']
-        user.email = email
-        user.phone = phone
         data = {
             'user': {
                 'id': user.pk,
-                'email': email,
-                'phone': phone,
+                'email': request.data['user']['email'],
+                'phone': request.data['user']['phone'],
             },
             'guardian_phone': request.data['guardian_phone'],
         }
