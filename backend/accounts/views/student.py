@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 
 from .user import decode_JWT
 from ..models import Student
@@ -16,7 +16,7 @@ class StudentView(APIView):
     """
     model = Student
     serializer_class = StudentSerializer
-    permission_classes  = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get(self, request, student_pk):
         """Get student inforamtion
@@ -89,15 +89,11 @@ class StudentView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        email = request.data['user']['email']
-        phone = request.data['user']['phone']
-        user.email = email
-        user.phone = phone
         data = {
             'user': {
                 'id': user.pk,
-                'email': email,
-                'phone': phone,
+                'email': request.data['user']['email'],
+                'phone': request.data['user']['phone'],
             },
             'guardian_phone': request.data['guardian_phone'],
         }
