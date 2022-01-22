@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 
 from .user import decode_JWT
 from ..models import Teacher
@@ -13,7 +13,7 @@ from ..serializers import TeacherSerializer
 class TeacherView(APIView):
     model = Teacher
     serializer_class = TeacherSerializer
-    permission_classes  = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get(self, request, teacher_pk):
         """Get teacher inforamtion

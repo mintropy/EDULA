@@ -91,4 +91,7 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('old_password', 'new_password', 'new_password_confirmation')
+        fields = ('id', 'username', 'old_password',\
+            'new_password', 'new_password_confirmation')
+        read_only_fields = ('id', 'username')
+

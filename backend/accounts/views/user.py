@@ -113,7 +113,7 @@ class UserView(APIView):
         
         Request Head
         ------------
-        JWT : int
+        JWT : str
         
         Returns
         -------
@@ -147,6 +147,32 @@ class PasswordChangeView(APIView):
     authentication_classes = [TokenAuthentication]
     
     def put(self, request):
+        """Password change
+        
+        Only one's own self password could be changed
+        
+        Request Head
+        ------------
+        JWT : str
+        
+        Request Body
+        ------------
+        old_password : str,
+            password which is already using<br>
+        new_password : str,
+            password which user want to set as new password
+        new_password_confirmation : str,
+            new password input confirmation
+        
+        Returns
+        -------
+        200 OK<br>
+        
+        400< Bad Request<br>
+            if password is wrong or password confirmaion failed
+        
+        401 Unauthorized<br>
+        """
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -198,6 +224,30 @@ class FindUsernameView(APIView):
     authentication_classes = [TokenAuthentication]
     
     def get(self, request):
+        """get username by email
+        
+        get username by email using email address and first name
+        
+        Request_Head
+        ------------
+        JWT : str
+        
+        Request Body
+        ------------
+        first_name : str,
+            user's name
+        email : str,
+            user's email
+        
+        Returns
+        -------
+        200 OK<br>
+        
+        400 Bad Request<br>
+            if first_name or email is different
+        
+        401 Unauthorized<br>
+        """
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -210,33 +260,61 @@ class FindUsernameView(APIView):
         if user.first_name != first_name or user.email != email:
             return Response(
                 {'error': 'Unauthorized'},
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_400_BAD_REQUEST
             )
         send_email(email, 'username', user.username)
         return Response(status=status.HTTP_200_OK)
 
 
 class PasswordResetView(APIView):
-    """Password change
+    """Reset user password
     
     """
     model = User
     authentication_classes = [TokenAuthentication]
     
     def put(self, request):
+        """Rest user password
+        
+        Reset userpassword using username and email,
+        get new password through email
+        
+        Request Head
+        ------------
+        JWT : str
+        
+        Request Body
+        ------------
+        username : str
+        email : str
+        
+        Returns
+        -------
+        200 OK
+        
+        400 Bad Request<br>
+            if username or email is different
+        
+        401 Unauthorized
+        """
         user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         data = request.data
         username = data.get('username')
         email = data.get('email')
         if user.username != username  or user.email != email:
             return Response(
                 {'error': 'Unauthorized'},
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_400_BAD_REQUEST
             )
-        new_password = 'admin'
-        user.set_password(new_password)
-        user.save()
-        if send_email(email, 'password', reset_password()):
+        new_password = reset_password()
+        if send_email(email, 'password', new_password):
+            user.set_password(new_password)
+            user.save()
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
