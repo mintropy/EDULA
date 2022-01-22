@@ -10,7 +10,7 @@ services:
       - 80:80
     volumes:
       - ./docker/nginx/conf/conf.d:/etc/nginx/conf.d
-      - ./docker/nginx/django_static:/usr/share/nginx/html/django_static
+      - static_volume:/usr/share/nginx/html/django_static
     depends_on:
       - backend
 
@@ -23,4 +23,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./docker/nginx/django_static:/app/backend/static
+      - static_volume:/app/backend/static
+
+volumes:
+  static_volume: {}
