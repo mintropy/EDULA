@@ -1,0 +1,9 @@
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - docker-compose build
+  tags:
+    - first
