@@ -1,7 +1,9 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import Logo from './LogoBtn';
 import Alert from './AlarmBtn';
 import Profile from './ProfileBtn';
+import UserContext from '../../context/user';
 
 const StyledNav = styled.nav`
 	display: flex;
@@ -21,10 +23,14 @@ const StyledSpan = styled.span`
 `;
 
 function TopNavBar() {
+	const { logout } = useContext(UserContext);
 	return (
 		<StyledNav>
 			<Logo />
 			<StyledSpan>
+				<button onClick={() => logout()} type='button'>
+					로그아웃
+				</button>
 				<Alert />
 				<Profile />
 			</StyledSpan>

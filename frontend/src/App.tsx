@@ -10,6 +10,7 @@ import routes from './routes';
 import Login from './views/Login';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
+import Home from './views/Home';
 
 function App() {
 	return (
@@ -17,13 +18,16 @@ function App() {
 			<GlobalStyles />
 			<Router>
 				<Routes>
-					<Route path={routes.main} element={<Main />} />
 					<Route path={routes.login} element={<Login />} />
-					<Route path={routes.setting} element={<Setting />} />
-					<Route path={routes.profile} element={<Profile />} />
-					<Route path={routes.alarm} element={<Alarm />} />
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
+
+					<Route path={routes.main} element={<Home />}>
+						<Route index element={<Main />} />
+						<Route path={routes.setting} element={<Setting />} />
+						<Route path={routes.profile} element={<Profile />} />
+						<Route path={routes.alarm} element={<Alarm />} />
+					</Route>
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>

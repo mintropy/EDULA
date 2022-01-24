@@ -5,7 +5,7 @@ const defaultTheme = theme.base;
 
 const ThemeContext = createContext({
 	theme: defaultTheme,
-	changeTheme: (themename: string) => {},
+	changeTheme: (_: string) => {},
 });
 
 export default ThemeContext;
