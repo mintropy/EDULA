@@ -8,8 +8,6 @@ const routes = {
 	articleform: '/articleform',
 	findid: '/findid',
 	findpw: '/findpw',
-	class: '/class',
-	articleform: '/articleform',
 };
 
 export default routes;

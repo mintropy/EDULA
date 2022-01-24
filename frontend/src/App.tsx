@@ -12,7 +12,6 @@ import Login from './views/Login';
 import ArticleForm from './views/ArticleForm';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
-import ArticleForm from './views/ArticleForm';
 
 function App() {
 	return (
