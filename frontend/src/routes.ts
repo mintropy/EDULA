@@ -6,6 +6,8 @@ const routes = {
 	alarm: '/alarm',
 	findid: '/findid',
 	findpw: '/findpw',
+	class: '/class',
+	articleform: '/articleform',
 };
 
 export default routes;

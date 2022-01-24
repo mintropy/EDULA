@@ -17,13 +17,8 @@ function ContextProvider({ children }: PropType) {
 	const [isLoggedIn, setIsLoggedIn] = useState(storedIsLoggedIn);
 
 	const changeTheme = (themename: string): void => {
-		if (themename === 'dark') {
-			setMainTheme(theme.dark);
-			localStorage.setItem('theme', 'dark');
-		} else {
-			setMainTheme(theme.base);
-			localStorage.setItem('theme', 'base');
-		}
+		setMainTheme((theme as any)[themename] || theme.base);
+		localStorage.setItem('theme', themename);
 	};
 
 	const login = (access: string, refresh: string): void => {
