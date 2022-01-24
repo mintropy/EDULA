@@ -4,6 +4,8 @@ const routes = {
 	setting: '/setting',
 	profile: '/profile',
 	alarm: '/alarm',
+	class: '/class',
+	articleform: '/articleform',
 	findid: '/findid',
 	findpw: '/findpw',
 	class: '/class',
