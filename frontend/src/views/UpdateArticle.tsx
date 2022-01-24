@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Form from '../components/class/articleForm';
+import Form from '../components/class/ArticleForm';
 import TopNavBar from '../components/navbar/TopNavBar';
-import StyledTitle from '../components/class/styledTitle';
+import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
 	margin: 3em;

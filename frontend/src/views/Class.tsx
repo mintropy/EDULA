@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import Board from '../components/class/board';
+import Board from '../components/class/Board';
 import TopNavBar from '../components/navbar/TopNavBar';
-import HomeworkViewer from '../components/class/homeworkViewer';
-import Intro from '../components/class/intro';
+import HomeworkViewer from '../components/class/HomeworkViewer';
+import Intro from '../components/class/Intro';
 
 const StyledContainer = styled.section`
 	display: grid;

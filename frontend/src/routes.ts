@@ -9,6 +9,7 @@ const routes = {
 	findpw: '/findpw',
 	createarticle: '/createarticle',
 	updatearticle: '/updatearticle',
+	articleDetail:'/article/:articleId'
 };
 
 export default routes;

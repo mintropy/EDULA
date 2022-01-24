@@ -13,6 +13,7 @@ import CreateArticle from './views/CreateArticle';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
 import UpdateArticle from './views/UpdateArticle';
+import ArticleDetail from './views/ArticleDetail';
 
 function App() {
 	return (
@@ -30,6 +31,7 @@ function App() {
 					<Route path={routes.class} element={<Class />} />
 					<Route path={routes.createarticle} element={<CreateArticle />} />
 					<Route path={routes.updatearticle} element={<UpdateArticle />} />
+					<Route path={routes.articleDetail} element={<ArticleDetail />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>
