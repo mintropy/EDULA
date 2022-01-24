@@ -10,6 +10,9 @@ from rest_framework.authentication import TokenAuthentication
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+
 from ..models import User
 from ..serializers import UserDetailSerializer, PasswordChangeSerializer
 import serect
@@ -104,7 +107,8 @@ class UserView(APIView):
     """
     model = User
     serializer_class = UserDetailSerializer
-    authentication_classes = [TokenAuthentication]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def get(self, request):
         """Get user information.
@@ -144,7 +148,8 @@ class PasswordChangeView(APIView):
     """
     model = User
     serializer_class = PasswordChangeSerializer
-    authentication_classes = [TokenAuthentication]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def put(self, request):
         """Password change
@@ -221,7 +226,8 @@ class FindUsernameView(APIView):
     
     """
     model = User
-    authentication_classes = [TokenAuthentication]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def get(self, request):
         """get username by email
@@ -271,7 +277,8 @@ class PasswordResetView(APIView):
     
     """
     model = User
-    authentication_classes = [TokenAuthentication]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def put(self, request):
         """Rest user password

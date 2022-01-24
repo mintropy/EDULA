@@ -3,7 +3,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
+
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from .user import decode_JWT
 from ..models import Teacher
@@ -13,7 +15,8 @@ from ..serializers import TeacherSerializer
 class TeacherView(APIView):
     model = Teacher
     serializer_class = TeacherSerializer
-    authentication_classes = [TokenAuthentication]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def get(self, request, teacher_pk):
         """Get teacher inforamtion
