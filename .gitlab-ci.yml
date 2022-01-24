@@ -4,13 +4,17 @@ stages:
 
 build:
   stage: build
+  only:
+    - develop@s06-webmobile1-sub2/S06P12D209
   script:
     - docker-compose build
   tags:
     - first
 
-build:
+deploy:
   stage: deploy
+  only:
+    - develop@s06-webmobile1-sub2/S06P12D209
   script:
     - docker-compose up -d
   tags:

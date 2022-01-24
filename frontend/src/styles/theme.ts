@@ -1,6 +1,6 @@
 import _ from './_variables';
 
-export type ThemeType = 'base' | 'dark';
+export type ThemeType = 'base' | 'dark' | 'nature' | 'twilight';
 
 const theme = {
 	base: {

@@ -21,7 +21,6 @@ const StyledHomeworkViewer = styled(HomeworkViewer)`
 function Class() {
 	return (
 		<>
-			<TopNavBar />
 			<StyledIntro />
 			<StyledContainer>
 				<StyledHomeworkViewer />
