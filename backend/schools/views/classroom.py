@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 
+from accounts.views.user import decode_JWT
 from ..models import Classroom
 from ..serializers import ClassroomSerializer
 
@@ -10,7 +11,6 @@ from ..serializers import ClassroomSerializer
 class ClassroomView(APIView):
     model = Classroom
     serializer_class = ClassroomSerializer
-    permission_classes  = [IsAuthenticated]
     
     def get(self, request,school_pk):
         """Get total classroom of school information
@@ -27,6 +27,12 @@ class ClassroomView(APIView):
         classroom : list,
             total classroom list of school<br>
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         classrooms = Classroom.objects.filter(school_id=school_pk)
         serializer = ClassroomSerializer(classrooms, many=True)  
         return Response(serializer.data)
@@ -53,6 +59,12 @@ class ClassroomView(APIView):
         
         400 Bad Request
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         serializer = ClassroomSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

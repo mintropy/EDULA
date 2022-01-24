@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 
+from accounts.views.user import decode_JWT
 from ..models import Lecture
 from ..serializers import LectureSerializer
 
@@ -12,7 +13,6 @@ from ..serializers import LectureSerializer
 class LectureView(APIView):
     model = Lecture
     serializer_class = LectureSerializer
-    permission_classes  = [IsAuthenticated]
     
     def get(self, request,school_pk):
         """Get total lecture of school information
@@ -29,6 +29,12 @@ class LectureView(APIView):
         lectures : list,
             total lecture list of school<br>
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         lectures = Lecture.objects.filter(school_id=school_pk)
         serializer = LectureSerializer(lectures, many=True)  
         return Response(serializer.data)
@@ -63,6 +69,12 @@ class LectureView(APIView):
         
         400 Bad Request
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         serializer = LectureSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -72,7 +84,6 @@ class LectureView(APIView):
 class LectureDetailView(APIView):
     model = Lecture
     serializer_class = LectureSerializer
-    permission_classes  = [IsAuthenticated]
     
     def get(self, request, lecture_pk, school_pk):
         """Get lecture information
@@ -92,6 +103,12 @@ class LectureDetailView(APIView):
             
         404 Not Found
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
         serializer = LectureSerializer(lecture)
         return Response(serializer.data)
@@ -130,6 +147,12 @@ class LectureDetailView(APIView):
         
         400 Bad Request
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
         serializer = LectureSerializer(instance=lecture, data=request.data)
         print(serializer)
@@ -153,6 +176,12 @@ class LectureDetailView(APIView):
             
         404 Not Found
         """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
