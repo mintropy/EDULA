@@ -12,5 +12,5 @@ COPY ./backend .
 RUN python manage.py migrate
 RUN python manage.py collectstatic
 
-ENV DJANGO_SUPERUSER_PASSWORD "9999"
+ENV DJANGO_SUPERUSER_PASSWORD "99999999"
 RUN python manage.py createsuperuser --username gu999999 --email admin@example.com --noinput
