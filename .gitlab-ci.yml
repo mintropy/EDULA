@@ -9,7 +9,7 @@ build:
   tags:
     - first
 
-build:
+deploy:
   stage: deploy
   script:
     - docker-compose up -d
