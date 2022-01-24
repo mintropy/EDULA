@@ -3,13 +3,21 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import random
 
+from rest_framework import serializers
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiExample, OpenApiParameter, OpenApiResponse, OpenApiSchemaBase,
+    inline_serializer
+)
+from drf_spectacular.types import OpenApiTypes
+
+from . import swagger_schema
 from ..models import User
 from ..serializers import UserDetailSerializer, PasswordChangeSerializer
 import serect
@@ -104,27 +112,26 @@ class UserView(APIView):
     """
     model = User
     serializer_class = UserDetailSerializer
-    authentication_classes = [TokenAuthentication]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=UserDetailSerializer,
+                description=swagger_schema.descriptions['UserView']['get'][200],
+                examples=swagger_schema.examples['UserView']['get'][200]
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['UserView']['get'][401],
+                description=swagger_schema.descriptions['UserView']['get'][401],
+            )
+        },
+        description=swagger_schema.descriptions['UserView']['get']['description'],
+        summary=swagger_schema.summaries['UserView'],
+        examples=[
+            swagger_schema.examples['UserView']['get'][401]
+        ],
+    )
     def get(self, request):
-        """Get user information.
-        
-        Decode JWT token, return user infromation
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Returns
-        -------
-        200 OK<br>
-        id : int,
-            user primary key based on DB<br>
-        status : str,
-            weather user is student, teacher or school admin<br>
-        
-        401 Unauthorized
-        """
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -139,40 +146,33 @@ class PasswordChangeView(APIView):
     """Password change
     
     password chang from old password to new password
-    
-    
     """
     model = User
     serializer_class = PasswordChangeSerializer
-    authentication_classes = [TokenAuthentication]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=PasswordChangeSerializer,
+                description=swagger_schema.descriptions['PasswordChangeView']['put'][200],
+            ),
+            400: OpenApiResponse(
+                response=swagger_schema.schema_serializers['PasswordChangeView']['put'][400],
+                description=swagger_schema.descriptions['PasswordChangeView']['put'][400],
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['PasswordChangeView']['put'][401],
+                description=swagger_schema.descriptions['PasswordChangeView']['put'][401],
+            ),
+        },
+        description=swagger_schema.descriptions['PasswordChangeView']['put']['description'],
+        summary=swagger_schema.summaries['PasswordChangeView']['put'],
+        examples=[
+            swagger_schema.examples['PasswordChangeView']['put'][400],
+            swagger_schema.examples['PasswordChangeView']['put'][401],
+        ],
+    )
     def put(self, request):
-        """Password change
-        
-        Only one's own self password could be changed
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Request Body
-        ------------
-        old_password : str,
-            password which is already using<br>
-        new_password : str,
-            password which user want to set as new password
-        new_password_confirmation : str,
-            new password input confirmation
-        
-        Returns
-        -------
-        200 OK<br>
-        
-        400< Bad Request<br>
-            if password is wrong or password confirmaion failed
-        
-        401 Unauthorized<br>
-        """
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -221,8 +221,10 @@ class FindUsernameView(APIView):
     
     """
     model = User
-    authentication_classes = [TokenAuthentication]
     
+    @extend_schema(
+        
+    )
     def get(self, request):
         """get username by email
         
@@ -271,7 +273,6 @@ class PasswordResetView(APIView):
     
     """
     model = User
-    authentication_classes = [TokenAuthentication]
     
     def put(self, request):
         """Rest user password

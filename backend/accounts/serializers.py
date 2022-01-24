@@ -7,8 +7,8 @@ from schools.models import Classroom, School
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'phone')
-        read_only_fields = ('id', 'username')
+        fields = ('id', 'username', 'email', 'phone', 'status')
+        read_only_fields = ('id', 'username', 'status')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -91,7 +91,7 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'old_password',\
+        fields = ('id', 'username', 'old_password', 'status',\
             'new_password', 'new_password_confirmation')
-        read_only_fields = ('id', 'username')
+        read_only_fields = ('id', 'username', 'status')
 

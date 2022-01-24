@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
 
 from .user import decode_JWT
 from ..models import Student
@@ -16,7 +15,6 @@ class StudentView(APIView):
     """
     model = Student
     serializer_class = StudentSerializer
-    authentication_classes = [TokenAuthentication]
     
     def get(self, request, student_pk):
         """Get student inforamtion
