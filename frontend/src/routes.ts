@@ -7,9 +7,9 @@ const routes = {
 	class: '/class',
 	findid: '/findid',
 	findpw: '/findpw',
-	createarticle: '/createarticle',
-	updatearticle: '/updatearticle',
-	articleDetail:'/article/:articleId'
+	createarticle: '/articleCreate',
+	updatearticle: '/articleUpdate/:articleId',
+	articleDetail: '/article/:articleId',
 };
 
 export default routes;
