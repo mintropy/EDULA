@@ -7,16 +7,19 @@ const StyledContainer = styled.div`
 	margin: 3em;
 `;
 
-function CreateArticle() {
+function UpdateArticle() {
 	return (
 		<div>
 			<TopNavBar />
-			<StyledTitle>게시물 쓰기</StyledTitle>
+			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
-				<Form originTitle='' originContent='' />
+				<Form
+					originTitle='과학 실험'
+					originContent='과학 책 32페이지 참고해서, 보호자의 지도 아래 하세요. 인증샷 필수 !! '
+				/>
 			</StyledContainer>
 		</div>
 	);
 }
 
-export default CreateArticle;
+export default UpdateArticle;

@@ -9,7 +9,13 @@ type ArticleInput = {
 	content: string;
 };
 
-function Form() {
+interface InnerProps {
+	originTitle: string;
+	originContent: string;
+}
+
+function Form(props: InnerProps) {
+	const { originTitle, originContent } = props;
 	const {
 		register,
 		handleSubmit,
@@ -54,6 +60,7 @@ function Form() {
 					})}
 					type='text'
 					placeholder='Title'
+					defaultValue={originTitle}
 				/>
 			</FormInput>
 
@@ -73,6 +80,7 @@ function Form() {
 					})}
 					type='text'
 					placeholder='Content'
+					defaultValue={originContent}
 				/>
 			</FormInput>
 			<FormBtn value='글쓰기' disabled={!isValid} />

@@ -5,9 +5,10 @@ const routes = {
 	profile: '/profile',
 	alarm: '/alarm',
 	class: '/class',
-	createarticle: '/createarticle',
 	findid: '/findid',
 	findpw: '/findpw',
+	createarticle: '/createarticle',
+	updatearticle: '/updatearticle',
 };
 
 export default routes;

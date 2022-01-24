@@ -12,6 +12,7 @@ import Login from './views/Login';
 import CreateArticle from './views/CreateArticle';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
+import UpdateArticle from './views/UpdateArticle';
 
 function App() {
 	return (
@@ -28,6 +29,7 @@ function App() {
 					<Route path={routes.findpw} element={<Findpw />} />
 					<Route path={routes.class} element={<Class />} />
 					<Route path={routes.createarticle} element={<CreateArticle />} />
+					<Route path={routes.updatearticle} element={<UpdateArticle />} />
 					<Route path='*' element={<Error404 />} />
 				</Routes>
 			</Router>
