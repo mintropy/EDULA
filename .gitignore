@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python,django,node,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,python,django,node,react
 
+# Serect Key
+serect.py
+
 ### Django ###
 *.log
 *.pot

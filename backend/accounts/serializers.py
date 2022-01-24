@@ -5,10 +5,10 @@ from schools.models import Classroom, School
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
-        fields = ('id', 'username', 'status')
+        fields = ('id', 'username', 'email', 'phone')
+        read_only_fields = ('id', 'username')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -18,24 +18,19 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'status')
 
 
+class ClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Classroom
+        fields = ('id', 'class_grade', 'class_num')
+
+
+class SchoolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = '__all__'
+
+
 class StudentSerializer(serializers.ModelSerializer):
-    
-    class UserSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = User
-            fields = ('id', 'username', 'email', 'phone')
-            read_only_fields = ('id', 'username')
-    
-    class ClassroomSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Classroom
-            fields = ('id', 'class_grade', 'class_num')
-    
-    class SchoolSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = School
-            fields = '__all__'
-    
     user = UserSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
@@ -50,28 +45,10 @@ class StudentSerializer(serializers.ModelSerializer):
             nested_instance = instance.user
             nested_data = validated_data.pop('user')
             nested_serializer.update(nested_instance, nested_data)
-            pass
         return super(StudentSerializer, self).update(instance, validated_data)
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-    
-    class UserSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = User
-            fields = ('id', 'username', 'email', 'phone')
-            read_only_fields = ('id', 'username')
-    
-    class ClassroomSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Classroom
-            fields = ('id', 'class_grade', 'class_num')
-    
-    class SchoolSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = School
-            fields = '__all__'
-    
     user = UserSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
@@ -86,28 +63,10 @@ class TeacherSerializer(serializers.ModelSerializer):
             nested_instance = instance.user
             nested_data = validated_data.pop('user')
             nested_serializer.update(nested_instance, nested_data)
-            pass
         return super(StudentSerializer, self).update(instance, validated_data)
 
 
 class SchoolAdminSerializer(serializers.ModelSerializer):
-    
-    class UserSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = User
-            fields = ('id', 'username', 'email', 'phone')
-            read_only_fields = ('id', 'username')
-    
-    class ClassroomSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Classroom
-            fields = ('id', 'class_grade', 'class_num')
-    
-    class SchoolSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = School
-            fields = '__all__'
-    
     user = UserSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
@@ -122,7 +81,6 @@ class SchoolAdminSerializer(serializers.ModelSerializer):
             nested_instance = instance.user
             nested_data = validated_data.pop('user')
             nested_serializer.update(nested_instance, nested_data)
-            pass
         return super(StudentSerializer, self).update(instance, validated_data)
 
 
@@ -133,4 +91,7 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('old_password', 'new_password', 'new_password_confirmation')
+        fields = ('id', 'username', 'old_password',\
+            'new_password', 'new_password_confirmation')
+        read_only_fields = ('id', 'username')
+
