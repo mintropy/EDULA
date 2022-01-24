@@ -5,7 +5,7 @@ const routes = {
 	profile: '/profile',
 	alarm: '/alarm',
 	class: '/class',
-	articleform: '/articleform',
+	createarticle: '/createarticle',
 	findid: '/findid',
 	findpw: '/findpw',
 };
