@@ -26,7 +26,7 @@ function App() {
 					<Route path={routes.main} element={<Home />}>
 						<Route index element={<Main />} />
 						<Route path={routes.setting} element={<Setting />} />
-						<Route path={routes.profile} element={<Profile />} />
+						<Route path={`${routes.profile}/:userId`} element={<Profile />} />
 						<Route path={routes.alarm} element={<Alarm />} />
 						<Route path={routes.class} element={<Class />} />
 						<Route path={routes.articleform} element={<ArticleForm />} />

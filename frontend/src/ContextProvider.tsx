@@ -1,6 +1,6 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { apiCheckRefreshToken } from './api/user';
+import { apiCheckRefreshToken, apiDecodeToken } from './api/user';
 import ThemeContext from './context/theme';
 import UserContext from './context/user';
 import theme, { ThemeType } from './styles/theme';
@@ -15,6 +15,8 @@ function ContextProvider({ children }: PropType) {
 	const storedIsLoggedIn: boolean = Boolean(localStorage.getItem('refresh'));
 	const [mainTheme, setMainTheme] = useState(theme[storedTheme] || theme.base);
 	const [isLoggedIn, setIsLoggedIn] = useState(storedIsLoggedIn);
+	const [userId, setUserId] = useState('');
+	const [userStat, setUserStat] = useState('');
 
 	const changeTheme = (themename: string): void => {
 		setMainTheme((theme as any)[themename] || theme.base);
@@ -32,6 +34,18 @@ function ContextProvider({ children }: PropType) {
 		localStorage.removeItem('refresh');
 		setIsLoggedIn(false);
 	};
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			apiDecodeToken().then(res => {
+				setUserId(res.data.id);
+				setUserStat(res.data.status);
+			});
+		} else {
+			setUserId('');
+			setUserStat('');
+		}
+	}, [isLoggedIn]);
 
 	const storedRefreshToken: string | null = localStorage.getItem('refresh');
 	if (typeof storedRefreshToken === 'string') {
@@ -54,8 +68,14 @@ function ContextProvider({ children }: PropType) {
 	);
 
 	const userValues = useMemo(
-		() => ({ isLoggedIn, login, logout }),
-		[isLoggedIn, login, logout]
+		() => ({
+			isLoggedIn,
+			login,
+			logout,
+			userId,
+			userStat,
+		}),
+		[isLoggedIn, login, logout, userId, userStat]
 	);
 
 	return (
