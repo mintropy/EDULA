@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+
 from .user import decode_JWT
 from ..models import Student
 from ..serializers import StudentSerializer
@@ -15,6 +18,8 @@ class StudentView(APIView):
     """
     model = Student
     serializer_class = StudentSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def get(self, request, student_pk):
         """Get student inforamtion

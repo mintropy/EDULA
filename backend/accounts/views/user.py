@@ -17,6 +17,9 @@ from drf_spectacular.utils import (
 )
 from drf_spectacular.types import OpenApiTypes
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+
 from . import swagger_schema
 from ..models import User
 from ..serializers import UserDetailSerializer, PasswordChangeSerializer
@@ -112,6 +115,8 @@ class UserView(APIView):
     """
     model = User
     serializer_class = UserDetailSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         responses={
@@ -149,6 +154,8 @@ class PasswordChangeView(APIView):
     """
     model = User
     serializer_class = PasswordChangeSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         responses={
@@ -221,6 +228,8 @@ class FindUsernameView(APIView):
     
     """
     model = User
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         
@@ -273,6 +282,8 @@ class PasswordResetView(APIView):
     
     """
     model = User
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def put(self, request):
         """Rest user password

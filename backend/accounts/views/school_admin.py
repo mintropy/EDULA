@@ -4,6 +4,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+
 from .user import decode_JWT
 from ..models import SchoolAdmin
 from ..serializers import SchoolAdminSerializer
@@ -12,6 +15,8 @@ from ..serializers import SchoolAdminSerializer
 class SchoolAdminView(APIView):
     model = SchoolAdmin
     serializer_class = SchoolAdminSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
     def get(self, request, school_admin_pk):
         """Get school admin inforamtion
