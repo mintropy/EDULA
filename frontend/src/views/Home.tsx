@@ -12,6 +12,10 @@ const OutletContainer = styled.div`
 	justify-content: center;
 `;
 
+const Container = styled.div`
+	display: flex;
+`;
+
 function Main() {
 	const { isLoggedIn } = useContext(UserContext);
 	if (!isLoggedIn) {
@@ -20,10 +24,12 @@ function Main() {
 	return (
 		<>
 			<TopNavBar />
-			<SideBar />
-			<OutletContainer>
-				<Outlet />
-			</OutletContainer>
+			<Container>
+				<SideBar />
+				<OutletContainer>
+					<Outlet />
+				</OutletContainer>
+			</Container>
 		</>
 	);
 }

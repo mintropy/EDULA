@@ -4,13 +4,19 @@ import routes from '../../routes';
 
 const StyledLink = styled(Link)`
 	text-decoration: none;
+	font-size: 1.5em;
+	color: ${props => props.theme.fontColor};
+`;
+
+const StyledList = styled.li`
+	margin: 1em;
 `;
 
 const StyledContainer = styled.div`
 	padding: 2em;
 	width: 10em;
 	height: 100%;
-	background-color: ${props => props.theme.pointColor};
+	background-color: ${props => props.theme.subBgColor};
 `;
 
 const StyledTitle = styled.h1`
@@ -22,14 +28,12 @@ function SideBar() {
 		<StyledContainer>
 			<StyledTitle>Side Navigation</StyledTitle>
 			<ul>
-				<li>
-					<StyledLink to={routes.class}>
-						수업 상세(가 아니라 시간표여야 함)
-					</StyledLink>
-				</li>
-				<li>
+				<StyledList>
 					<StyledLink to={routes.class}>시간표</StyledLink>
-				</li>
+				</StyledList>
+				<StyledList>
+					<StyledLink to={routes.class}>과제 모음</StyledLink>
+				</StyledList>
 			</ul>
 		</StyledContainer>
 	);
