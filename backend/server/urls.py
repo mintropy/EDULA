@@ -28,7 +28,7 @@ api_version = ''
 
 urlpatterns = [
     # APPs
-    path(base_api_url + api_version + 'admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path(base_api_url + api_version + 'accounts/', include('accounts.urls')),
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
     # JWT
