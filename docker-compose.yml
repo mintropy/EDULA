@@ -7,12 +7,30 @@ services:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
     ports:
-      - 80:80
+      - 443:443
     volumes:
       - ./docker/nginx/conf/conf.d:/etc/nginx/conf.d
       - static_volume:/usr/share/nginx/html/django_static
+      - ./docker/nginx/cert/etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
+      - certbot
+
+  certbot:
+    image: certbot/certbot
+    ports:
+      - 80:80
+    command:
+      - certonly
+      - -n
+      - --agree-tos
+      - --standalone
+      - -d
+      - i6d209.p.ssafy.io
+      - -m
+      - admin@example.com
+    volumes:
+      - ./docker/nginx/cert/etc/letsencrypt:/etc/letsencrypt
 
   backend:
     restart: unless-stopped
