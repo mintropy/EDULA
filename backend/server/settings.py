@@ -157,7 +157,12 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Edula API',
     'DESCRIPTION': 'Edula API page',
     'VERSION': '1.0.0',
+    
     # OTHER SETTINGS
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,
+        'filter': True,
+    },
 }
 
 
