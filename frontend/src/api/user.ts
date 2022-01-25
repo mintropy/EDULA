@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = 'http://i6d209.p.ssafy.io/api';
 
 const setToken = () => {
 	const token = localStorage.getItem('access') || ``;
@@ -13,7 +13,7 @@ const setToken = () => {
 export const apiLogin = (userId: string, password: string) =>
 	axios({
 		method: 'post',
-		url: `${BASE_URL}/accounts/token/`,
+		url: `${BASE_URL}/token/`,
 		data: {
 			username: userId,
 			password,
@@ -23,7 +23,7 @@ export const apiLogin = (userId: string, password: string) =>
 export const apiCheckRefreshToken = (refresh: string) =>
 	axios({
 		method: 'post',
-		url: `${BASE_URL}/accounts/token/refresh/`,
+		url: `${BASE_URL}/token/refresh/`,
 		data: {
 			refresh,
 		},
@@ -36,6 +36,12 @@ export const apiDecodeToken = () =>
 		headers: {
 			...setToken(),
 		},
+	});
+
+export const apiGetUserStatus = (userId: string) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/accounts/${userId}/`,
 	});
 
 export const apiGetAdminInfo = (adminId: string) =>

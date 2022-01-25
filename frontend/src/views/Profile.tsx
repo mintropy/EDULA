@@ -1,4 +1,5 @@
 import { BiPhone } from 'react-icons/bi';
+import { FiUser } from 'react-icons/fi';
 import { VscMail } from 'react-icons/vsc';
 import { FaUserEdit } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
@@ -38,13 +39,14 @@ const UserProfileContainer = styled.div`
 
 const UserDataContainer = styled.div`
 	div {
-		margin-top: 20px;
+		margin-top: 15px;
 		display: flex;
 		align-items: center;
+		padding: 5px;
 	}
 
 	svg {
-		margin-right: 0.5rem;
+		margin: 0 0.5rem;
 	}
 
 	.edit {
@@ -101,10 +103,13 @@ function Profile() {
 				</UserProfileContainer>
 				<UserDataContainer>
 					<div className='name'>김싸피 {userId}</div>
-					<div className='class'>3학년 2반 7번</div>
+					<div className='class'>
+						<FiUser />
+						3학년 2반 7번
+					</div>
 					<div className='email'>
 						<VscMail />
-						999@gugu.gu.gu
+						999999@gugugugu.gu.gu
 					</div>
 					<div className='phone'>
 						<BiPhone />
