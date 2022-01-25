@@ -7,7 +7,7 @@ type PropType = {
 function PageTitle({ title }: PropType) {
 	return (
 		<Helmet>
-			<title>{title}</title>
+			<title>{title} | Edula ~</title>
 		</Helmet>
 	);
 }

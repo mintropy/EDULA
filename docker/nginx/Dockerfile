@@ -1,6 +1,7 @@
 FROM node:16.13-alpine as builder
 WORKDIR /app/frontend
-COPY ../../frontend .
+COPY ./frontend .
+RUN npm i -g npm@latest
 RUN npm i
 RUN npm run build
 

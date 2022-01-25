@@ -1,20 +1,11 @@
 import { createContext } from 'react';
 
-export interface User {
-	username?: string;
-	userId: string;
-	userType: string;
-	profilePath?: string;
-	email?: string;
-	phoneNumber?: string;
-	guardianNumber?: string;
-}
-
-const defaultUser: User = {
+const UserContext = createContext({
+	isLoggedIn: false,
+	login: (_: string, __: string) => {},
+	logout: () => {},
 	userId: '',
-	userType: '',
-};
-
-const UserContext = createContext({ user: defaultUser, changeUser: () => {} });
+	userStat: '',
+});
 
 export default UserContext;
