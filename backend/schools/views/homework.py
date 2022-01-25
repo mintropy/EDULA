@@ -4,8 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
+from drf_spectacular.types import OpenApiTypes
 
 from accounts.views.user import decode_JWT
+from . import swagger_schema
 from ..models import Homework
 from ..serializers import HomeworkSerializer
 
@@ -14,7 +17,24 @@ class HomeworkView(APIView):
     model = Homework
     serializer_class = HomeworkSerializer
     
-    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=HomeworkSerializer,
+                description=swagger_schema.descriptions['HomeworkView']['get'][200],
+                examples=swagger_schema.examples['HomeworkView']['get'][200]
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['HomeworkView']['get'][401],
+                description=swagger_schema.descriptions['HomeworkView']['get'][401],
+            )
+        },
+        description=swagger_schema.descriptions['HomeworkView']['description'],
+        summary=swagger_schema.summaries['HomeworkView'],
+        examples=[
+            swagger_schema.examples['HomeworkView']['get'][401]
+        ],
+    )
     def get(self, request,lecture_pk):
         """Get total classroom of school information
         
@@ -155,7 +175,6 @@ class HomeworkDetailView(APIView):
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
         serializer = HomeworkSerializer(instance=homework, data=request.data)
-        print(serializer)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
