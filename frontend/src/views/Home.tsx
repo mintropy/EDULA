@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import TopNavBar from '../components/navbar/TopNavBar';
 import UserContext from '../context/user';
 import routes from '../routes';
+import SideBar from '../components/sidebar/SideBar';
 
 const OutletContainer = styled.div`
 	display: flex;
@@ -19,6 +20,7 @@ function Main() {
 	return (
 		<>
 			<TopNavBar />
+			<SideBar />
 			<OutletContainer>
 				<Outlet />
 			</OutletContainer>

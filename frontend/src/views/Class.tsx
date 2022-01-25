@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import Board from '../components/class/Board';
-import TopNavBar from '../components/navbar/TopNavBar';
 import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 
