@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import UserContext from '../../context/user';
 import routes from '../../routes';
-import { useDetectOutsideClick } from '../useDetecOutsideClick';
+import { useDetectOutsideClick } from '../useDetectOutsideClick';
 
 const StyledContainer = styled.div`
 	box-sizing: border-box;
