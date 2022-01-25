@@ -4,18 +4,19 @@ from .models import SchoolAdmin, Teacher, User, Student
 from schools.models import Classroom, School
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'phone', 'status')
         read_only_fields = ('id', 'username', 'status')
 
 
-class UserDetailSerializer(serializers.ModelSerializer):
+class UserBasicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'status')
+        fields = ('id', 'username', 'status')
+        read_only_fields = ('id', 'username', 'status')
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserDetailSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
     
@@ -49,7 +50,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserDetailSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
     
@@ -67,7 +68,7 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class SchoolAdminSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserDetailSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)
     
@@ -84,6 +85,13 @@ class SchoolAdminSerializer(serializers.ModelSerializer):
         return super(StudentSerializer, self).update(instance, validated_data)
 
 
+class FindUsernameSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=User
+        fields = ('id', 'first_name', 'email',)
+
+
 class PasswordChangeSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, required=True)
@@ -96,8 +104,8 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'username', 'status')
 
 
-class FindUsernameSerializer(serializers.ModelSerializer):
+class PasswordResetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model=User
-        fields = ('id', 'first_name', 'email',)
+        fields = ('id', 'username', 'email',)

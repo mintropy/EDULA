@@ -3,6 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import random
 
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,7 +21,8 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from . import swagger_schema
 from ..models import User
 from ..serializers import (
-    UserDetailSerializer, PasswordChangeSerializer, FindUsernameSerializer
+    UserBasicSerializer,
+    FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer
 )
 import serect
 
@@ -97,6 +100,14 @@ def send_email(recipient_email, type, context):
 
 
 def reset_password():
+    """Make new random password
+    
+    make new random password of length 14
+    
+    returns
+    -------
+    str
+    """
     base_alpabet = [chr(97 + i) for i in range(26)]
     base_num = [str(i) for i in range(10)]
     base_special_char = ['!', '@', '#', '$']
@@ -112,14 +123,14 @@ class UserView(APIView):
     
     """
     model = User
-    serializer_class = UserDetailSerializer
+    serializer_class = UserBasicSerializer
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         responses={
             200: OpenApiResponse(
-                response=UserDetailSerializer,
+                response=UserBasicSerializer,
                 description=swagger_schema.descriptions['UserView']['get'][200],
                 examples=swagger_schema.examples['UserView']['get'][200]
             ),
@@ -142,8 +153,127 @@ class UserView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        serializer = UserDetailSerializer(user)
-        return Response(serializer.data)
+        serializer = UserBasicSerializer(user)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class UserSpecifyingView(APIView):
+    """User specifying
+    
+    search about user's id | username | status
+    """
+    model = User
+    serializer_class = UserBasicSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=UserBasicSerializer,
+                description=swagger_schema.descriptions['UserSpecifyingView']['get'][200]
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['UserSpecifyingView']['get'][401],
+                description=swagger_schema.descriptions['UserSpecifyingView']['get'][401],
+            ),
+            404: OpenApiResponse(
+                response=swagger_schema.schema_serializers['UserSpecifyingView']['get'][404],
+                description=swagger_schema.descriptions['UserSpecifyingView']['get'][404],
+            ),
+        },
+        description=swagger_schema.descriptions['UserSpecifyingView']['get']['description'],
+        summary=swagger_schema.summaries['UserSpecifyingView']['get'],
+        tags=['user'],
+        examples=[
+            swagger_schema.examples['UserSpecifyingView']['get'][401],
+            swagger_schema.examples['UserSpecifyingView']['get'][404],
+        ],
+    )
+    def get(self, request, user_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        requset_user = get_object_or_404(User, pk=user_pk)
+        serializer = UserBasicSerializer(requset_user)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class FindUsernameView(APIView):
+    """Find username
+    
+    """
+    model = User
+    serializer_class = FindUsernameSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FindUsernameSerializer,
+                description=swagger_schema.descriptions['FindUsernameView']['post'][200],
+                examples=[
+                    swagger_schema.examples['FindUsernameView']['post'][200]
+                ]
+            ),
+            400: OpenApiResponse(
+                response=swagger_schema.schema_serializers['FindUsernameView']['post'][400],
+                description=swagger_schema.descriptions['FindUsernameView']['post'][400],
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['FindUsernameView']['post'][401],
+                description=swagger_schema.descriptions['FindUsernameView']['post'][401],
+            ),
+        },
+        description=swagger_schema.descriptions['FindUsernameView']['post']['description'],
+        summary=swagger_schema.summaries['FindUsernameView']['post'],
+        tags=['user', 'user information'],
+        examples=[
+            swagger_schema.examples['FindUsernameView']['post']['input'],
+            swagger_schema.examples['FindUsernameView']['post'][400],
+            swagger_schema.examples['FindUsernameView']['post'][401],
+        ],
+    )
+    def post(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        data = {
+            'id': user.pk,
+            'first_name': request.data.get('first_name'),
+            'email': request.data.get('email'),
+        }
+        serializer = FindUsernameSerializer(data=data)
+        if not serializer.is_valid()\
+            or data['email'] != user.email\
+            or data['first_name'] != user.first_name:
+                return Response(
+                    {'error': 'wrong information'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        elif send_email(data['email'], 'username', user.username):
+            return Response(
+                {'success': 'email send'},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {'error': 'email send failure'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class PasswordChangeView(APIView):
@@ -223,43 +353,39 @@ class PasswordChangeView(APIView):
                 )
 
 
-class FindUsernameView(APIView):
-    """Find username
+class PasswordResetView(APIView):
+    """Reset user password
     
     """
     model = User
-    serializer_class = FindUsernameSerializer
+    serializer_class = PasswordResetSerializer
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         responses={
             200: OpenApiResponse(
-                response=FindUsernameSerializer,
-                description=swagger_schema.descriptions['FindUsernameView']['post'][200],
-                examples=[
-                    swagger_schema.examples['FindUsernameView']['post'][200]
-                ]
+                response=PasswordResetSerializer,
+                description=swagger_schema.descriptions['PasswordResetView']['put'][200],
             ),
             400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['FindUsernameView']['post'][400],
-                description=swagger_schema.descriptions['FindUsernameView']['post'][400],
+                response=swagger_schema.schema_serializers['PasswordResetView']['put'][400],
+                description=swagger_schema.descriptions['PasswordResetView']['put'][400],
             ),
             401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['FindUsernameView']['post'][401],
-                description=swagger_schema.descriptions['FindUsernameView']['post'][401],
+                response=swagger_schema.schema_serializers['PasswordResetView']['put'][401],
+                description=swagger_schema.descriptions['PasswordResetView']['put'][401],
             ),
         },
-        description=swagger_schema.descriptions['FindUsernameView']['post']['description'],
-        summary=swagger_schema.summaries['FindUsernameView']['post'],
+        description=swagger_schema.descriptions['PasswordResetView']['put']['description'],
+        summary=swagger_schema.summaries['PasswordResetView']['put'],
         tags=['user', 'user information'],
         examples=[
-            swagger_schema.examples['FindUsernameView']['post']['input'],
-            swagger_schema.examples['FindUsernameView']['post'][400],
-            swagger_schema.examples['FindUsernameView']['post'][401],
+            swagger_schema.examples['PasswordResetView']['put'][400],
+            swagger_schema.examples['PasswordResetView']['put'][401],
         ],
     )
-    def post(self, request):
+    def put(self, request):
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -268,18 +394,21 @@ class FindUsernameView(APIView):
             )
         data = {
             'id': user.pk,
-            'first_name': request.data.get('first_name'),
+            'username': request.data.get('username'),
             'email': request.data.get('email'),
         }
-        serializer = FindUsernameSerializer(data=data)
+        new_password = reset_password()
+        serializer = PasswordResetSerializer(data=data)
         if not serializer.is_valid()\
-            or data['email'] != user.email\
-            or data['first_name'] != user.first_name:
-                return Response(
-                    {'error': 'wrong information'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        elif send_email(data['email'], 'username', user.username):
+            or data['username'] != user.username\
+            or data['email'] != user.email:
+            return Response(
+                {'error': 'wrong information'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        elif send_email(data['email'], 'password', new_password):
+            user.set_password(new_password)
+            user.save()
             return Response(
                 {'success': 'email send'},
                 status=status.HTTP_200_OK
@@ -289,58 +418,3 @@ class FindUsernameView(APIView):
                 {'error': 'email send failure'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-
-class PasswordResetView(APIView):
-    """Reset user password
-    
-    """
-    model = User
-    renderer_classes = [CamelCaseJSONRenderer]
-    parser_classes = [CamelCaseJSONParser]
-    
-    def put(self, request):
-        """Rest user password
-        
-        Reset userpassword using username and email,
-        get new password through email
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Request Body
-        ------------
-        username : str
-        email : str
-        
-        Returns
-        -------
-        200 OK
-        
-        400 Bad Request<br>
-            if username or email is different
-        
-        401 Unauthorized
-        """
-        user = decode_JWT(request)
-        if user == None:
-            return Response(
-                {'error': 'Unauthorized'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        data = request.data
-        username = data.get('username')
-        email = data.get('email')
-        if user.username != username  or user.email != email:
-            return Response(
-                {'error': 'Unauthorized'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        new_password = reset_password()
-        if send_email(email, 'password', new_password):
-            user.set_password(new_password)
-            user.save()
-            return Response(status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
