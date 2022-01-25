@@ -30,26 +30,12 @@ class HomeworkView(APIView):
             )
         },
         description=swagger_schema.descriptions['HomeworkView']['description'],
-        summary=swagger_schema.summaries['HomeworkView'],
+        summary=swagger_schema.summaries['HomeworkView']['get'],
         examples=[
             swagger_schema.examples['HomeworkView']['get'][401]
         ],
     )
     def get(self, request,lecture_pk):
-        """Get total classroom of school information
-        
-        Use school_pk, return total classroom of school infromation
-        
-        Request Head
-        ------------
-        school_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        classroom : list,
-            total classroom list of school<br>
-        """
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -60,6 +46,29 @@ class HomeworkView(APIView):
         serializer = HomeworkSerializer(homeworks, many=True)  
         return Response(serializer.data)
     
+    @extend_schema(
+        request=HomeworkSerializer,
+        responses={
+            200: OpenApiResponse(
+                response=HomeworkSerializer,
+                description=swagger_schema.descriptions['HomeworkView']['post'][200],
+                examples=swagger_schema.examples['HomeworkView']['post'][200]
+            ),
+            400: OpenApiResponse(
+                response=swagger_schema.schema_serializers['HomeworkView']['post'][400],
+                description=swagger_schema.descriptions['HomeworkView']['post'][400],
+            ),
+            401: OpenApiResponse(
+                response=swagger_schema.schema_serializers['HomeworkView']['post'][401],
+                description=swagger_schema.descriptions['HomeworkView']['post'][401],
+            )
+        },
+        description=swagger_schema.descriptions['HomeworkView']['description'],
+        summary=swagger_schema.summaries['HomeworkView']['post'],
+        examples=[
+            swagger_schema.examples['HomeworkView']['post'][401]
+        ],
+    )
     def post(self,request,lecture_pk):
         """Post homework information
         
