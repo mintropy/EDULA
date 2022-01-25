@@ -1,6 +1,8 @@
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import UserContext from '../../context/user';
+import routes from '../../routes';
 import { useDetectOutsideClick } from '../useDetecOutsideClick';
 
 const StyledContainer = styled.div`
@@ -83,10 +85,7 @@ function NavbarDropdown() {
 	const dropdownRef = useRef(null);
 	const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
 	const onClick = () => setIsActive(!isActive);
-
-	function logout() {
-		// console.log('logout');
-	}
+	const { logout, userId } = useContext(UserContext);
 
 	return (
 		<StyledContainer>
@@ -97,10 +96,10 @@ function NavbarDropdown() {
 				<StyledMenu ref={dropdownRef} isactive={isActive ? 'active' : 'inactive'}>
 					<ul>
 						<li>
-							<Link to='/profile'>My Profile</Link>
+							<Link to={`${routes.profile}/${userId}`}>My Profile</Link>
 						</li>
 						<li>
-							<Link to='/setting'>Settings</Link>
+							<Link to={routes.setting}>Settings</Link>
 						</li>
 						<li>
 							<button type='button' onClick={logout}>

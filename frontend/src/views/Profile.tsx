@@ -1,10 +1,11 @@
-import TopNavBar from '../components/navbar/TopNavBar';
+import { useParams } from 'react-router-dom';
 
 function Profile() {
+	const { userId } = useParams();
+
 	return (
 		<div>
-			<TopNavBar />
-			<h1>Profile✨🐸🐔🐲🦄</h1>
+			<h1>{userId}&apos;s Profile✨🐸🐔🐲🦄</h1>
 		</div>
 	);
 }
