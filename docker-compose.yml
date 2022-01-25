@@ -28,7 +28,7 @@ services:
       - -d
       - i6d209.p.ssafy.io
       - -m
-      - admin@example.com
+      - se1620236@naver.com
     volumes:
       - ./docker/nginx/cert/etc/letsencrypt:/etc/letsencrypt
 
