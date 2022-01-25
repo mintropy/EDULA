@@ -1,3 +1,4 @@
+from re import I
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
@@ -9,7 +10,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from .user import decode_JWT
 from ..models import Student
-from ..serializers import StudentSerializer
+from ..serializers.student import StudentSerializer
 
 
 class StudentView(APIView):

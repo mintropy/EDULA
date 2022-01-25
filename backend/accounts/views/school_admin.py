@@ -9,7 +9,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from .user import decode_JWT
 from ..models import SchoolAdmin
-from ..serializers import SchoolAdminSerializer
+from ..serializers.school_admin import SchoolAdminSerializer
 
 
 class SchoolAdminView(APIView):

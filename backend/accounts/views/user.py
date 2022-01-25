@@ -18,11 +18,12 @@ from drf_spectacular.utils import (
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from server import basic_swagger_schema
 from . import swagger_schema
 from ..models import User
-from ..serializers import (
-    UserBasicSerializer,
-    FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer
+from ..serializers.user import(
+    UserBasicSerializer, FindUsernameSerializer,
+    PasswordChangeSerializer, PasswordResetSerializer,
 )
 import serect
 
@@ -158,6 +159,13 @@ class UserView(APIView):
             serializer.data,
             status=status.HTTP_200_OK
         )
+
+
+class UserCreationView(APIView):
+    """User Creation
+    
+    """
+    model = User
 
 
 class UserSpecifyingView(APIView):
