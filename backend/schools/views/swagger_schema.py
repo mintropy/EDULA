@@ -21,7 +21,7 @@ successfully get total homework information from lecture_pk
     Post homework information
 Input homework information
     ''',
-            200: 
+            201: 
     '''
     Successfully post homework
 successfully input homework
@@ -47,7 +47,7 @@ successfully get homework information from lecture_pk and homework_pk
     Change homework information
 homework information changed
     ''',
-            200: 
+            201: 
     '''
     Successfully Put homework
 successfully change homework
@@ -85,7 +85,7 @@ successfully get total classroom information from school_pk
     Post classroom information
 Input classroom information
     ''',
-            200: 
+            201: 
     '''
     Successfully post classroom
 successfully input classroom
@@ -111,7 +111,7 @@ successfully get total lecture information from lecture_pk
     Post lecture information
 Input lecture information
     ''',
-            200: 
+            201: 
     '''
     Successfully post lecture
 successfully input lecture
@@ -137,7 +137,7 @@ successfully get lecture information from lecture_pk and school_pk
     Change lecture information
 lecture information changed
     ''',
-            200: 
+            201: 
     '''
     Successfully Put lecture
 successfully change lecture
@@ -263,7 +263,7 @@ examples = {
                 },
                 request_only=True,
             ),
-            200: [
+            201: [
             OpenApiExample(
                 name='user',
                 value={
@@ -308,7 +308,7 @@ examples = {
                 },
                 request_only=True,
             ),
-            200: [
+            201: [
             OpenApiExample(
                 name='user',
                 value={
@@ -358,7 +358,7 @@ examples = {
                 },
                 request_only=True,
             ),
-            200: [
+            201: [
             OpenApiExample(
                 name='user',
                 value={
@@ -409,7 +409,7 @@ examples = {
                 },
                 request_only=True,
             ),
-            200: [
+            201: [
             OpenApiExample(
                 name='user',
                 value={
@@ -470,7 +470,7 @@ examples = {
                 },
                 request_only=True,
             ),
-            200: [
+            201: [
             OpenApiExample(
                 name='user',
                 value={

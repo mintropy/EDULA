@@ -53,10 +53,10 @@ class HomeworkView(APIView):
     
     @extend_schema(
         responses={
-            200: OpenApiResponse(
+            201: OpenApiResponse(
                 response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkView']['post'][200],
-                examples=swagger_schema.examples['HomeworkView']['post'][200]
+                description=swagger_schema.descriptions['HomeworkView']['post'][201],
+                examples=swagger_schema.examples['HomeworkView']['post'][201]
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401]
@@ -136,9 +136,9 @@ class HomeworkDetailView(APIView):
     
     @extend_schema(
         responses={
-            200: OpenApiResponse(
+            201: OpenApiResponse(
                 response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkDetailView']['put'][200],
+                description=swagger_schema.descriptions['HomeworkDetailView']['put'][201],
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401]

@@ -55,10 +55,10 @@ class ClassroomView(APIView):
     
     @extend_schema(
         responses={
-            200: OpenApiResponse(
+            201: OpenApiResponse(
                 response=ClassroomSerializer,
-                description=swagger_schema.descriptions['ClassroomView']['post'][200],
-                examples=swagger_schema.examples['ClassroomView']['post'][200]
+                description=swagger_schema.descriptions['ClassroomView']['post'][201],
+                examples=swagger_schema.examples['ClassroomView']['post'][201]
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401]
