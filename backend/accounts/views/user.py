@@ -22,8 +22,8 @@ from server import basic_swagger_schema
 from . import swagger_schema
 from ..models import User
 from ..serializers.user import(
-    UserBasicSerializer, FindUsernameSerializer,
-    PasswordChangeSerializer, PasswordResetSerializer,
+    UserBasicSerializer, UserCreationSerialzier,
+    FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
 )
 import serect
 
@@ -100,7 +100,19 @@ def send_email(recipient_email, type, context):
         return False
 
 
-def reset_password():
+def create_username(preset: str, length: int=7):
+    """
+    
+    """
+    username = preset
+    random_num = random.choices(
+        [str(i) for i in range(10)], k=length-len(preset)
+    )
+    username += ''.join(random_num)
+    return username
+
+
+def create_password():
     """Make new random password
     
     make new random password of length 14
@@ -166,6 +178,42 @@ class UserCreationView(APIView):
     
     """
     model = User
+    serializer_class = UserCreationSerialzier
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        
+    )
+    def post(self, request):
+        request_creation_count= request.data.get['creation_count']
+        preset = 'test'
+        data = {
+            'user_creation_count': request_creation_count,
+            'users': []
+        }
+        for _ in range(request_creation_count):
+            failure_count = 0
+            username = ''
+            while failure_count < 5:
+                new_username = create_username(preset)
+                if User.objects.filter(username=new_username).exists():
+                    failure_count += 1
+                else:
+                    break
+            if username == '':
+                continue
+            password = create_password()
+            if UserCreationSerialzier(data={'username': new_username, 'password': password}).is_valid():
+                # new_user = User.objects.create(username= new_username, password= password)
+                # new_user.save()
+                data['users'].append(
+                    {'username': new_username, 'password': password}
+                )
+        data['user_creation_count'] = len(data['users'])
+        return Response(
+            data, status=status.HTTP_201_CREATED
+        )
 
 
 class UserSpecifyingView(APIView):
@@ -405,7 +453,7 @@ class PasswordResetView(APIView):
             'username': request.data.get('username'),
             'email': request.data.get('email'),
         }
-        new_password = reset_password()
+        new_password = create_password()
         serializer = PasswordResetSerializer(data=data)
         if not serializer.is_valid()\
             or data['username'] != user.username\

@@ -18,6 +18,14 @@ class UserBasicSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'username', 'status')
 
 
+class UserCreationSerialzier(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password',)
+        write_only_field = ('password',)
+
+
 class FindUsernameSerializer(serializers.ModelSerializer):
     
     class Meta:

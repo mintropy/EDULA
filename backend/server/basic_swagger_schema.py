@@ -75,7 +75,7 @@ examples = {
 open_api_response = {
     400: OpenApiResponse(
         response=schema_serializers[400],
-        descriptions=descriptions[400],
+        description=descriptions[400],
     ),
     401: OpenApiResponse(
         response=schema_serializers[401],
