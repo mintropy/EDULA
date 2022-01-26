@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://i6d209.p.ssafy.io/api';
+const BASE_URL = 'http://localhost:8000/api';
 
 const setToken = () => {
 	const token = localStorage.getItem('access') || ``;
