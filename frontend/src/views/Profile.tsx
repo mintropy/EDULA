@@ -1,14 +1,16 @@
+import { useEffect, useState } from 'react';
 import { BiPhone } from 'react-icons/bi';
 import { FiUser } from 'react-icons/fi';
 import { VscMail } from 'react-icons/vsc';
 import { FaUserEdit } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-// import {
-// 	apiGetAdminInfo,
-// 	apiGetStudentInfo,
-// 	apiGetTeacherInfo,
-// } from '../api/user';
+import {
+	apiGetAdminInfo,
+	apiGetStudentInfo,
+	apiGetTeacherInfo,
+	apiGetUserStatus,
+} from '../api/user';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -72,25 +74,68 @@ const UserDataContainer = styled.div`
 
 const ScheduleContainer = styled.div`
 	margin-left: 50px;
+	width: 600px;
+	min-height: 300px;
+	background-color: white;
+	padding: 20px;
+	border-radius: 3px;
 `;
+
+interface UserDataType {
+	user: {
+		id: number;
+		status: string;
+		username: string;
+		email: string;
+		phone: string;
+	};
+	classroom: {
+		id: number;
+		classGrade: string;
+		classNum: string;
+	};
+	school: {
+		id: number;
+		name: string;
+	};
+	guardianNumber?: string;
+}
 
 function Profile() {
 	const { userId } = useParams();
-	// let userStat = '';
+	const [userStat, setUserStat] = useState('');
+	const [userName, setUserName] = useState('');
+	const [userData, setUserData] = useState({
+		user: {},
+		classroom: {},
+		school: {},
+	} as UserDataType);
 
-	// switch (userStat) {
-	// 	case 'ST':
-	// 		apiGetStudentInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	case 'TE':
-	// 		apiGetTeacherInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	case 'SA':
-	// 		apiGetAdminInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	default:
-	// 		console.log('user not found');
-	// }
+	apiGetUserStatus(userId || '').then(res => {
+		setUserStat(res.data.status);
+		setUserName(res.data.name);
+	});
+	useEffect(() => {
+		switch (userStat) {
+			case 'ST':
+				apiGetStudentInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			case 'TE':
+				apiGetTeacherInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			case 'SA':
+				apiGetAdminInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			default:
+				break;
+		}
+	}, [userStat]);
 
 	return (
 		<UserContainer>
@@ -102,18 +147,20 @@ function Profile() {
 					/>
 				</UserProfileContainer>
 				<UserDataContainer>
-					<div className='name'>김싸피 {userId}</div>
+					<div className='name'>{userName}</div>
 					<div className='class'>
 						<FiUser />
-						3학년 2반 7번
+						{userData?.school?.name}
+						{userData?.classroom &&
+							` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
 					</div>
 					<div className='email'>
 						<VscMail />
-						999999@gugugugu.gu.gu
+						{userData?.user?.email}
 					</div>
 					<div className='phone'>
 						<BiPhone />
-						999-9999-9999
+						{userData?.user?.phone}
 					</div>
 					<div className='edit'>
 						<FaUserEdit />
@@ -121,7 +168,9 @@ function Profile() {
 					</div>
 				</UserDataContainer>
 			</UserInfoContainer>
-			<ScheduleContainer>Schedule</ScheduleContainer>
+			<ScheduleContainer>
+				<span>오늘의 일정</span>
+			</ScheduleContainer>
 		</UserContainer>
 	);
 }
