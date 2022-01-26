@@ -11,7 +11,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from accounts.views.user import decode_JWT
 from . import swagger_schema
 from accounts.models import Student
-from accounts.serializers import StudentSerializer
+from accounts.serializers.student import StudentSerializer
 from server import basic_swagger_schema
 
 

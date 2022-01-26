@@ -9,7 +9,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from accounts.views.user import decode_JWT
 from . import swagger_schema
 from accounts.models import Teacher
-from accounts.serializers import TeacherSerializer
+from accounts.serializers.teacher import TeacherSerializer
 from server import basic_swagger_schema
 
 
