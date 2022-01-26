@@ -1,31 +1,44 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from accounts.views.user import decode_JWT
+from . import swagger_schema
 from accounts.models import Teacher
 from accounts.serializers import TeacherSerializer
+from server import basic_swagger_schema
 
 
 class TeacherView(APIView):
     model = Teacher
     serializer_class = TeacherSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=TeacherSerializer,
+                description=swagger_schema.descriptions['TeacherView']['get'][200],
+                examples=swagger_schema.examples['TeacherView']['get'][200]
+            ),
+            401: basic_swagger_schema.open_api_response[401]
+        },
+        description=swagger_schema.descriptions['TeacherView']['get']['description'],
+        summary=swagger_schema.summaries['TeacherView']['get'],
+        tags=['school','teacher'],
+        examples=[
+            basic_swagger_schema.examples[401]
+        ],
+    )
     def get(self, request,school_pk):
         """Get total teacher of school information
         
         Use school_pk, return total teacher of school infromation
-        
-        Request Head
-        ------------
-        school_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        teachers : list,
-            total teacher list of school<br>
         """
         user = decode_JWT(request)
         if user == None:

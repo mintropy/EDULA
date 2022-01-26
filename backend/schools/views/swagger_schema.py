@@ -1,59 +1,5 @@
-from drf_spectacular.utils import (
-    OpenApiExample, OpenApiResponse, inline_serializer
-)
-from rest_framework import serializers
+from drf_spectacular.utils import OpenApiExample
 
-
-schema_serializers = {
-    'HomeworkView': {
-        'get': {
-            401: inline_serializer(
-                name='unauthorized',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-        },
-        'post': {
-            400: inline_serializer(
-                name='error',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-            401: inline_serializer(
-                name='error',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-        },
-    },
-    'HomeworkDetailView': {
-        'get': {
-            401: inline_serializer(
-                name='unauthorized',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-        },
-        'put': {
-            400: inline_serializer(
-                name='error',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-            401: inline_serializer(
-                name='error',
-                fields={
-                    'error': serializers.CharField(),
-                },
-            ),
-        },
-    },
-}
 
 descriptions = {
     'HomeworkView': {
@@ -68,11 +14,6 @@ Use lecture_pk, return total homework information
     Successfully get total homework list
 successfully get total homework information from lecture_pk
     ''',
-            401:
-    '''
-    Unauthorized
-Wrong JWT or unauthorized user
-    ''',
         },
         'post': {
             'description': 
@@ -84,15 +25,6 @@ Input homework information
     '''
     Successfully post homework
 successfully input homework
-    ''',
-            400:
-    '''
-    Bad Request
-    ''',
-            401:
-    '''
-    Unauthorized
-Wrong JWT or unauthorized user
     ''',
         },
     },
@@ -108,11 +40,6 @@ Use lecture_pk and homework_pk, return homework information
     Successfully get homework information
 successfully get homework information from lecture_pk and homework_pk
     ''',
-            401:
-    '''
-    Unauthorized
-Wrong JWT or unauthorized user
-    ''',
         },
         'put': {
             'description': 
@@ -125,14 +52,149 @@ homework information changed
     Successfully Put homework
 successfully change homework
     ''',
-            400:
+        },
+        'delete': {
+            'description': 
     '''
-    Bad Request
+    Delete homework information
+homework information deleted
     ''',
-            401:
+            204: 
     '''
-    Unauthorized
-Wrong JWT or unauthorized user
+    Successfully Delete homework
+successfully deleted homework
+    ''',
+        },
+    },
+    'ClassroomView': {
+        'get': {
+            'description': 
+    '''
+    Get total classroom information
+Use school_pk, return total homework information
+    ''',
+            200: 
+    '''
+    Successfully get total classroom list
+successfully get total classroom information from school_pk
+    ''',
+        },
+        'post': {
+            'description': 
+    '''
+    Post classroom information
+Input classroom information
+    ''',
+            200: 
+    '''
+    Successfully post classroom
+successfully input classroom
+    ''',
+        },
+    },
+    'LectureView': {
+        'get': {
+            'description': 
+    '''
+    Get total lecture of school information
+Use lecture_pk, return total lecture information
+    ''',
+            200: 
+    '''
+    Successfully get total lecture list
+successfully get total lecture information from lecture_pk
+    ''',
+        },
+        'post': {
+            'description': 
+    '''
+    Post lecture information
+Input lecture information
+    ''',
+            200: 
+    '''
+    Successfully post lecture
+successfully input lecture
+    ''',
+        },
+    },
+    'LectureDetailView': {
+        'get': {
+            'description': 
+    '''
+    Get lecture information
+Use lecture_pk and school_pk, return lecture information
+    ''',
+            200: 
+    '''
+    Successfully get lecture information
+successfully get lecture information from lecture_pk and school_pk
+    ''',
+        },
+        'put': {
+            'description': 
+    '''
+    Change lecture information
+lecture information changed
+    ''',
+            200: 
+    '''
+    Successfully Put lecture
+successfully change lecture
+    ''',
+        },
+        'delete': {
+            'description': 
+    '''
+    Delete lecture information
+lecture information deleted
+    ''',
+            204: 
+    '''
+    Successfully Delete lecture
+successfully deleted lecture
+    ''',
+        },
+    },
+    'StudentView': {
+        'get': {
+            'description': 
+    '''
+    Get total student of school information
+Use school_pk, return total student of school infromation
+    ''',
+            200: 
+    '''
+    Successfully get total student list
+successfully get total student information from school_pk
+    ''',
+        },
+    },
+    'ClassroomStudentView': {
+        'get': {
+            'description': 
+    '''
+    Get total student of classroom information
+Use school_pk and classroom_pk, return total student of classroom infromation
+    ''',
+            200: 
+    '''
+    Successfully get total student list
+successfully get total student information from school_pk and classroom_pk
+    ''',
+        },
+    },
+    'TeacherView': {
+        'get': {
+            'description': 
+    '''
+    Get total teacher of school information
+Use school_pk, return total teacher of school infromation
+    ''',
+            200: 
+    '''
+    Successfully get total teacher list
+successfully get total teacher information from school_pk
     ''',
         },
     },
@@ -146,7 +208,30 @@ summaries = {
     'HomeworkDetailView': {
         'get' : 'Get detail homework information',
         'put' : 'Put homework information',
-    }
+        'delete' : 'Delete homework' 
+    },
+    'ClassroomView': {
+        'get' : 'Get classroom information',
+        'post' : 'Post classroom',
+    },
+    'LectureView': {
+        'get' : 'Get lecture information',
+        'post' : 'Post lecture',
+    },
+    'LectureDetailView': {
+        'get' : 'Get detail lecture information',
+        'put' : 'Put lecture information',
+        'delete' : 'Delete lecture' 
+    },
+    'StudentView': {
+        'get' : 'Get students of school information',
+    },
+    'ClassroomStudentView': {
+        'get' : 'Get students of classroom information',
+    },
+    'TeacherView': {
+        'get' : 'Get teacher of school information',
+    },
 }
 
 examples = {
@@ -167,14 +252,6 @@ examples = {
                 },
             ),
             ],
-            401: OpenApiExample(
-                name='error',
-                value={
-                    'error': 'Unauthorized',
-                },
-                status_codes=['401'],
-                response_only=True
-            ),
         },
         'post': {
             'input': OpenApiExample(
@@ -201,22 +278,6 @@ examples = {
                 },
             ),
             ],
-            400: OpenApiExample(
-                name='error',
-                value={
-                    'error': 'Bad Request',
-                },
-                status_codes=['400'],
-                response_only=True
-            ),
-            401: OpenApiExample(
-                name='error',
-                value={
-                    'error': 'Unauthorized',
-                },
-                status_codes=['401'],
-                response_only=True
-            ),
         }
     },
     'HomeworkDetailView': {
@@ -236,14 +297,6 @@ examples = {
                 },
             ),
             ],
-            401: OpenApiExample(
-                name='error',
-                value={
-                    'error': 'Unauthorized',
-                },
-                status_codes=['401'],
-                response_only=True
-            ),
         },
         'put': {
             'input': OpenApiExample(
@@ -270,22 +323,267 @@ examples = {
                 },
             ),
             ],
-            400: OpenApiExample(
-                name='error',
+        },
+        'delete': {
+            204: [
+            OpenApiExample(
+                name='user',
                 value={
-                    'error': 'Bad Request',
+                    'OK': 'No Content'
                 },
-                status_codes=['400'],
+                status_codes=['204'],
                 response_only=True
             ),
-            401: OpenApiExample(
-                name='error',
-                value={
-                    'error': 'Unauthorized',
-                },
-                status_codes=['401'],
-                response_only=True
-            ),
+            ],
         }
+    },
+    'ClassroomView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "class_grade": 6,
+                    "class_num": 0
+                },
+            ),
+            ],
+        },
+        'post': {
+            'input': OpenApiExample(
+                name='input example',
+                value={
+                    "class_grade": 6,
+                    "class_num": 0
+                },
+                request_only=True,
+            ),
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "class_grade": 6,
+                    "class_num": 0
+                },
+            ),
+            ],
+        }
+    },
+    'LectureView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "id": 0,
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                }
+            ),
+            ],
+        },
+        'post': {
+            'input': OpenApiExample(
+                name='input example',
+                value={
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                },
+                request_only=True,
+            ),
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "id": 0,
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                },
+            ),
+            ],
+        }
+    },
+    'LectureDetailView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "id": 0,
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                },
+            ),
+            ],
+        },
+        'put': {
+            'input': OpenApiExample(
+                name='input example',
+                value={
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                },
+                request_only=True,
+            ),
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "id": 0,
+                    "name": "string",
+                    "time_list": {
+                        "additionalProp1": "string",
+                        "additionalProp2": "string",
+                        "additionalProp3": "string"
+                    },
+                    "school": 0,
+                    "teacher": 0,
+                    "student_list": [
+                        0
+                    ]
+                },
+            ),
+            ],
+        },
+        'delete': {
+            204: [
+            OpenApiExample(
+                name='user',
+                value={
+                    'OK': 'No Content'
+                },
+                status_codes=['204'],
+                response_only=True
+            ),
+            ],
+        }
+    },
+    'StudentView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value=[{
+                    "user": {
+                        "id": 0,
+                        "username": "string",
+                        "email": "user@example.com",
+                        "phone": "string",
+                        "status": "ST"
+                    },
+                    "classroom": {
+                        "id": 0,
+                        "class_grade": 6,
+                        "class_num": 0
+                    },
+                    "school": {
+                        "id": 0,
+                        "name": "string"
+                    },
+                    "guardian_phone": "string"
+                }],
+            ),
+            ],
+        },
+    },
+    'ClassroomStudentView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value={
+                    "user": {
+                        "id": 0,
+                        "username": "string",
+                        "email": "user@example.com",
+                        "phone": "string",
+                        "status": "ST"
+                    },
+                    "classroom": {
+                        "id": 0,
+                        "class_grade": 6,
+                        "class_num": 0
+                    },
+                    "school": {
+                        "id": 0,
+                        "name": "string"
+                    },
+                    "guardian_phone": "string"
+                },
+            ),
+            ],
+        },
+    },
+    'TeacherView': {
+        'get': {
+            200: [
+            OpenApiExample(
+                name='user',
+                value=[{
+                    "user": {
+                        "id": 0,
+                        "username": "string",
+                        "email": "user@example.com",
+                        "phone": "string",
+                        "status": "ST"
+                    },
+                    "classroom": {
+                        "id": 0,
+                        "class_grade": 6,
+                        "class_num": 0
+                    },
+                    "school": {
+                        "id": 0,
+                        "name": "string"
+                    }
+                }],
+            ),
+            ],
+        },
     },
 }

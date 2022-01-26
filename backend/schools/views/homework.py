@@ -12,6 +12,7 @@ from accounts.views.user import decode_JWT
 from . import swagger_schema
 from ..models import Homework
 from ..serializers import HomeworkSerializer
+from server import basic_swagger_schema
 
 
 class HomeworkView(APIView):
@@ -30,16 +31,13 @@ class HomeworkView(APIView):
                 description=swagger_schema.descriptions['HomeworkView']['get'][200],
                 examples=swagger_schema.examples['HomeworkView']['get'][200]
             ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkView']['get'][401],
-                description=swagger_schema.descriptions['HomeworkView']['get'][401],
-            )
+            401: basic_swagger_schema.open_api_response[401]
         },
         description=swagger_schema.descriptions['HomeworkView']['get']['description'],
         summary=swagger_schema.summaries['HomeworkView']['get'],
         tags=['homework',],
         examples=[
-            swagger_schema.examples['HomeworkView']['get'][401]
+            basic_swagger_schema.examples[401]
         ],
     )
     def get(self, request,lecture_pk):
@@ -60,22 +58,16 @@ class HomeworkView(APIView):
                 description=swagger_schema.descriptions['HomeworkView']['post'][200],
                 examples=swagger_schema.examples['HomeworkView']['post'][200]
             ),
-            400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkView']['post'][400],
-                description=swagger_schema.descriptions['HomeworkView']['post'][400],
-            ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkView']['post'][401],
-                description=swagger_schema.descriptions['HomeworkView']['post'][401],
-            )
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401]
         },
         description=swagger_schema.descriptions['HomeworkView']['post']['description'],
         summary=swagger_schema.summaries['HomeworkView']['post'],
         tags=['homework',],
         examples=[
             swagger_schema.examples['HomeworkView']['post']['input'],
-            swagger_schema.examples['HomeworkView']['post'][400],
-            swagger_schema.examples['HomeworkView']['post'][401]
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401]
         ],
     )
     def post(self,request,lecture_pk):
@@ -118,16 +110,13 @@ class HomeworkDetailView(APIView):
                 description=swagger_schema.descriptions['HomeworkDetailView']['get'][200],
                 examples=swagger_schema.examples['HomeworkDetailView']['get'][200]
             ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkDetailView']['get'][401],
-                description=swagger_schema.descriptions['HomeworkDetailView']['get'][401],
-            )
+            401: basic_swagger_schema.open_api_response[401]
         },
         description=swagger_schema.descriptions['HomeworkDetailView']['get']['description'],
         summary=swagger_schema.summaries['HomeworkDetailView']['get'],
         tags=['homework',],
         examples=[
-            swagger_schema.examples['HomeworkDetailView']['get'][401]
+            basic_swagger_schema.examples[401]
         ],
     )
     def get(self, request, lecture_pk, homework_pk):
@@ -151,22 +140,16 @@ class HomeworkDetailView(APIView):
                 response=HomeworkSerializer,
                 description=swagger_schema.descriptions['HomeworkDetailView']['put'][200],
             ),
-            400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkDetailView']['put'][400],
-                description=swagger_schema.descriptions['HomeworkDetailView']['put'][400],
-            ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['HomeworkDetailView']['put'][401],
-                description=swagger_schema.descriptions['HomeworkDetailView']['put'][401],
-            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401]
         },
         description=swagger_schema.descriptions['HomeworkDetailView']['put']['description'],
         summary=swagger_schema.summaries['HomeworkDetailView']['put'],
         tags=['homework',],
         examples=[
             swagger_schema.examples['HomeworkDetailView']['put']['input'],
-            swagger_schema.examples['HomeworkDetailView']['put'][400],
-            swagger_schema.examples['HomeworkDetailView']['put'][401],
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401]
         ],
     )
     def put(self, request, lecture_pk, homework_pk):
@@ -185,22 +168,29 @@ class HomeworkDetailView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        
+    @extend_schema(
+        responses={
+            204: OpenApiResponse(
+                response=HomeworkSerializer,
+                description=swagger_schema.descriptions['HomeworkDetailView']['delete'][204],
+                examples=swagger_schema.examples['HomeworkDetailView']['delete'][204],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404]
+        },
+        description=swagger_schema.descriptions['HomeworkDetailView']['delete']['description'],
+        summary=swagger_schema.summaries['HomeworkDetailView']['delete'],
+        tags=['homework',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404]
+        ],
+    )
     def delete(self, request, lecture_pk, homework_pk):
         """Delete homework information
         
         Delete homework information
-        
-        Request Head
-        ------------
-        homework_pk : int,<br>
-        lecture_pk : int
-        
-        Returns
-        -------
-        204 OK<br>
-            
-        404 Not Found
         """
         user = decode_JWT(request)
         if user == None:
