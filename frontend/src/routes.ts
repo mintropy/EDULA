@@ -8,6 +8,12 @@ const routes = {
 	findpw: '/findpw',
 	class: '/class',
 	articleform: '/articleform',
+	// Admin Page
+	admin: '/administrator',
+	studentManager: '/administrator/student',
+	teacherManager: '/administrator/teacher',
+	classManager: '/administrator/class',
+	lectureManager: '/administrator/lecture',
 };
 
 export default routes;

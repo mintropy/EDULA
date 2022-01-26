@@ -13,6 +13,12 @@ import Findid from './views/Findid';
 import Findpw from './views/Findpw';
 import Home from './views/Home';
 import ArticleForm from './views/ArticleForm';
+import Admin from './views/admin/Admin';
+import StudentManager from './views/admin/Student';
+import TeacherManager from './views/admin/Teacher';
+import LectureManager from './views/admin/Lecture';
+import ClassManager from './views/admin/Class';
+import AdminIndex from './views/admin/AdminIndex';
 
 function App() {
 	return (
@@ -30,6 +36,13 @@ function App() {
 						<Route path={routes.alarm} element={<Alarm />} />
 						<Route path={routes.class} element={<Class />} />
 						<Route path={routes.articleform} element={<ArticleForm />} />
+						<Route path={routes.admin} element={<Admin />}>
+							<Route index element={<AdminIndex />} />
+							<Route path={routes.studentManager} element={<StudentManager />} />
+							<Route path={routes.teacherManager} element={<TeacherManager />} />
+							<Route path={routes.lectureManager} element={<LectureManager />} />
+							<Route path={routes.classManager} element={<ClassManager />} />
+						</Route>
 					</Route>
 					<Route path='*' element={<Error404 />} />
 				</Routes>
