@@ -40,3 +40,26 @@ class Lecture(models.Model):
         'accounts.Student',
         related_name="lecture_list",
     )
+
+
+class Homework(models.Model):
+    title = models.CharField(max_length=20)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    deadline = models.DateTimeField()
+    writer_pk = models.IntegerField(
+        null=True,
+        blank=True
+    )
+    writer_name = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
+    lecture = models.ForeignKey(
+        Lecture,
+        related_name="homework_list",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

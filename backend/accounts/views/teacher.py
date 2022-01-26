@@ -7,9 +7,15 @@ from rest_framework.response import Response
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from drf_spectacular.utils import (
+    extend_schema, OpenApiResponse
+)
+
+from server import basic_swagger_schema
+from . import swagger_schema
 from .user import decode_JWT
 from ..models import Teacher
-from ..serializers import TeacherSerializer
+from ..serializers.teacher import TeacherSerializer
 
 
 class TeacherView(APIView):
@@ -18,69 +24,65 @@ class TeacherView(APIView):
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=TeacherSerializer,
+                description=swagger_schema.descriptions['TeacherView']['get'][200],
+                examples=[
+                    swagger_schema.examples['TeacherView']['get'][200],
+                ]
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401],
+        },
+        description=swagger_schema.descriptions['TeacherView']['get']['description'],
+        summary=swagger_schema.summaries['TeacherView']['get'],
+        tags=['user', 'teacher'],
+        examples=[
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+        ],
+    )
     def get(self, request, teacher_pk):
-        """Get teacher inforamtion
-        
-        get teacher information by teacher_pk
-        
-        Parameters
-        ----------
-        teacher_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        'classroom': dict,
-            detail information of classroom<br>
-        'school': dict,
-            detail information of school<br>
-        'guardian_phone: str
-        
-        404 Not Fount,
-            if user whose pk is not a teacher
-        """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         teacher = get_object_or_404(Teacher, pk=teacher_pk)
         serializer = TeacherSerializer(teacher)
         return Response(serializer.data)
     
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(
+                response=TeacherSerializer,
+                description=swagger_schema.descriptions['TeacherView']['put'][201],
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['TeacherView']['put']['description'],
+        summary=swagger_schema.summaries['TeacherView']['put'],
+        tags=['user', 'teacher'],
+        examples=[
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['TeacherView']['put']['request'],
+            swagger_schema.examples['TeacherView']['put'][201],
+        ],
+    )
     def put(self, request, teacher_pk):
-        """Update teacher information
-        
-        update teacher information<br>
-        Only one's own self profile could be chaged
-        
-        Parameters
-        ----------
-        teacher_pk : int
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Request Body
-        ------------
-        user : dict
-        classroom : dict
-        school : dict
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        
-        400 Bad Request<br>
-            if data is wrong
-        
-        401 Unauthorized<br>
-            unauthorized user or not own self profile
-        
-        404 Not Fount<br>
-            if user whose pk is not a teacher
-        """
         user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         teacher = get_object_or_404(Teacher, pk=teacher_pk)
         if teacher.user.pk != user.pk:
             return Response(
