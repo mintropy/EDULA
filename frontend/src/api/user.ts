@@ -42,6 +42,9 @@ export const apiGetUserStatus = (userId: string) =>
 	axios({
 		method: 'get',
 		url: `${BASE_URL}/accounts/${userId}/`,
+		headers: {
+			...setToken(),
+		},
 	});
 
 export const apiGetAdminInfo = (adminId: string) =>
