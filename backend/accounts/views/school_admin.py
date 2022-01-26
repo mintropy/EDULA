@@ -6,10 +6,15 @@ from rest_framework.response import Response
 
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+from drf_spectacular.utils import (
+    extend_schema, OpenApiResponse
+)
 
+from server import basic_swagger_schema
+from . import swagger_schema
 from .user import decode_JWT
 from ..models import SchoolAdmin
-from ..serializers import SchoolAdminSerializer
+from ..serializers.school_admin import SchoolAdminSerializer
 
 
 class SchoolAdminView(APIView):
@@ -18,35 +23,31 @@ class SchoolAdminView(APIView):
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=SchoolAdminSerializer,
+                description=swagger_schema.descriptions['SchoolAdminView']['get'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['SchoolAdminView']['get']['description'],
+        summary=swagger_schema.summaries['SchoolAdminView']['get'],
+        tags=['user', 'school admin'],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['SchoolAdminView']['get'][200],
+        ],
+    )
     def get(self, request, school_admin_pk):
-        """Get school admin inforamtion
-        
-        get school admin information by school_admin_pk<br>
-        only school admin could access
-        
-        Parameters
-        ----------
-        school_admin_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        'classroom': dict,
-            detail information of classroom<br>
-        'school': dict,
-            detail information of school<br>
-        'guardian_phone: str
-        
-        401 Unauthorized<br>
-            unauthorized user or not own self profile
-        
-        
-        404 Not Fount,
-            if user whose pk is not a school admin
-        """
         user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         school_admin = get_object_or_404(SchoolAdmin, pk=school_admin_pk)
         if user != school_admin:
             return Response(
@@ -56,42 +57,34 @@ class SchoolAdminView(APIView):
         serializer = SchoolAdminSerializer(school_admin)
         return Response(serializer.data)
     
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(
+                response=SchoolAdminSerializer,
+                description=swagger_schema.descriptions['SchoolAdminView']['put'][201],
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['SchoolAdminView']['put']['description'],
+        summary=swagger_schema.summaries['SchoolAdminView']['put'],
+        tags=['user', 'school admin'],
+        examples=[
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['SchoolAdminView']['put']['request'],
+            swagger_schema.examples['SchoolAdminView']['put'][201],
+        ],
+    )
     def put(self, request, school_admin_pk):
-        """Update school admin information
-        
-        update school admin information<br>
-        Only one's own self profile could be chaged
-        
-        Parameters
-        ----------
-        teacher_pk : int
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Request Body
-        ------------
-        user : dict
-        classroom : dict
-        school : dict
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        
-        400 Bad Request<br>
-            if data is wrong
-        
-        401 Unauthorized<br>
-            unauthorized user or not own self profile
-        
-        404 Not Fount<br>
-            if user whose pk is not a school admin
-        """
         user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         school_admin = get_object_or_404(SchoolAdmin, pk=school_admin_pk)
         if school_admin.user.pk != user.pk:
             return Response(
