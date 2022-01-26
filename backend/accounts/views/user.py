@@ -216,7 +216,7 @@ class UserCreationView(APIView):
 class UserSpecifyingView(APIView):
     """User specifying
     
-    search about user's id | username | status
+    search about user's id | username | first_name | status
     """
     model = User
     serializer_class = UserBasicSerializer
@@ -227,7 +227,8 @@ class UserSpecifyingView(APIView):
         responses={
             200: OpenApiResponse(
                 response=UserBasicSerializer,
-                description=swagger_schema.descriptions['UserSpecifyingView']['get'][200]
+                description=swagger_schema.descriptions['UserSpecifyingView']['get'][200],
+                examples=swagger_schema.examples['UserSpecifyingView']['get'][200]
             ),
             401: basic_swagger_schema.open_api_response[401],
             404: basic_swagger_schema.open_api_response[404],

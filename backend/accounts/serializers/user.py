@@ -6,16 +6,16 @@ from ..models import User
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'phone', 'status')
-        read_only_fields = ('id', 'username', 'status')
+        fields = ('id', 'username', 'first_name', 'email', 'phone', 'status')
+        read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
 class UserBasicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'status')
-        read_only_fields = ('id', 'username', 'status')
+        fields = ('id', 'username', 'first_name', 'status')
+        read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
 class UserCreationSerialzier(serializers.ModelSerializer):

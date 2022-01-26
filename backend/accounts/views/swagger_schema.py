@@ -192,6 +192,8 @@ examples = {
                     name='student',
                     value={
                         'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'status': 'ST',
                     },
                 ),
@@ -199,6 +201,8 @@ examples = {
                     name='teacher',
                     value={
                         'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'status': 'TE',
                     },
                 ),
@@ -206,11 +210,46 @@ examples = {
                     name='school admin',
                     value={
                         'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'status': 'SA',
                     },
                 ),
             ],
         },
+    },
+    'UserSpecifyingView': {
+        'get': {
+            200: [
+                OpenApiExample(
+                    name='student',
+                    value={
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'ST',
+                    },
+                ),
+                OpenApiExample(
+                    name='teacher',
+                    value={
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'TE',
+                    },
+                ),
+                OpenApiExample(
+                    name='school admin',
+                    value={
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'SA',
+                    },
+                ),
+            ],
+        }
     },
     'FindUsernameView': {
         'post': {
@@ -241,7 +280,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'ssafy@example.com',
                         'phone': '999-9999-9999',
                         'status': 'ST',
@@ -278,7 +318,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'new-ssafy@example.com',
                         'phone': '998-9999-9999',
                         'status': 'ST',
@@ -306,7 +347,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'ssafy@example.com',
                         'phone': '999-9999-9999',
                         'status': 'TE',
@@ -341,7 +383,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'new-ssafy@example.com',
                         'phone': '998-9999-9999',
                         'status': 'TE',
@@ -368,7 +411,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'ssafy@example.com',
                         'phone': '999-9999-9999',
                         'status': 'SA',
@@ -403,7 +447,8 @@ examples = {
                 value={
                     'user': {
                         'id': 0,
-                        'username': '김싸피',
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
                         'email': 'new-ssafy@example.com',
                         'phone': '998-9999-9999',
                         'status': 'TE',
