@@ -1,7 +1,7 @@
-import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import random
+import smtplib
 
 from django.shortcuts import get_object_or_404
 
@@ -147,16 +147,13 @@ class UserView(APIView):
                 description=swagger_schema.descriptions['UserView']['get'][200],
                 examples=swagger_schema.examples['UserView']['get'][200]
             ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['UserView']['get'][401],
-                description=swagger_schema.descriptions['UserView']['get'][401],
-            )
+            401: basic_swagger_schema.open_api_response[401]
         },
         description=swagger_schema.descriptions['UserView']['get']['description'],
         summary=swagger_schema.summaries['UserView']['get'],
         tags=['user',],
         examples=[
-            swagger_schema.examples['UserView']['get'][401]
+            basic_swagger_schema.examples[401],
         ],
     )
     def get(self, request):
@@ -232,21 +229,15 @@ class UserSpecifyingView(APIView):
                 response=UserBasicSerializer,
                 description=swagger_schema.descriptions['UserSpecifyingView']['get'][200]
             ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['UserSpecifyingView']['get'][401],
-                description=swagger_schema.descriptions['UserSpecifyingView']['get'][401],
-            ),
-            404: OpenApiResponse(
-                response=swagger_schema.schema_serializers['UserSpecifyingView']['get'][404],
-                description=swagger_schema.descriptions['UserSpecifyingView']['get'][404],
-            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
         },
         description=swagger_schema.descriptions['UserSpecifyingView']['get']['description'],
         summary=swagger_schema.summaries['UserSpecifyingView']['get'],
         tags=['user'],
         examples=[
-            swagger_schema.examples['UserSpecifyingView']['get'][401],
-            swagger_schema.examples['UserSpecifyingView']['get'][404],
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
         ],
     )
     def get(self, request, user_pk):
@@ -282,22 +273,16 @@ class FindUsernameView(APIView):
                     swagger_schema.examples['FindUsernameView']['post'][200]
                 ]
             ),
-            400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['FindUsernameView']['post'][400],
-                description=swagger_schema.descriptions['FindUsernameView']['post'][400],
-            ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['FindUsernameView']['post'][401],
-                description=swagger_schema.descriptions['FindUsernameView']['post'][401],
-            ),
+            401: basic_swagger_schema.open_api_response[400],
+            404: basic_swagger_schema.open_api_response[401],
         },
         description=swagger_schema.descriptions['FindUsernameView']['post']['description'],
         summary=swagger_schema.summaries['FindUsernameView']['post'],
         tags=['user', 'user information'],
         examples=[
-            swagger_schema.examples['FindUsernameView']['post']['input'],
-            swagger_schema.examples['FindUsernameView']['post'][400],
-            swagger_schema.examples['FindUsernameView']['post'][401],
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+            swagger_schema.examples['FindUsernameView']['post']['request'],
         ],
     )
     def post(self, request):
@@ -344,25 +329,19 @@ class PasswordChangeView(APIView):
     
     @extend_schema(
         responses={
-            200: OpenApiResponse(
+            201: OpenApiResponse(
                 response=PasswordChangeSerializer,
-                description=swagger_schema.descriptions['PasswordChangeView']['put'][200],
+                description=swagger_schema.descriptions['PasswordChangeView']['put'][201],
             ),
-            400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['PasswordChangeView']['put'][400],
-                description=swagger_schema.descriptions['PasswordChangeView']['put'][400],
-            ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['PasswordChangeView']['put'][401],
-                description=swagger_schema.descriptions['PasswordChangeView']['put'][401],
-            ),
+            401: basic_swagger_schema.open_api_response[400],
+            404: basic_swagger_schema.open_api_response[401],
         },
         description=swagger_schema.descriptions['PasswordChangeView']['put']['description'],
         summary=swagger_schema.summaries['PasswordChangeView']['put'],
         tags=['user', 'user information',],
         examples=[
-            swagger_schema.examples['PasswordChangeView']['put'][400],
-            swagger_schema.examples['PasswordChangeView']['put'][401],
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
         ],
     )
     def put(self, request):
@@ -400,7 +379,7 @@ class PasswordChangeView(APIView):
                 user.save()
                 return Response(
                     serializer.data,
-                    status=status.HTTP_200_OK
+                    status=status.HTTP_201_CREATED
                 )
             else:
                 return Response(
@@ -420,25 +399,19 @@ class PasswordResetView(APIView):
     
     @extend_schema(
         responses={
-            200: OpenApiResponse(
+            201: OpenApiResponse(
                 response=PasswordResetSerializer,
-                description=swagger_schema.descriptions['PasswordResetView']['put'][200],
+                description=swagger_schema.descriptions['PasswordResetView']['put'][201],
             ),
-            400: OpenApiResponse(
-                response=swagger_schema.schema_serializers['PasswordResetView']['put'][400],
-                description=swagger_schema.descriptions['PasswordResetView']['put'][400],
-            ),
-            401: OpenApiResponse(
-                response=swagger_schema.schema_serializers['PasswordResetView']['put'][401],
-                description=swagger_schema.descriptions['PasswordResetView']['put'][401],
-            ),
+            401: basic_swagger_schema.open_api_response[400],
+            404: basic_swagger_schema.open_api_response[401],
         },
         description=swagger_schema.descriptions['PasswordResetView']['put']['description'],
         summary=swagger_schema.summaries['PasswordResetView']['put'],
         tags=['user', 'user information'],
         examples=[
-            swagger_schema.examples['PasswordResetView']['put'][400],
-            swagger_schema.examples['PasswordResetView']['put'][401],
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
         ],
     )
     def put(self, request):
@@ -467,7 +440,7 @@ class PasswordResetView(APIView):
             user.save()
             return Response(
                 {'success': 'email send'},
-                status=status.HTTP_200_OK
+                status=status.HTTP_201_CREATED
             )
         else:
             return Response(
