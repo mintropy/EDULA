@@ -199,6 +199,81 @@ wrong information input or email failure
     ''',
         },
     },
+    'StudentView': {
+        'get': {
+            'description':
+    '''
+    Get student information
+student information using student_pk
+    ''',
+            200:
+    '''
+    Successfully get student information
+    ''',
+        },
+        'put': {
+            'description':
+    '''
+    Update student's own self information
+email, phone, guardian phone could be updated
+    ''',
+            201:
+    '''
+    Successfully update student information
+and get updated information
+    ''',
+        },
+    },
+    'TeacherView': {
+        'get': {
+            'description':
+    '''
+    Get teacher information
+teacher information using teacher_pk
+    ''',
+        200 : 
+    '''
+    Successfully get teacher information
+    ''',
+        },
+        'put': {
+            'description':
+    '''
+    Update teacher's own self information
+email and phone could be updated
+    ''',
+            201:
+    '''
+    Successfully update teacher information
+and get updated information
+    ''',
+        },
+    },
+    'SchoolAdminView': {
+        'get': {
+            'description':
+    '''
+    Get school admin information
+school admin information using teacher_pk
+    ''',
+        200 : 
+    '''
+    Successfully get school admin information
+    ''',
+        },
+        'put': {
+            'description':
+    '''
+    Update school admin's own self information
+email and phone could be updated
+    ''',
+            201:
+    '''
+    Successfully update school admin information
+and get updated information
+    ''',
+        },
+    },
 }
 
 summaries = {
@@ -217,6 +292,18 @@ summaries = {
     'PasswordResetView': {
         'put': 'get reset password through email',
     },
+    'StudentView': {
+        'get': 'get studnet information',
+        'put': 'update student information',
+    },
+    'TeacherView': {
+        'get': 'get teacher information',
+        'put': 'update teacher information',
+    },
+    'SchoolAdminView': {
+        'get': 'get school admin information',
+        'put': 'update school admin information',
+    }
 }
 
 examples = {
@@ -349,6 +436,195 @@ examples = {
                     'error': 'Unauthorized',
                 },
                 status_codes=['401'],
+                response_only=True,
+            ),
+        },
+    },
+    'StudentView': {
+        'get': {
+            200: OpenApiExample(
+                name='student',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'ssafy@example.com',
+                        'phone': '999-9999-9999',
+                        'status': 'ST',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                    'guardianPhone': '999-9999-9990',
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        },
+        'put': {
+            'request': OpenApiExample(
+                name='request',
+                value={
+                    'user': {
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                    },
+                    'guardianPhone': '998-9999-9990',
+                },
+                request_only=True,
+            ),
+            201: OpenApiExample(
+                name='student',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                        'status': 'ST',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                    'guardianPhone': '998-9999-9990',
+                },
+                status_codes=['201'],
+                response_only=True,
+            ),
+        },
+    },
+    'TeacherView': {
+        'get': {
+            200: OpenApiExample(
+                name='teacher',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'ssafy@example.com',
+                        'phone': '999-9999-9999',
+                        'status': 'TE',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        },
+        'put': {
+            'request': OpenApiExample(
+                name='request',
+                value={
+                    'user': {
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                    },
+                },
+                request_only=True,
+            ),
+            201: OpenApiExample(
+                name='teacher',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                        'status': 'TE',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                },
+                status_codes=['201'],
+                response_only=True,
+            ),
+        },
+    },
+    'SchoolAdminView': {
+        'get': {
+            200: OpenApiExample(
+                name='school admin',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'ssafy@example.com',
+                        'phone': '999-9999-9999',
+                        'status': 'SA',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        },
+        'put': {
+            'request': OpenApiExample(
+                name='request',
+                value={
+                    'user': {
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                    },
+                },
+                request_only=True,
+            ),
+            201: OpenApiExample(
+                name='school admin',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': '김싸피',
+                        'email': 'new-ssafy@example.com',
+                        'phone': '998-9999-9999',
+                        'status': 'TE',
+                    },
+                    'classroom': {
+                        'id': 0,
+                        'classGrage': 1,
+                        'calssNum': 3,
+                    },
+                    'school': {
+                        'id': 0,
+                        'name': '싸피 초등학교',
+                    },
+                },
+                status_codes=['201'],
                 response_only=True,
             ),
         },
