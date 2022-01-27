@@ -5,6 +5,7 @@ from .views import user, student, teacher, school_admin
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view()),
+    path('user/', user.UserCUDView.as_view()),
     path('<int:user_pk>/', user.UserSpecifyingView.as_view()),
     path('student/<int:student_pk>/', student.StudentView.as_view()),
     path('teacher/<int:teacher_pk>/', teacher.TeacherView.as_view()),

@@ -18,7 +18,7 @@ class UserBasicSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
-class UserCreationSerialzier(serializers.ModelSerializer):
+class UserCUDSerialzier(serializers.ModelSerializer):
     
     class Meta:
         model = User
