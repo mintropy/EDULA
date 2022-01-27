@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BiPhone } from 'react-icons/bi';
 import { FiUser } from 'react-icons/fi';
 import { VscMail } from 'react-icons/vsc';
@@ -11,6 +11,7 @@ import {
 	apiGetTeacherInfo,
 	apiGetUserStatus,
 } from '../api/user';
+import UserContext from '../context/user';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -53,8 +54,12 @@ const UserDataContainer = styled.div`
 
 	.edit {
 		background-color: inherit;
-		border: none;
+		border: 1px solid black;
 		border-radius: 3px;
+		margin-top: 20px;
+		text-align: center;
+		width: 100%;
+		padding: 3px;
 
 		&:hover {
 			cursor: pointer;
@@ -84,6 +89,7 @@ const ScheduleContainer = styled.div`
 interface UserDataType {
 	user: {
 		id: number;
+		firstName: string;
 		status: string;
 		username: string;
 		email: string;
@@ -102,19 +108,21 @@ interface UserDataType {
 }
 
 function Profile() {
+	const { userId: loggedInUserId } = useContext(UserContext);
 	const { userId } = useParams();
 	const [userStat, setUserStat] = useState('');
-	const [userName, setUserName] = useState('');
 	const [userData, setUserData] = useState({
 		user: {},
 		classroom: {},
 		school: {},
 	} as UserDataType);
 
-	apiGetUserStatus(userId || '').then(res => {
-		setUserStat(res.data.status);
-		setUserName(res.data.name);
-	});
+	useEffect(() => {
+		apiGetUserStatus(userId || '').then(res => {
+			setUserStat(res.data.status);
+		});
+	}, []);
+
 	useEffect(() => {
 		switch (userStat) {
 			case 'ST':
@@ -137,6 +145,14 @@ function Profile() {
 		}
 	}, [userStat]);
 
+	const editBtn =
+		loggedInUserId.toString() === userId ? (
+			<button className='edit' type='button'>
+				<FaUserEdit />
+				정보 수정
+			</button>
+		) : null;
+
 	return (
 		<UserContainer>
 			<UserInfoContainer>
@@ -147,7 +163,7 @@ function Profile() {
 					/>
 				</UserProfileContainer>
 				<UserDataContainer>
-					<div className='name'>{userName}</div>
+					<div className='name'>{userData?.user?.firstName}</div>
 					<div className='class'>
 						<FiUser />
 						{userData?.school?.name}
@@ -162,10 +178,7 @@ function Profile() {
 						<BiPhone />
 						{userData?.user?.phone}
 					</div>
-					<div className='edit'>
-						<FaUserEdit />
-						정보 수정
-					</div>
+					{editBtn}
 				</UserDataContainer>
 			</UserInfoContainer>
 			<ScheduleContainer>
