@@ -15,6 +15,13 @@ import Findpw from './views/Findpw';
 import UpdateArticle from './views/UpdateArticle';
 import ArticleDetail from './views/ArticleDetail';
 import Home from './views/Home';
+import ArticleForm from './views/ArticleForm';
+import Admin from './views/admin/Admin';
+import StudentManager from './views/admin/Student';
+import TeacherManager from './views/admin/Teacher';
+import LectureManager from './views/admin/Lecture';
+import ClassManager from './views/admin/Class';
+import AdminIndex from './views/admin/AdminIndex';
 
 function App() {
 	return (
@@ -34,6 +41,14 @@ function App() {
 						<Route path={routes.createarticle} element={<CreateArticle />} />
 						<Route path={routes.updatearticle} element={<UpdateArticle />} />
 						<Route path={routes.articleDetail} element={<ArticleDetail />} />
+						<Route path={routes.articleform} element={<ArticleForm />} />
+						<Route path={routes.admin} element={<Admin />}>
+							<Route index element={<AdminIndex />} />
+							<Route path={routes.studentManager} element={<StudentManager />} />
+							<Route path={routes.teacherManager} element={<TeacherManager />} />
+							<Route path={routes.lectureManager} element={<LectureManager />} />
+							<Route path={routes.classManager} element={<ClassManager />} />
+						</Route>
 					</Route>
 					<Route path='*' element={<Error404 />} />
 				</Routes>

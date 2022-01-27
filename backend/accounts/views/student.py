@@ -2,12 +2,20 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
+
+from drf_spectacular.utils import (
+    extend_schema, OpenApiResponse
+)
+
+from server import basic_swagger_schema
+from . import swagger_schema
 from .user import decode_JWT
 from ..models import Student
-from ..serializers import StudentSerializer
+from ..serializers.student import StudentSerializer
 
 
 class StudentView(APIView):
@@ -16,88 +24,79 @@ class StudentView(APIView):
     """
     model = Student
     serializer_class = StudentSerializer
-    permission_classes  = [IsAuthenticated]
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=StudentSerializer,
+                description=swagger_schema.descriptions['StudentView']['get'][200],
+                examples=[
+                    swagger_schema.examples['StudentView']['get'][200],
+                ]
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['StudentView']['get']['description'],
+        summary=swagger_schema.summaries['StudentView']['get'],
+        tags=['user', 'student'],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ],
+    )
     def get(self, request, student_pk):
-        """Get student inforamtion
-        
-        get student information by student_pk
-        
-        Parameters
-        ----------
-        student_pk : int
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        'classroom': dict,
-            detail information of classroom<br>
-        'school': dict,
-            detail information of school<br>
-        'guardian_phone: str
-        
-        404 Not Fount,
-            if user whose pk is not a student
-        """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         student = get_object_or_404(Student, pk=student_pk)
         serializer = StudentSerializer(student)
         return Response(serializer.data)
     
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(
+                response=StudentSerializer,
+                description=swagger_schema.descriptions['StudentView']['put'][201],
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['StudentView']['put']['description'],
+        summary=swagger_schema.summaries['StudentView']['put'],
+        tags=['user', 'student'],
+        examples=[
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['StudentView']['put']['request'],
+            swagger_schema.examples['StudentView']['put'][201],
+        ],
+    )
     def put(self, request, student_pk):
-        """Update student information
-        
-        update student information<br>
-        Only one's own self profile could be chaged
-        
-        Parameters
-        ----------
-        student_pk : int
-        
-        Request Head
-        ------------
-        JWT : str
-        
-        Request Body
-        ------------
-        user : dict
-        classroom : dict
-        school : dict
-        guardian_phone : str
-        
-        Returns
-        -------
-        200 OK<br>
-        'user': dict,
-            detail information of user<br>
-        'guardian_phone: str
-        
-        400 Bad Request<br>
-            if data is wrong
-        
-        401 Unauthorized<br>
-            unauthorized user or not own self profile
-        
-        404 Not Fount<br>
-            if user whose pk is not a student
-        """
         user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         student = get_object_or_404(Student, pk=student_pk)
         if student.user.pk != user.pk:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        email = request.data['user']['email']
-        phone = request.data['user']['phone']
-        user.email = email
-        user.phone = phone
         data = {
             'user': {
                 'id': user.pk,
-                'email': email,
-                'phone': phone,
+                'email': request.data['user']['email'],
+                'phone': request.data['user']['phone'],
             },
             'guardian_phone': request.data['guardian_phone'],
         }
