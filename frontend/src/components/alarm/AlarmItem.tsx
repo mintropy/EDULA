@@ -11,7 +11,7 @@ const StyledLink = styled(Link)`
 	font-size: 2em;
 `;
 
-const StyledContainer = styled.p<Type>`
+const StyledContainer = styled.div<Type>`
 	font-size: 1em;
 	text-align: center;
 	position: relative;

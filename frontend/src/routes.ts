@@ -4,9 +4,12 @@ const routes = {
 	setting: '/setting',
 	profile: '/profile',
 	alarm: '/alarm',
+	class: '/class',
 	findid: '/findid',
 	findpw: '/findpw',
-	class: '/class',
+	createarticle: '/articleCreate',
+	updatearticle: '/articleUpdate/:articleId',
+	articleDetail: '/article/:articleId',
 	articleform: '/articleform',
 	// Admin Page
 	admin: '/manage',

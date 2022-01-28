@@ -9,10 +9,12 @@ import GlobalStyles from './styles/GlobalStyles';
 import ContextProvider from './ContextProvider';
 import routes from './routes';
 import Login from './views/Login';
+import CreateArticle from './views/CreateArticle';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
+import UpdateArticle from './views/UpdateArticle';
+import ArticleDetail from './views/ArticleDetail';
 import Home from './views/Home';
-import ArticleForm from './views/ArticleForm';
 import Admin from './views/admin/Admin';
 import StudentManager from './views/admin/Student';
 import TeacherManager from './views/admin/Teacher';
@@ -35,7 +37,9 @@ function App() {
 						<Route path={`${routes.profile}/:userId`} element={<Profile />} />
 						<Route path={routes.alarm} element={<Alarm />} />
 						<Route path={routes.class} element={<Class />} />
-						<Route path={routes.articleform} element={<ArticleForm />} />
+						<Route path={routes.createarticle} element={<CreateArticle />} />
+						<Route path={routes.updatearticle} element={<UpdateArticle />} />
+						<Route path={routes.articleDetail} element={<ArticleDetail />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />
 							<Route path={routes.studentManager} element={<StudentManager />} />
