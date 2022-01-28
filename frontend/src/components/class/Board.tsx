@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import StyledTitle from './styledTitle';
-import StyledButton from './styledButton';
+import routes from '../../routes';
+import StyledTitle from './StyledTitle';
+import StyledButton from './StyledButton';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -46,7 +47,7 @@ function Board() {
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
 				{articles.map(article => (
-					<StyledLink to='/'>
+					<StyledLink to='/' key={article.title}>
 						<StyledListItem>
 							<p>{article.type}</p>
 							<h1>{article.title}</h1>
@@ -55,7 +56,7 @@ function Board() {
 					</StyledLink>
 				))}
 			</ul>
-			<Link to='/articleform/'>
+			<Link to={routes.createarticle}>
 				<StyledButton>글쓰기</StyledButton>
 			</Link>
 		</div>

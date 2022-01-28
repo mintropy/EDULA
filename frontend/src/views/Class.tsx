@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Board from '../components/class/board';
-import HomeworkViewer from '../components/class/homeworkViewer';
-import Intro from '../components/class/intro';
+import Board from '../components/class/Board';
+import HomeworkViewer from '../components/class/HomeworkViewer';
+import Intro from '../components/class/Intro';
 
 const StyledContainer = styled.section`
 	display: grid;
