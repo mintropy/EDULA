@@ -8,30 +8,30 @@ SSAFY 6기의 공통 Project, 🕊 비둘기야 밥 먹자 구구구구구 구 
 ## 기술 스택
 
 - BE
-    - Python 3.10.1
-    - Django 4.0.1
-        - Django REST framework 3.13.1
-        - drf-yasg 1.20.0
+  - Python 3.10.1
+  - Django 4.0.1
+    - Django REST framework 3.13.1
+    - drf-yasg 1.20.0
 - FE
-    - Node 16.13.x
-    - React 17.0.2
-    - React Router 6.2.1
-    - TypeScript 4.5.4
-    - Styled Component 5.1.20
+  - Node 16.13.x
+  - React 17.0.2
+  - React Router 6.2.1
+  - TypeScript 4.5.4
+  - Styled Component 5.1.20
 - 주요 기술
-    - WebRTC
-    - WebSocket
-    - JWT Authentication
-    - REST API
+  - WebRTC
+  - WebSocket
+  - JWT Authentication
+  - REST API
 
 ## 프로젝트 소개
 
 학교를 웹에서, 화상회의 학습 서비스
 
 - 주요 기능
-    - 회원 관리
-    - 화상 미팅룸
-    - 그룹 채팅
+  - 회원 관리
+  - 화상 미팅룸
+  - 그룹 채팅
 
 ## 팀 소개
 
@@ -49,3 +49,4 @@ SSAFY 6기의 공통 Project, 🕊 비둘기야 밥 먹자 구구구구구 구 
 
 - [back](/backend/README.md)
 - [front](/frontend/README.md)
+- [docker](/docker/README.md)
