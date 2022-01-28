@@ -12,7 +12,6 @@ const StyledIntro = styled.div`
 	margin: 0px;
 	padding: 0px;
 	background-color: ${props => props.theme.pointColor};
-	/* background-image: url('https://37.media.tumblr.com/8b4969985e84b2aa1ac8d3449475f1af/tumblr_n3iftvUesn1snvqtdo1_1280.jpg'); */
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;

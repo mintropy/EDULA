@@ -29,9 +29,8 @@ function Form(props: InnerProps) {
 
 	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
 		// 글쓰기 로직
-		const { title, content } = getValues();
+		// const { title, content } = getValues();
 		try {
-			// console.log(title, content)
 			navigate(routes.main);
 		} catch (error) {
 			// console.log(error);

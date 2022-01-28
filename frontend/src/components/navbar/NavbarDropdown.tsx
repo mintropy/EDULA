@@ -27,7 +27,7 @@ const StyledMenuTrigger = styled.button`
 	border: none;
 	vertical-align: middle;
 	transition: box-shadow 0.4s ease;
-	margin-left: auto; /* Strictly for positioning */
+	margin-left: auto;
 
 	:hover {
 		box-shadow: 0 1px 8px ${props => props.theme.fontColor};
