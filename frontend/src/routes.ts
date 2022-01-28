@@ -12,11 +12,11 @@ const routes = {
 	articleDetail: '/article/:articleId',
 	articleform: '/articleform',
 	// Admin Page
-	admin: '/administrator',
-	studentManager: '/administrator/student',
-	teacherManager: '/administrator/teacher',
-	classManager: '/administrator/class',
-	lectureManager: '/administrator/lecture',
+	admin: '/manage',
+	studentManager: '/manage/student',
+	teacherManager: '/manage/teacher',
+	classManager: '/manage/class',
+	lectureManager: '/manage/lecture',
 };
 
 export default routes;
