@@ -71,7 +71,7 @@ class LectureView(APIView):
             basic_swagger_schema.examples[401]
         ],
     )
-    def post(self, request):
+    def post(self, request, school_pk):
         """Post lecture of school information
         
         Save lecture of school infromation
@@ -86,7 +86,7 @@ class LectureView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
 
 class LectureDetailView(APIView):
     model = Lecture
