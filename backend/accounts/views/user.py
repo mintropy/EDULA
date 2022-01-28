@@ -184,31 +184,31 @@ class UserCUDView(APIView):
     )
     def post(self, request):
         user = decode_JWT(request)
-        if user == None:
+        if user == None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         student_creation_count = request.data.get('student_creation_count')
         teacher_creation_count = request.data.get('teacher_creation_count')
-        preset = 'test'
+        shcool_pk = user.school_admin.pk
+        abbreviation = user.school_admin.abbreviation
         data = {
-            'preset': preset,
+            'abbreviation': abbreviation,
             'student_creation_count': student_creation_count,
             'teacher_creation_count': teacher_creation_count,
             'student': [],
             'teacher': [],
         }
         # username preset의 마지막
-        last_user = User.objects.filter(username__startswith=preset).order_by('-pk')[0]
-        start_num = int(last_user.username[len(preset):]) + 1
-        print(start_num)
+        last_user = User.objects.filter(username__startswith=abbreviation).order_by('-pk')[0]
+        start_num = int(last_user.username[len(abbreviation):]) + 1
         teachers = [
-            {'username': preset + str(i).zfill(3), 'password': create_password()}
+            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
             for i in range(start_num, start_num + teacher_creation_count)
         ]
         students = [
-            {'username': preset + str(i).zfill(3), 'password': create_password()}
+            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
             for i in range(
                 start_num + teacher_creation_count, 
                 start_num + teacher_creation_count + student_creation_count

@@ -3,7 +3,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 class School(models.Model):
-    name = models.CharField(max_length=40)    
+    name = models.CharField(max_length=40)
+    abbreviation = models.CharField(
+        max_length=10,
+        unique=True,
+    )
 
 
 class Classroom(models.Model):
