@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  nginx:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/conf/conf.d:/etc/nginx/conf.d
+      - static_volume:/usr/share/nginx/html/django_static
+      - ./docker/nginx/cert/etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - backend
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    entrypoint: gunicorn --bind 0:8000 server.wsgi:application
+    ports:
+      - 8000:8000
+    volumes:
+      - static_volume:/app/backend/static
+
+volumes:
+  static_volume: {}
