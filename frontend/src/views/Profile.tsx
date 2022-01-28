@@ -1,14 +1,17 @@
+import { useContext, useEffect, useState } from 'react';
 import { BiPhone } from 'react-icons/bi';
 import { FiUser } from 'react-icons/fi';
 import { VscMail } from 'react-icons/vsc';
 import { FaUserEdit } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-// import {
-// 	apiGetAdminInfo,
-// 	apiGetStudentInfo,
-// 	apiGetTeacherInfo,
-// } from '../api/user';
+import {
+	apiGetAdminInfo,
+	apiGetStudentInfo,
+	apiGetTeacherInfo,
+	apiGetUserStatus,
+} from '../api/user';
+import UserContext from '../context/user';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -51,8 +54,12 @@ const UserDataContainer = styled.div`
 
 	.edit {
 		background-color: inherit;
-		border: none;
+		border: 1px solid black;
 		border-radius: 3px;
+		margin-top: 20px;
+		text-align: center;
+		width: 100%;
+		padding: 3px;
 
 		&:hover {
 			cursor: pointer;
@@ -72,25 +79,79 @@ const UserDataContainer = styled.div`
 
 const ScheduleContainer = styled.div`
 	margin-left: 50px;
+	width: 600px;
+	min-height: 300px;
+	background-color: white;
+	padding: 20px;
+	border-radius: 3px;
 `;
 
-function Profile() {
-	const { userId } = useParams();
-	// let userStat = '';
+interface UserDataType {
+	user: {
+		id: number;
+		firstName: string;
+		status: string;
+		username: string;
+		email: string;
+		phone: string;
+	};
+	classroom: {
+		id: number;
+		classGrade: string;
+		classNum: string;
+	};
+	school: {
+		id: number;
+		name: string;
+	};
+	guardianNumber?: string;
+}
 
-	// switch (userStat) {
-	// 	case 'ST':
-	// 		apiGetStudentInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	case 'TE':
-	// 		apiGetTeacherInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	case 'SA':
-	// 		apiGetAdminInfo(userId || '').then(res => console.log(res));
-	// 		break;
-	// 	default:
-	// 		console.log('user not found');
-	// }
+function Profile() {
+	const { userId: loggedInUserId } = useContext(UserContext);
+	const { userId } = useParams();
+	const [userStat, setUserStat] = useState('');
+	const [userData, setUserData] = useState({
+		user: {},
+		classroom: {},
+		school: {},
+	} as UserDataType);
+
+	useEffect(() => {
+		apiGetUserStatus(userId || '').then(res => {
+			setUserStat(res.data.status);
+		});
+	}, []);
+
+	useEffect(() => {
+		switch (userStat) {
+			case 'ST':
+				apiGetStudentInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			case 'TE':
+				apiGetTeacherInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			case 'SA':
+				apiGetAdminInfo(userId || '').then(res => {
+					setUserData(res.data);
+				});
+				break;
+			default:
+				break;
+		}
+	}, [userStat]);
+
+	const editBtn =
+		loggedInUserId.toString() === userId ? (
+			<button className='edit' type='button'>
+				<FaUserEdit />
+				정보 수정
+			</button>
+		) : null;
 
 	return (
 		<UserContainer>
@@ -102,26 +163,27 @@ function Profile() {
 					/>
 				</UserProfileContainer>
 				<UserDataContainer>
-					<div className='name'>김싸피 {userId}</div>
+					<div className='name'>{userData?.user?.firstName}</div>
 					<div className='class'>
 						<FiUser />
-						3학년 2반 7번
+						{userData?.school?.name}
+						{userData?.classroom &&
+							` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
 					</div>
 					<div className='email'>
 						<VscMail />
-						999999@gugugugu.gu.gu
+						{userData?.user?.email}
 					</div>
 					<div className='phone'>
 						<BiPhone />
-						999-9999-9999
+						{userData?.user?.phone}
 					</div>
-					<div className='edit'>
-						<FaUserEdit />
-						정보 수정
-					</div>
+					{editBtn}
 				</UserDataContainer>
 			</UserInfoContainer>
-			<ScheduleContainer>Schedule</ScheduleContainer>
+			<ScheduleContainer>
+				<span>오늘의 일정</span>
+			</ScheduleContainer>
 		</UserContainer>
 	);
 }

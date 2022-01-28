@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import UserContext from '../../context/user';
 import routes from '../../routes';
-import { useDetectOutsideClick } from '../useDetecOutsideClick';
+import { useDetectOutsideClick } from '../useDetectOutsideClick';
 
 const StyledContainer = styled.div`
 	box-sizing: border-box;
@@ -27,7 +27,7 @@ const StyledMenuTrigger = styled.button`
 	border: none;
 	vertical-align: middle;
 	transition: box-shadow 0.4s ease;
-	margin-left: auto; /* Strictly for positioning */
+	margin-left: auto;
 
 	:hover {
 		box-shadow: 0 1px 8px ${props => props.theme.fontColor};
