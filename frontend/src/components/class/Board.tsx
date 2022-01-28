@@ -47,7 +47,7 @@ function Board() {
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
 				{articles.map(article => (
-					<StyledLink to='/'>
+					<StyledLink to='/' key={article.title}>
 						<StyledListItem>
 							<p>{article.type}</p>
 							<h1>{article.title}</h1>

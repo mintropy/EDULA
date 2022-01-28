@@ -10,7 +10,7 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
 `;
-const HomeworkContainer = styled.p`
+const HomeworkContainer = styled.div`
 	font-size: 1em;
 	text-align: center;
 	margin: 2em;

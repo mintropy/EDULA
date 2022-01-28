@@ -15,7 +15,6 @@ import Findpw from './views/Findpw';
 import UpdateArticle from './views/UpdateArticle';
 import ArticleDetail from './views/ArticleDetail';
 import Home from './views/Home';
-import ArticleForm from './views/ArticleForm';
 import Admin from './views/admin/Admin';
 import StudentManager from './views/admin/Student';
 import TeacherManager from './views/admin/Teacher';
@@ -41,7 +40,6 @@ function App() {
 						<Route path={routes.createarticle} element={<CreateArticle />} />
 						<Route path={routes.updatearticle} element={<UpdateArticle />} />
 						<Route path={routes.articleDetail} element={<ArticleDetail />} />
-						<Route path={routes.articleform} element={<ArticleForm />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />
 							<Route path={routes.studentManager} element={<StudentManager />} />
