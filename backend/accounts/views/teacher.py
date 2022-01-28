@@ -15,7 +15,7 @@ from server import basic_swagger_schema
 from . import swagger_schema
 from .user import decode_JWT
 from ..models import Teacher
-from ..serializers.teacher import TeacherSerializer
+from ..serializers.teacher import TeacherSerializer, TeacherLectureSerializer
 
 
 class TeacherView(APIView):
@@ -108,3 +108,28 @@ class TeacherView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class TeacherLectureView(APIView):
+    model = Teacher
+    serializer_class = TeacherLectureSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=TeacherLectureSerializer,
+            ),
+        },
+    )
+    def get(self, request, teacher_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        student = get_object_or_404(Teacher, pk=teacher_pk)
+        serializer = TeacherLectureSerializer(student)
+        return Response(serializer.data)

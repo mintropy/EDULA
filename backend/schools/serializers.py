@@ -1,8 +1,13 @@
-from django.forms import models
 from rest_framework import serializers
 
-from . models import Homework, Lecture, Classroom
-from accounts.models import User, Student, Teacher
+from . models import School, Homework, Lecture, Classroom
+
+
+class SchoolSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = School
+        fields = '__all__'
 
 
 class LectureSerializer(serializers.ModelSerializer):
@@ -17,8 +22,8 @@ class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
         fields = '__all__'
-     
-        
+
+
 class HomeworkSerializer(serializers.ModelSerializer):
     
     class Meta:
