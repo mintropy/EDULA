@@ -127,8 +127,19 @@ class StudentLectureView(APIView):
         responses={
             200: OpenApiResponse(
                 response=StudentLectureSerializer,
-            )
-        }
+                description=swagger_schema.descriptions['StudentLectureView']['get'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['StudentLectureView']['get']['description'],
+        summary=swagger_schema.summaries['StudentLectureView']['get'],
+        tags=['student', 'lecture'],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['StudentLectureView']['get'][200],
+        ]
     )
     def get(self, request, student_pk):
         user = decode_JWT(request)

@@ -102,6 +102,18 @@ and get updated information
     ''',
         },
     },
+    'StudentLectureView': {
+        'get': {
+            'description':
+    '''
+    Get student's lecture lists
+    ''',
+            200:
+    '''
+    Successfully get student's lecture list
+    ''',
+        },
+    },
     'TeacherView': {
         'get': {
             'description':
@@ -126,6 +138,18 @@ email and phone could be updated
 and get updated information
     ''',
         },
+    },
+    'TeacherLectureView': {
+        'get': {
+            'description':
+    '''
+    Get teacher lecture list
+    ''',
+            200:
+    '''
+    Successfully get teacher lecture list
+    ''',
+        }
     },
     'SchoolAdminView': {
         'get': {
@@ -174,9 +198,16 @@ summaries = {
         'get': 'get studnet information',
         'put': 'update student information',
     },
+    'StudentLectureView': {
+        'get': 'get student lecture list'
+    },
     'TeacherView': {
         'get': 'get teacher information',
         'put': 'update teacher information',
+    },
+    'TeacherLectureView':
+    {
+        'get': 'get teacher lecture list'
     },
     'SchoolAdminView': {
         'get': 'get school admin information',
@@ -340,6 +371,39 @@ examples = {
             ),
         },
     },
+    'StudentLectureView': {
+        'get': {
+            200: OpenApiExample(
+                name='student',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'ST',
+                    },
+                    'lectureList': [
+                        {
+                            'id': 1,
+                            'name': 'math',
+                            'timeList': {
+                                
+                            },
+                            'school': 1,
+                            'teacher': 1,
+                            'studentList': [
+                                1,
+                                2,
+                                3
+                            ]
+                        }
+                    ],
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        }
+    },
     'TeacherView': {
         'get': {
             200: OpenApiExample(
@@ -403,6 +467,39 @@ examples = {
                 response_only=True,
             ),
         },
+    },
+    'TeacherLectureView': {
+        'get': {
+            200: OpenApiExample(
+                name='teacher',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'TE',
+                    },
+                    'lectureList': [
+                        {
+                            'id': 1,
+                            'name': 'math',
+                            'timeList': {
+                                
+                            },
+                            'school': 1,
+                            'teacher': 1,
+                            'studentList': [
+                                1,
+                                2,
+                                3
+                            ]
+                        }
+                    ],
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        }
     },
     'SchoolAdminView': {
         'get': {
