@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = serect.Django_SERECT_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -157,7 +157,12 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Edula API',
     'DESCRIPTION': 'Edula API page',
     'VERSION': '1.0.0',
+    
     # OTHER SETTINGS
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,
+        'filter': True,
+    },
 }
 
 

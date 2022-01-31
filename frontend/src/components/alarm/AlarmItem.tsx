@@ -6,18 +6,12 @@ interface Type {
 	type: String;
 }
 
-const StyledTitle = styled.h1`
-	font-size: 2em;
-	text-align: center;
-	margin: 1em 1em;
-`;
-
 const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 2em;
 `;
 
-const StyledContainer = styled.p<Type>`
+const StyledContainer = styled.div<Type>`
 	font-size: 1em;
 	text-align: center;
 	position: relative;
@@ -101,8 +95,6 @@ function AlarmItem() {
 						<StyledContent>
 							{alarm.author}, {alarm.created_at}
 						</StyledContent>
-						<StyledTitle>{alarm.title}</StyledTitle>
-						<StyledContent>{alarm.author}</StyledContent>
 						<StyledContent>{alarm.content}</StyledContent>
 					</StyledContainer>
 				))}

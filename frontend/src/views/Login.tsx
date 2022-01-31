@@ -1,8 +1,10 @@
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import { useContext, useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEarlybirds } from 'react-icons/fa';
 import styled from 'styled-components';
 import { BiKey, BiLock, BiUser } from 'react-icons/bi';
+import { AxiosError } from 'axios';
 import AuthLayout from '../components/auth/AuthLayout';
 import ErrorMsg from '../components/auth/ErrorMsg';
 import FormBox from '../components/auth/FormBox';
@@ -13,6 +15,7 @@ import { apiLogin } from '../api/user';
 import PageTitle from '../components/PageTitle';
 import FormInput from '../components/auth/FormInput';
 import LinkBox from '../components/auth/LinkBox';
+import UserContext from '../context/user';
 
 const HeaderContainer = styled.div`
 	display: flex;
@@ -30,36 +33,53 @@ const HeaderContainer = styled.div`
 `;
 
 type LoginInput = {
+	result: string;
 	id: string;
 	password: string;
 };
 
 function Login() {
+	const { isLoggedIn, login } = useContext(UserContext);
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
 		getValues,
+		setError,
+		clearErrors,
 	} = useForm<LoginInput>({
 		mode: 'all',
 	});
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if (isLoggedIn) {
+			navigate(routes.main);
+		}
+	}, [isLoggedIn]);
+
 	const onValidSubmit: SubmitHandler<LoginInput> = async () => {
-		// login logic
 		const { id, password } = getValues();
 		try {
-			await apiLogin(id, password).then(res => res);
-
+			await apiLogin(id, password).then(res => {
+				if (res.data?.access && res.data?.refresh) {
+					login(res.data.access, res.data.refresh);
+				}
+			});
 			navigate(routes.main);
-		} catch (error) {
-			// console.log(error);
+		} catch (e) {
+			const error = e as AxiosError;
+			if (error?.response?.status === 401) {
+				setError('result', { message: '사용자 정보가 일치하지 않습니다.' });
+			}
 		}
 	};
 
-	const onInValidSubmit: SubmitErrorHandler<LoginInput> = () => {
-		// error handling
-	};
+	const resultError = errors.result?.message ? (
+		<ErrorMsg message={errors.result?.message} />
+	) : (
+		<EmptyMsg />
+	);
 
 	const idError = errors.id?.message ? (
 		<ErrorMsg message={errors.id?.message} />
@@ -80,7 +100,8 @@ function Login() {
 				<span>Edula</span>
 			</HeaderContainer>
 			<FormBox>
-				<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+				<form onSubmit={handleSubmit(onValidSubmit)}>
+					{resultError}
 					<FormInput htmlFor='id'>
 						<span>
 							<BiUser />
@@ -103,6 +124,7 @@ function Login() {
 							})}
 							type='text'
 							placeholder='ID'
+							onChange={() => clearErrors()}
 						/>
 					</FormInput>
 					{idError}
@@ -124,6 +146,7 @@ function Login() {
 							})}
 							type='password'
 							placeholder='Password'
+							onChange={() => clearErrors()}
 						/>
 					</FormInput>
 					{pwError}
