@@ -12,7 +12,7 @@ services:
     volumes:
       - ./docker/nginx/conf/conf.d:/etc/nginx/conf.d
       - static_volume:/usr/share/nginx/html/django_static
-      - ./docker/nginx/cert/etc/letsencrypt:/etc/letsencrypt
+      - ./docker/nginx/cert:/etc/letsencrypt
     depends_on:
       - backend
 
