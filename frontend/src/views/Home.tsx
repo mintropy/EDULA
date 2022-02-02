@@ -5,6 +5,7 @@ import TopNavBar from '../components/navbar/TopNavBar';
 import UserContext from '../context/user';
 import routes from '../routes';
 import SideBar from '../components/sidebar/SideBar';
+import ScheduleContainer from '../components/schedule/ScheduleContainer';
 
 const OutletContainer = styled.div`
 	display: flex;
@@ -26,6 +27,7 @@ function Main() {
 			<TopNavBar />
 			<Container>
 				<SideBar />
+				<ScheduleContainer />
 				<OutletContainer>
 					<Outlet />
 				</OutletContainer>
