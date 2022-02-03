@@ -15,7 +15,7 @@ from server import basic_swagger_schema
 from . import swagger_schema
 from .user import decode_JWT
 from ..models import Student
-from ..serializers.student import StudentSerializer
+from ..serializers.student import StudentSerializer, StudentLectureSerializer
 
 
 class StudentView(APIView):
@@ -112,3 +112,42 @@ class StudentView(APIView):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class StudentLectureView(APIView):
+    """Student Lecture View
+    
+    """
+    model = Student
+    serializer_class = StudentLectureSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=StudentLectureSerializer,
+                description=swagger_schema.descriptions['StudentLectureView']['get'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['StudentLectureView']['get']['description'],
+        summary=swagger_schema.summaries['StudentLectureView']['get'],
+        tags=['student', 'lecture'],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['StudentLectureView']['get'][200],
+        ]
+    )
+    def get(self, request, student_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        student = get_object_or_404(Student, pk=student_pk)
+        serializer = StudentLectureSerializer(student)
+        return Response(serializer.data)
