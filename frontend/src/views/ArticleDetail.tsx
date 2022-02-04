@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
-import routes from '../routes';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
 
 interface HomeworkDataType {
@@ -53,16 +52,14 @@ function ArticleDetail() {
 							apiDeleteHomework(1, parseInt(articleId, 10))
 								.then(res => {})
 								.catch(err => {
-									console.log(err);
+									// console.log(err);
 								});
 
 							// 해당 클래스 숫자!!
 							navigate(`/class/1`);
 						} catch (error) {
-							console.log(error);
+							// console.log(error);
 						}
-					} else {
-						console.log('nono...');
 					}
 				}}
 			/>

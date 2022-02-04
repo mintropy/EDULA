@@ -2,7 +2,6 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
-import routes from '../../routes';
 import { apiPostHomework, apiUpdateHomework } from '../../api/homework';
 
 type ArticleInput = {
@@ -37,14 +36,14 @@ function Form(props: InnerProps) {
 
 		try {
 			await apiPostHomework(1, title, content, deadline)
-				.then(res => {})
-				.catch(err => {
-					console.log(err);
+				.then(() => {})
+				.catch(() => {
+					// console.log(err);
 				});
 			// 해당 클래스 숫자!!
 			navigate(`/class/1`);
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 		}
 	};
 
@@ -60,13 +59,13 @@ function Form(props: InnerProps) {
 					content,
 					deadline
 				)
-					.then(res => {})
-					.catch(err => {
-						console.log(err);
+					.then(() => {})
+					.catch(() => {
+						// console.log(err);
 					});
 				navigate(`/article/${articleId}`);
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 		}
 	};
