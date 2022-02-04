@@ -47,20 +47,22 @@ function ContextProvider({ children }: PropType) {
 		}
 	}, [isLoggedIn]);
 
-	const storedRefreshToken: string | null = localStorage.getItem('refresh');
-	if (typeof storedRefreshToken === 'string') {
-		try {
-			apiCheckRefreshToken(storedRefreshToken).then(res => {
-				if (res.data?.access && res.data?.refresh) {
-					login(res.data.access, res.data.refresh);
-				} else {
-					logout();
-				}
-			});
-		} catch (error) {
-			logout();
+	useEffect(() => {
+		const storedRefreshToken: string | null = localStorage.getItem('refresh');
+		if (typeof storedRefreshToken === 'string') {
+			try {
+				apiCheckRefreshToken(storedRefreshToken).then(res => {
+					if (res.data?.access && res.data?.refresh) {
+						login(res.data.access, res.data.refresh);
+					} else {
+						logout();
+					}
+				});
+			} catch (error) {
+				logout();
+			}
 		}
-	}
+	}, []);
 
 	const themeValues = useMemo(
 		() => ({ theme: mainTheme, changeTheme }),
