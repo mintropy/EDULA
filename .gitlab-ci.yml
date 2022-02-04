@@ -17,5 +17,6 @@ deploy:
     - develop@s06-webmobile1-sub2/S06P12D209
   script:
     - docker-compose up -d
+    - cp -r ~/cert ./docker/nginx/cert
   tags:
     - first
