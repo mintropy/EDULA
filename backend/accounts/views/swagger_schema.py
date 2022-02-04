@@ -5,6 +5,23 @@ from rest_framework import serializers
 
 
 schema_serializers = {
+    'FriendRequestViewSet': {
+        'request_list': inline_serializer(
+                name='RequestList',
+                fields={
+                    'request_send': serializers.ListField(),
+                    'request_reveive': serializers.ListField(),
+                },
+        ),
+        'create': {
+            'request': inline_serializer(
+                name='CreateRequest',
+                fields={
+                    'to_user': serializers.IntegerField(),
+                },
+            ),
+        },
+    },
 }
 
 descriptions = {
@@ -207,6 +224,36 @@ and get updated information
     ''',
         },
     },
+    'FriendRequestViewSet': {
+        'list': {
+            'description':
+    '''
+    보낸 친구 신청 목록과 받은 친구 신청 목록을 표시합니다
+보낸 친구 신청 목록과 받은 친구 신청 목록에 대하여 유저의 간략한 정보와 함께 requestStatus를 제공합니다\n
+requestStatus는 RQ일때 친구 신청, RF일때 신청에 대한 거절, AC일때 신청에 대한 승인입니다\n
+(RQ=Request, RF=Refusal, AC=Accept)
+    ''',
+            200:
+    '''
+    받은/보낸 친구 신청 목록을 성공적으로 받았습니다
+    ''',
+        },
+        'create': {
+            'description':
+    '''
+    친구 신청을 생성합니다
+친구 신청을 원하는 유저의 id(friend_pk)를 입력으로 받습니다\n
+이미 신청을 한 경우(RQ) 추가적으로 신청되지 않고 400을 반환합니다\n
+또한 올바르지 않은 데이터인 경우 400을 반환할 수 있습니다\n
+해당 유저를 찾을 수 없으면 404를 반환합니다\n
+신청이 완료되었으면, 전체 신청 결과를 반환합니다
+    ''',
+            200:
+    '''
+    친구신청이 완료되었고, 전체 신청 리스트를 반환합니다
+    ''',
+        },
+    },
 }
 
 summaries = {
@@ -247,6 +294,10 @@ summaries = {
     'SchoolAdminView': {
         'get': 'get school admin information',
         'put': 'update school admin information',
+    },
+    'FriendRequestViewSet':{
+        'list': '친구 신청 목록',
+        'create': '친구 신청 생성',
     }
 }
 
@@ -647,5 +698,59 @@ examples = {
                 response_only=True,
             ),
         },
+    },
+    'FriendRequestViewSet': {
+        'request_list': OpenApiExample(
+            name='request list',
+            value={
+                'requestSend': [
+                    {
+                        'id': 5,
+                        'fromUser': {
+                            'id': 2,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        'toUser': {
+                            'id': 1,
+                            'username': 'ssafy0006',
+                            'firstName': '이싸피',
+                            'status': 'St',
+                        },
+                        'requestStatus': 'RQ',
+                    },
+                ],
+                'requestReveive': [
+                    {
+                        'id': 6,
+                        'fromUser': {
+                            'id': 5,
+                            'username': 'ssafy0009',
+                            'firstName': '박싸피',
+                            'status': 'St',
+                        },
+                        'toUser': {
+                            'id': 2,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        'requestStatus': 'RF',
+                    },
+                ],
+            },
+            status_codes=['200'],
+            response_only=True
+        ),
+        'create': {
+            'request': OpenApiExample(
+                name='create friend request',
+                value={
+                    'toUser': 1,
+                },
+                request_only=True,
+            )
+        }
     },
 }
