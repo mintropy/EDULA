@@ -18,3 +18,12 @@ export const apiGetHomeworks = (lectureId: number) =>
 			...setToken(),
 		},
 	});
+
+export const apiGetHomeworkDetail = (lectureId: number, homeworkId: number) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		headers: {
+			...setToken(),
+		},
+	});
