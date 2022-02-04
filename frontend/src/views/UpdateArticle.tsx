@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Form from '../components/class/ArticleForm';
-import TopNavBar from '../components/navbar/TopNavBar';
+
 import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
@@ -10,7 +10,6 @@ const StyledContainer = styled.div`
 function UpdateArticle() {
 	return (
 		<div>
-			<TopNavBar />
 			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
 				<Form

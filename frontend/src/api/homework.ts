@@ -27,3 +27,22 @@ export const apiGetHomeworkDetail = (lectureId: number, homeworkId: number) =>
 			...setToken(),
 		},
 	});
+
+export const apiPostHomework = (
+	lectureId: number,
+	title: string,
+	content: string,
+	deadline: string
+) =>
+	axios({
+		method: 'post',
+		url: `${BASE_URL}/schools/${lectureId}/homework/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			title,
+			content,
+			deadline,
+		},
+	});

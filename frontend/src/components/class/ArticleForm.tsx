@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
 import routes from '../../routes';
+import { apiPostHomework } from '../../api/homework';
 
 type ArticleInput = {
 	title: string;
@@ -29,11 +30,17 @@ function Form(props: InnerProps) {
 
 	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
 		// 글쓰기 로직
-		// const { title, content } = getValues();
+		const { title, content } = getValues();
+
 		try {
+			await apiPostHomework(1, title, content, '2022-01-25T05:49:19.152Z')
+				.then(res => {})
+				.catch(err => {
+					console.log(err);
+				});
 			navigate(routes.main);
 		} catch (error) {
-			// console.log(error);
+			console.log(error);
 		}
 	};
 
