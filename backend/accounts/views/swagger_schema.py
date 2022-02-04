@@ -21,6 +21,14 @@ schema_serializers = {
                 },
             ),
         },
+        'update': {
+            'request': inline_serializer(
+                name='UpdateRequest',
+                fields={
+                    'request_status': serializers.CharField(),
+                },
+            ),
+        },
     },
 }
 
@@ -248,11 +256,38 @@ requestStatus는 RQ일때 친구 신청, RF일때 신청에 대한 거절, AC일
 해당 유저를 찾을 수 없으면 404를 반환합니다\n
 신청이 완료되었으면, 전체 신청 결과를 반환합니다
     ''',
-            200:
+            201:
     '''
     친구신청이 완료되었고, 전체 신청 리스트를 반환합니다
     ''',
         },
+        'update': {
+            'description':
+    '''
+    받은 친구 신청을 승인 또는 거절
+받은 친구 신청을 승인 또는 거절합니다\n
+승인하면 친구 신청의 fromUser와 toUser가 친구가됩니다\n
+성공적으로 승인 또는 거절이 처리되면 200을 반환합니다\n
+requset_pk에 해당하는 요청을 받은 유저가 아니라면 404를 반환합니다\n
+잘못된 데이터가 있으면 400을 반환할 수 있습니다
+    ''',
+            200:
+    '''
+    성공적으로 친구 신청 승인/거절 되었습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    보낸 친구 신청을 삭제(취소)합니다
+기존 보낸 친구 신청을 삭제하고, 전체 보낸/받은 친구 신청 리스트를 반환합니다\n
+request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 보낸 요청이 아닌경우 404를 반환합니다
+    ''',
+            200:
+    '''
+    친구 신청을 삭제하고 친구 목록을 반환합니다
+    ''',
+        }
     },
 }
 
@@ -298,6 +333,8 @@ summaries = {
     'FriendRequestViewSet':{
         'list': '친구 신청 목록',
         'create': '친구 신청 생성',
+        'update': '친구 신청 승인/거절',
+        'destroy': '보낸 친구 신청 취소',
     }
 }
 
@@ -740,7 +777,7 @@ examples = {
                     },
                 ],
             },
-            status_codes=['200'],
+            status_codes=['200', '201'],
             response_only=True
         ),
         'create': {
@@ -750,7 +787,48 @@ examples = {
                     'toUser': 1,
                 },
                 request_only=True,
-            )
-        }
+            ),
+        },
+        'update': {
+            'request': [
+                OpenApiExample(
+                    name='accept',
+                    value={
+                        'requestStatus': 'AC'
+                    },
+                    request_only=True,
+                ),
+                OpenApiExample(
+                    name='refusal',
+                    value={
+                        'requestStatus': 'RF'
+                    }
+                )
+            ],
+            200: [
+                OpenApiExample(
+                    name='accept',
+                    value={
+                        'id': 1,
+                        'fromUser': 1,
+                        'toUser': 2,
+                        'requestStatus': 'AC',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+                OpenApiExample(
+                    name='refusal',
+                    value={
+                        'id': 1,
+                        'fromUser': 1,
+                        'toUser': 2,
+                        'requestStatus': 'RF',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
     },
 }
