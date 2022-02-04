@@ -4,6 +4,7 @@ import Board from '../components/class/Board';
 import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
+import { apiGetHomeworks } from '../api/homework';
 
 const StyledContainer = styled.section`
 	display: grid;
@@ -29,6 +30,17 @@ interface LectureDataType {
 	studentList: [number];
 }
 
+interface HomeworkDataType {
+	id: number;
+	title: string;
+	content: string;
+	created_at: string;
+	deadline: string;
+	writer_pk: number;
+	writer_name: string;
+	lecture: number;
+}
+
 const StyledIntro = styled(Intro)``;
 const StyledBoard = styled(Board)`
 	grid-column: 2;
@@ -39,6 +51,7 @@ const StyledHomeworkViewer = styled(HomeworkViewer)`
 
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
+	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
 	useEffect(() => {
 		// 학교, 강의 pk로 바꾸기!!
@@ -46,6 +59,9 @@ function Class() {
 			setLectureData(res.data);
 		});
 		// 게시글 조회해서 styledContainer에 넘겨주기
+		apiGetHomeworks(1).then(res => {
+			setHomeworkData(res.data);
+		});
 	}, []);
 
 	if (lectureData) {
@@ -54,7 +70,7 @@ function Class() {
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					<StyledHomeworkViewer />
-					<StyledBoard />
+					<StyledBoard/>
 				</StyledContainer>
 			</>
 		);

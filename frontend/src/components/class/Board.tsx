@@ -21,7 +21,14 @@ const StyledLink = styled(Link)`
 	font-size: 1em;
 `;
 
-function Board() {
+interface Props {
+
+	id: number;
+	title: string;
+	content: string;
+	deadline: string;
+}
+function Board({ id, title, content, deadline }: Props) {
 	const [articles] = useState([
 		{
 			type: 'Q&A',
