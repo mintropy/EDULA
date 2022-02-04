@@ -8,6 +8,7 @@ import { apiPostHomework } from '../../api/homework';
 type ArticleInput = {
 	title: string;
 	content: string;
+	deadline: string;
 };
 
 interface InnerProps {
@@ -29,11 +30,10 @@ function Form(props: InnerProps) {
 	const navigate = useNavigate();
 
 	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
-		// 글쓰기 로직
-		const { title, content } = getValues();
+		const { title, content, deadline } = getValues();
 
 		try {
-			await apiPostHomework(1, title, content, '2022-01-25T05:49:19.152Z')
+			await apiPostHomework(1, title, content, deadline)
 				.then(res => {})
 				.catch(err => {
 					console.log(err);
@@ -87,6 +87,16 @@ function Form(props: InnerProps) {
 					type='text'
 					placeholder='Content'
 					defaultValue={originContent}
+				/>
+			</FormInput>
+			<FormInput htmlFor='deadline'>
+				<div>마감일</div>
+				<input
+					{...register('deadline', {
+						required: '마감일을 정하세요.',
+					})}
+					type='datetime-local'
+					placeholder='deadline'
 				/>
 			</FormInput>
 			<FormBtn value='글쓰기' disabled={!isValid} />

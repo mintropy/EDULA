@@ -68,8 +68,6 @@ function Class() {
 		});
 	}, []);
 
-	console.log(homeworkData);
-
 	if (lectureData) {
 		return (
 			<>
