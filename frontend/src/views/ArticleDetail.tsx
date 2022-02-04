@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import routes from '../routes';
-import { apiGetHomeworkDetail } from '../api/homework';
+import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
 
 interface HomeworkDataType {
 	content: string;
@@ -19,6 +19,7 @@ interface HomeworkDataType {
 
 function ArticleDetail() {
 	const { articleId } = useParams();
+	const navigate = useNavigate();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
@@ -32,7 +33,6 @@ function ArticleDetail() {
 
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
-	// 삭제 버튼 onClick 시 삭제 로직
 	return (
 		<div>
 			<StyledTitle>{homeworkData.title}</StyledTitle>
@@ -40,11 +40,32 @@ function ArticleDetail() {
 				{homeworkData.writerName} / {homeworkData.deadline}
 			</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
-
 			<Link to={`/articleUpdate/${articleId}`}>
 				<StyledButton>수정</StyledButton>
 			</Link>
-			<StyledButton>삭제</StyledButton>
+			<input
+				type='button'
+				value='삭제'
+				onClick={e => {
+					e.preventDefault();
+					if (articleId) {
+						try {
+							apiDeleteHomework(1, parseInt(articleId, 10))
+								.then(res => {})
+								.catch(err => {
+									console.log(err);
+								});
+
+							// 해당 클래스 숫자!!
+							navigate(`/class/1`);
+						} catch (error) {
+							console.log(error);
+						}
+					} else {
+						console.log('nono...');
+					}
+				}}
+			/>
 		</div>
 	);
 }

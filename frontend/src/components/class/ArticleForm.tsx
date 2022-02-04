@@ -41,7 +41,8 @@ function Form(props: InnerProps) {
 				.catch(err => {
 					console.log(err);
 				});
-			navigate(routes.main);
+			// 해당 클래스 숫자!!
+			navigate(`/class/1`);
 		} catch (error) {
 			console.log(error);
 		}
@@ -63,7 +64,7 @@ function Form(props: InnerProps) {
 					.catch(err => {
 						console.log(err);
 					});
-				navigate(routes.main);
+				navigate(`/article/${articleId}`);
 			} catch (error) {
 				console.log(error);
 			}

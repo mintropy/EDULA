@@ -70,19 +70,11 @@ export const apiUpdateHomework = (
 export const apiDeleteHomework = (
 	lectureId: number,
 	homeworkId: number,
-	title: string,
-	content: string,
-	deadline: string
 ) =>
 	axios({
-		method: 'put',
+		method: 'delete',
 		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
-		},
-		data: {
-			title,
-			content,
-			deadline,
-		},
+		}
 	});
