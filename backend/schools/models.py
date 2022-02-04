@@ -3,7 +3,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 class School(models.Model):
-    name = models.CharField(max_length=40)    
+    name = models.CharField(max_length=40)
+    abbreviation = models.CharField(
+        max_length=10,
+        unique=True,
+    )
+    
+    def __str__(self):
+        return self.name
 
 
 class Classroom(models.Model):
@@ -18,7 +25,10 @@ class Classroom(models.Model):
         School, 
         related_name="class_list",
         on_delete=models.CASCADE,
-    ) 
+    )
+    
+    def __str__(self):
+        return f'{self.school} {self.class_grade}학년 {self.class_num}반'
 
 
 class Lecture(models.Model):

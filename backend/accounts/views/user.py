@@ -3,10 +3,11 @@ from email.mime.multipart import MIMEMultipart
 import random
 import smtplib
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -22,8 +23,9 @@ from server import basic_swagger_schema
 from . import swagger_schema
 from ..models import User
 from ..serializers.user import(
-    UserBasicSerializer, UserCreationSerialzier,
+    UserBasicSerializer, UserCUDSerialzier,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
+    FriendSerializer
 )
 import serect
 
@@ -170,12 +172,12 @@ class UserView(APIView):
         )
 
 
-class UserCreationView(APIView):
-    """User Creation
-    
+class UserCUDView(APIView):
+    """User create / update / delete view
+    use user UserView or UserSpecifyingView if you want read user
     """
     model = User
-    serializer_class = UserCreationSerialzier
+    serializer_class = UserCUDSerialzier
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
@@ -183,33 +185,62 @@ class UserCreationView(APIView):
         
     )
     def post(self, request):
-        request_creation_count= request.data.get['creation_count']
-        preset = 'test'
+        user = decode_JWT(request)
+        if user == None or user.status != 'SA':
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        student_creation_count = request.data.get('student_creation_count')
+        teacher_creation_count = request.data.get('teacher_creation_count')
+        shcool_pk = user.school_admin.pk
+        abbreviation = user.school_admin.abbreviation
         data = {
-            'user_creation_count': request_creation_count,
-            'users': []
+            'abbreviation': abbreviation,
+            'student_creation_count': student_creation_count,
+            'teacher_creation_count': teacher_creation_count,
+            'student': [],
+            'teacher': [],
         }
-        for _ in range(request_creation_count):
-            failure_count = 0
-            username = ''
-            while failure_count < 5:
-                new_username = create_username(preset)
-                if User.objects.filter(username=new_username).exists():
-                    failure_count += 1
-                else:
-                    break
-            if username == '':
-                continue
-            password = create_password()
-            if UserCreationSerialzier(data={'username': new_username, 'password': password}).is_valid():
-                # new_user = User.objects.create(username= new_username, password= password)
-                # new_user.save()
-                data['users'].append(
-                    {'username': new_username, 'password': password}
-                )
-        data['user_creation_count'] = len(data['users'])
+        # username preset의 마지막
+        last_user = User.objects.filter(username__startswith=abbreviation).order_by('-pk')[0]
+        start_num = int(last_user.username[len(abbreviation):]) + 1
+        teachers = [
+            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
+            for i in range(start_num, start_num + teacher_creation_count)
+        ]
+        students = [
+            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
+            for i in range(
+                start_num + teacher_creation_count, 
+                start_num + teacher_creation_count + student_creation_count
+            )
+        ]
+        
+        # for _ in range(creation_count):
+        #     failure_count = 0
+        #     username = ''
+        #     while failure_count < 5:
+        #         new_username = create_username(preset)
+        #         if User.objects.filter(username=new_username).exists():
+        #             failure_count += 1
+        #         else:
+        #             username = new_username
+        #             break
+        #     if username == '':
+        #         continue
+        #     password = create_password()
+        #     if UserCUDSerialzier(data={'username': new_username, 'password': password}).is_valid():
+        #         # new_user = User.objects.create(username= new_username, password= password)
+        #         # new_user.save()
+        #         data['users'].append(
+        #             {'username': new_username, 'password': password}
+        #         )\
+        # return Response(
+        #     data, status=status.HTTP_201_CREATED
+        # )
         return Response(
-            data, status=status.HTTP_201_CREATED
+            data={'teacher': teachers, 'student': students}
         )
 
 
@@ -448,3 +479,86 @@ class PasswordResetView(APIView):
                 {'error': 'email send failure'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class FriendViewSet(ViewSet):
+    """About user friends list
+    
+    """
+    model = User
+    queryset = User.objects.all()
+    serializer_class = FriendSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FriendSerializer,
+                description=swagger_schema.descriptions['FriendViewSet']['list'][200],
+                examples=swagger_schema.examples['FriendViewSet']['list'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['FriendViewSet']['list']['description'],
+        summary=swagger_schema.summaries['FriendViewSet']['list'],
+        tags=['친구',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ],
+    )
+    def list(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        friends = get_list_or_404(user.friend_list)
+        serializer = FriendSerializer(friends, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FriendSerializer,
+                description=swagger_schema.descriptions['FriendViewSet']['destroy'][200],
+                examples=swagger_schema.examples['FriendViewSet']['destroy'][200],
+            ),
+            204: OpenApiResponse(
+                description=swagger_schema.descriptions['FriendViewSet']['destroy'][204],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['FriendViewSet']['destroy']['description'],
+        summary=swagger_schema.summaries['FriendViewSet']['destroy'],
+        tags=['친구',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
+    )
+    def destroy(self, request, friend_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        friend = get_object_or_404(user.friend_list, pk=friend_pk)
+        user.friend_list.remove(friend)
+        friends = user.friend_list.all()
+        if friends:
+            serializer = FriendSerializer(friends, many=True)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
