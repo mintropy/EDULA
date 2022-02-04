@@ -77,6 +77,37 @@ reset password send through email
     ''',
         },
     },
+    'FriendViewSet': {
+        'list' : {
+            'description':
+    '''
+    친구 목록을 받습니다
+    ''',
+            200:
+    '''
+    유저의 친구 목록을 받았습니다
+유저의 친구목록을 받았고, 각 친구의 id, username, firstName, status를 받습니다\n
+친구가 없으면 404를 받습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    친구를 삭제합니다
+성공적으로 삭제 후 친구 리스트를 200번으로 반환합니다\n
+만약 친구 삭제 후 친구가 남아있지 않으면 204를 반환합니다\n
+해당 유저가 friend_pk에 해당하는 유저를 친구로 두지 않은 경우 404를 반환합니다
+    ''',
+            200:
+    '''
+    성공적으로 친구 삭제 후 친구 목록을 반환합니다
+    ''',
+            204:
+    '''
+    성공적으로 친구 삭제 후 남은 친구가 없습니다
+    ''',
+        }
+    },
     'StudentView': {
         'get': {
             'description':
@@ -194,6 +225,10 @@ summaries = {
     'PasswordResetView': {
         'put': 'get reset password through email',
     },
+    'FriendViewSet': {
+        'list': '친구 목록',
+        'destroy': '친구 삭제',
+    },
     'StudentView': {
         'get': 'get studnet information',
         'put': 'update student information',
@@ -302,6 +337,54 @@ examples = {
                 status_codes=['200'],
                 response_only=True,
             ),
+        },
+    },
+    'FriendViewSet': {
+        'list': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value=[
+                        {
+                            'id': 0,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        {
+                            'id': 2,
+                            'username': 'ssafy0005',
+                            'firstName': '이싸피',
+                            'status': 'ST',
+                        },
+                    ],
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
+        'destroy': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value=[
+                        {
+                            'id': 0,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        {
+                            'id': 2,
+                            'username': 'ssafy0005',
+                            'firstName': '이싸피',
+                            'status': 'ST',
+                        },
+                    ],
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
         },
     },
     'StudentView': {

@@ -27,7 +27,7 @@ urlpatterns = [
     path('<int:user_pk>/', user.UserSpecifyingView.as_view()),
     # Friend
     path('friend/', friend_list),
-    path('friend/<int:friend_pk>', friend_detail),
+    path('friend/<int:friend_pk>/', friend_detail),
     path('friend/request/', request_list),
     path('friend/request/<int:request_pk>/', request_detail),
     # student / teacher / school admin

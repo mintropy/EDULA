@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 import random
 import smtplib
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -482,14 +482,33 @@ class PasswordResetView(APIView):
 
 
 class FriendViewSet(ViewSet):
-    """Get user friends list
+    """About user friends list
     
     """
     model = User
+    queryset = User.objects.all()
     serializer_class = FriendSerializer
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FriendSerializer,
+                description=swagger_schema.descriptions['FriendViewSet']['list'][200],
+                examples=swagger_schema.examples['FriendViewSet']['list'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['FriendViewSet']['list']['description'],
+        summary=swagger_schema.summaries['FriendViewSet']['list'],
+        tags=['친구',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ],
+    )
     def list(self, request):
         user = decode_JWT(request)
         if user == None:
@@ -497,12 +516,34 @@ class FriendViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        target_user = get_object_or_404(User, pk=user.pk)
-        serializer = FriendSerializer(target_user)
+        friends = get_list_or_404(user.friend_list)
+        serializer = FriendSerializer(friends, many=True)
         return Response(
-            serializer.data
+            serializer.data,
+            status=status.HTTP_200_OK,
         )
     
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FriendSerializer,
+                description=swagger_schema.descriptions['FriendViewSet']['destroy'][200],
+                examples=swagger_schema.examples['FriendViewSet']['destroy'][200],
+            ),
+            204: OpenApiResponse(
+                description=swagger_schema.descriptions['FriendViewSet']['destroy'][204],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['FriendViewSet']['destroy']['description'],
+        summary=swagger_schema.summaries['FriendViewSet']['destroy'],
+        tags=['친구',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
+    )
     def destroy(self, request, friend_pk):
         user = decode_JWT(request)
         if user == None:
@@ -512,4 +553,12 @@ class FriendViewSet(ViewSet):
             )
         friend = get_object_or_404(user.friend_list, pk=friend_pk)
         user.friend_list.remove(friend)
-        return Response()
+        friends = user.friend_list.all()
+        if friends:
+            serializer = FriendSerializer(friends, many=True)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)

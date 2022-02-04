@@ -110,4 +110,6 @@ class FriendRequestViewSet(ViewSet):
             )
         friend_request = get_object_or_404(FriendRequest, pk=request_pk)
         friend_request.delete()
-        return Response()    
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )    

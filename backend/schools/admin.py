@@ -21,7 +21,7 @@ class StudentInline(admin.TabularInline):
 
 @admin.register(School)
 class CustomSchoolAdmin(ModelAdmin):
-    list_display = ('id', 'name',  'school_admin', 'teacher', 'student')
+    list_display = ('id', 'name', 'abbreviation', 'school_admin', 'teacher', 'student')
     list_display_links = ('name',)
     inlines = [
         SchoolAdminInline, TeacherInline, StudentInline

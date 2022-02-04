@@ -56,8 +56,7 @@ class PasswordResetSerializer(serializers.ModelSerializer):
 
 
 class FriendSerializer(serializers.ModelSerializer):
-    friend_list = UserBasicSerializer(many=True)
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'status', 'friend_list',)
+        fields = ('id', 'username', 'first_name', 'status',)
