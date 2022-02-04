@@ -41,7 +41,7 @@ function ArticleDetail() {
 			</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
 
-			<Link to={routes.updatearticle}>
+			<Link to={`/articleUpdate/${articleId}`}>
 				<StyledButton>수정</StyledButton>
 			</Link>
 			<StyledButton>삭제</StyledButton>

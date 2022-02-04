@@ -11,7 +11,7 @@ function CreateArticle() {
 		<div>
 			<StyledTitle>게시물 쓰기</StyledTitle>
 			<StyledContainer>
-				<Form originTitle='' originContent='' />
+				<Form type='new' originTitle='' originContent='' originDeadline='' />
 			</StyledContainer>
 		</div>
 	);

@@ -1,20 +1,49 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useParams, Link } from 'react-router-dom';
 import Form from '../components/class/ArticleForm';
-
 import StyledTitle from '../components/class/StyledTitle';
+import { apiGetHomeworkDetail } from '../api/homework';
 
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
+interface HomeworkDataType {
+	content: string;
+	createdAt: string;
+	deadline: string;
+	id: number;
+	lecture: number;
+	title: string;
+	writerName: string;
+	writerPk: number;
+}
 
 function UpdateArticle() {
+	const { articleId } = useParams();
+
+	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
+
+	if (articleId) {
+		useEffect(() => {
+			apiGetHomeworkDetail(1, parseInt(articleId, 10)).then(res => {
+				setHomeworkData(res.data);
+			});
+		}, [articleId]);
+	}
+
 	return (
 		<div>
 			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
 				<Form
-					originTitle='과학 실험'
-					originContent='과학 책 32페이지 참고해서, 보호자의 지도 아래 하세요. 인증샷 필수 !! '
+					type='update'
+					originTitle={homeworkData.title}
+					originContent={homeworkData.content}
+					originDeadline={homeworkData.deadline?.slice(
+						0,
+						homeworkData.deadline.length - 1
+					)}
 				/>
 			</StyledContainer>
 		</div>

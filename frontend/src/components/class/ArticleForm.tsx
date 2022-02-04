@@ -1,9 +1,9 @@
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
 import routes from '../../routes';
-import { apiPostHomework } from '../../api/homework';
+import { apiPostHomework, apiUpdateHomework } from '../../api/homework';
 
 type ArticleInput = {
 	title: string;
@@ -12,12 +12,15 @@ type ArticleInput = {
 };
 
 interface InnerProps {
+	type: string;
 	originTitle: string;
 	originContent: string;
+	originDeadline: string;
 }
 
 function Form(props: InnerProps) {
-	const { originTitle, originContent } = props;
+	const { articleId } = useParams();
+	const { type, originTitle, originContent, originDeadline } = props;
 	const {
 		register,
 		handleSubmit,
@@ -29,7 +32,7 @@ function Form(props: InnerProps) {
 
 	const navigate = useNavigate();
 
-	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
+	const onValidCreate: SubmitHandler<ArticleInput> = async () => {
 		const { title, content, deadline } = getValues();
 
 		try {
@@ -44,12 +47,40 @@ function Form(props: InnerProps) {
 		}
 	};
 
+	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
+		const { title, content, deadline } = getValues();
+
+		if (articleId) {
+			try {
+				await apiUpdateHomework(
+					1,
+					parseInt(articleId, 10),
+					title,
+					content,
+					deadline
+				)
+					.then(res => {})
+					.catch(err => {
+						console.log(err);
+					});
+				navigate(routes.main);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+	};
+
 	const onInValidSubmit: SubmitErrorHandler<ArticleInput> = () => {
 		// error handling
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+		<form
+			onSubmit={handleSubmit(
+				type === 'update' ? onValidUpdate : onValidCreate,
+				onInValidSubmit
+			)}
+		>
 			<FormInput htmlFor='title'>
 				<div>제목</div>
 				<input
@@ -97,9 +128,11 @@ function Form(props: InnerProps) {
 					})}
 					type='datetime-local'
 					placeholder='deadline'
+					defaultValue={originDeadline}
 				/>
 			</FormInput>
-			<FormBtn value='글쓰기' disabled={!isValid} />
+			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
+			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
 		</form>
 	);
 }

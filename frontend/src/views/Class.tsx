@@ -74,7 +74,6 @@ function Class() {
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					<StyledHomeworkViewer />
-
 					{homeworkData && <StyledBoard articles={homeworkData} />}
 				</StyledContainer>
 			</>
