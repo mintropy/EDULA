@@ -12,6 +12,7 @@ import {
 	apiGetUserStatus,
 } from '../api/user';
 import UserContext from '../context/user';
+import EditProfileForm from '../components/profile/EditProfileForm';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -104,7 +105,7 @@ interface UserDataType {
 		id: number;
 		name: string;
 	};
-	guardianNumber?: string;
+	guardianPhone?: string;
 }
 
 function Profile() {
@@ -115,15 +116,23 @@ function Profile() {
 		user: {},
 		classroom: {},
 		school: {},
+		guardianPhone: '',
 	} as UserDataType);
+	const [isEditMode, setEditMode] = useState(false);
 
-	useEffect(() => {
-		apiGetUserStatus(userId || '').then(res => {
-			setUserStat(res.data.status);
+	const toggleMode = () => {
+		setEditMode(!isEditMode);
+	};
+
+	const changeUserData = (newData: object) => {
+		setUserData({
+			...userData,
+			...newData,
 		});
-	}, []);
+		getUserData();
+	};
 
-	useEffect(() => {
+	const getUserData = () => {
 		switch (userStat) {
 			case 'ST':
 				apiGetStudentInfo(userId || '').then(res => {
@@ -143,11 +152,21 @@ function Profile() {
 			default:
 				break;
 		}
+	};
+
+	useEffect(() => {
+		apiGetUserStatus(userId || '').then(res => {
+			setUserStat(res.data.status);
+		});
+	}, []);
+
+	useEffect(() => {
+		getUserData();
 	}, [userStat]);
 
 	const editBtn =
 		loggedInUserId.toString() === userId ? (
-			<button className='edit' type='button'>
+			<button className='edit' type='button' onClick={() => toggleMode()}>
 				<FaUserEdit />
 				정보 수정
 			</button>
@@ -163,22 +182,37 @@ function Profile() {
 					/>
 				</UserProfileContainer>
 				<UserDataContainer>
-					<div className='name'>{userData?.user?.firstName}</div>
-					<div className='class'>
-						<FiUser />
-						{userData?.school?.name}
-						{userData?.classroom &&
-							` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
-					</div>
-					<div className='email'>
-						<VscMail />
-						{userData?.user?.email}
-					</div>
-					<div className='phone'>
-						<BiPhone />
-						{userData?.user?.phone}
-					</div>
-					{editBtn}
+					{isEditMode ? (
+						<EditProfileForm
+							toggleMode={toggleMode}
+							changeUserData={changeUserData}
+						/>
+					) : (
+						<>
+							<div className='name'>{userData?.user?.firstName}</div>
+							<div className='class'>
+								<FiUser />
+								{userData?.school?.name}
+								{userData?.classroom &&
+									` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
+							</div>
+							<div className='email'>
+								<VscMail />
+								{userData?.user?.email}
+							</div>
+							<div className='phone'>
+								<BiPhone />
+								{userData?.user?.phone}
+							</div>
+							{userStat === 'ST' && (
+								<div className='guadianPhone'>
+									<BiPhone />
+									{userData?.guardianPhone}
+								</div>
+							)}
+							{editBtn}
+						</>
+					)}
 				</UserDataContainer>
 			</UserInfoContainer>
 			<ScheduleContainer>
