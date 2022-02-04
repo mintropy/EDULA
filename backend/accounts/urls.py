@@ -23,6 +23,7 @@ request_detail = friend_request.FriendRequestViewSet.as_view({
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view()),
+    path('user/', user.UserCUDView.as_view()),
     path('<int:user_pk>/', user.UserSpecifyingView.as_view()),
     # Friend
     path('friend/', friend_list),
