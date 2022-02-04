@@ -14,7 +14,6 @@ request_list = friend_request.FriendRequestViewSet.as_view({
     'post': 'create',
 })
 request_detail = friend_request.FriendRequestViewSet.as_view({
-    'get': 'retrieve',
     'put': 'update',
     'delete': 'destroy',
 })
