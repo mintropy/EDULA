@@ -48,5 +48,13 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
 class PasswordResetSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model=User
+        model = User
         fields = ('id', 'username', 'email',)
+
+
+class FriendSerializer(serializers.ModelSerializer):
+    friend_list = UserBasicSerializer(many=True)
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'status', 'friend_list',)

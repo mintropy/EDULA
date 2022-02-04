@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,6 +25,7 @@ from ..models import User
 from ..serializers.user import(
     UserBasicSerializer, UserCreationSerialzier,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
+    FriendSerializer
 )
 import serect
 
@@ -448,3 +450,37 @@ class PasswordResetView(APIView):
                 {'error': 'email send failure'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class FriendViewSet(ViewSet):
+    """Get user friends list
+    
+    """
+    model = User
+    serializer_class = FriendSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    def list(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        target_user = get_object_or_404(User, pk=user.pk)
+        serializer = FriendSerializer(target_user)
+        return Response(
+            serializer.data
+        )
+    
+    def destroy(self, request, friend_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        friend = get_object_or_404(user.friend_list, pk=friend_pk)
+        user.friend_list.remove(friend)
+        return Response()
