@@ -21,47 +21,32 @@ const StyledLink = styled(Link)`
 	font-size: 1em;
 `;
 
-interface Props {
-
-	id: number;
-	title: string;
-	content: string;
-	deadline: string;
+interface BoardProps {
+	articles: {
+		content: string;
+		createdAt: string;
+		deadline: string;
+		id: number;
+		lecture: number;
+		title: string;
+		writerName: string;
+		writerPk: number;
+	}[];
 }
-function Board({ id, title, content, deadline }: Props) {
-	const [articles] = useState([
-		{
-			type: 'Q&A',
-			title: '다큐멘터리 소감문 과제',
-			content: '꼭 들어가야 하는 내용이 무엇인가요?',
-			author: '김하루',
-			deadline: '2021.1.7',
-			link: '',
-		},
-		{
-			type: '자유게시판',
-			title: '마야의 도시에 관한 재미있는 기사~~ ^^',
-			content:
-				'신문에서 재미있는 기사를 봐서 추천해! http://www.handmk.com/news/articleView.html?idxno=12000 ',
-			author: '서지산',
-			deadline: '2021.1.15',
-			link: '',
-		},
-	]);
-
+function Board({ articles }: BoardProps) {
 	return (
 		<div>
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
-				{articles.map(article => (
-					<StyledLink to='/' key={article.title}>
-						<StyledListItem>
-							<p>{article.type}</p>
-							<h1>{article.title}</h1>
-							<p>{article.author}</p>
-						</StyledListItem>
-					</StyledLink>
-				))}
+				{articles &&
+					articles.map(article => (
+						<StyledLink to={`/article/${article.id}`} key={article.id}>
+							<StyledListItem>
+								<h1>{article.title}</h1>
+								<p>{article.content}</p>
+							</StyledListItem>
+						</StyledLink>
+					))}
 			</ul>
 			<Link to={routes.createarticle}>
 				<StyledButton>글쓰기</StyledButton>

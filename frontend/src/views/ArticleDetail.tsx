@@ -18,6 +18,7 @@ function ArticleDetail() {
 	});
 	// articleId를 가지고 article 정보를 받아오는 로직
 
+	
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
 	// 삭제 버튼 onClick 시 삭제 로직
