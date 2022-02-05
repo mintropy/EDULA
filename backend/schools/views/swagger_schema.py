@@ -2,67 +2,57 @@ from drf_spectacular.utils import OpenApiExample
 
 
 descriptions = {
-    'HomeworkView': {
-        'get': {
-            'description': 
+    'HomeworkViewSet': {
+        'list': {
+            'description':
     '''
-    Get total homework of school information
-Use lecture_pk, return total homework information
+    lecture_pk에 해당하는 모든 숙제를 조회합니다
     ''',
-            200: 
+            200:
     '''
-    Successfully get total homework list
-successfully get total homework information from lecture_pk
+    해당 수업의 숙제 정보 조회를 성공했습니다
     ''',
         },
-        'post': {
-            'description': 
+        'create': {
+            'description':
     '''
-    Post homework information
-Input homework information
+    lecture_pk의 숙제를 생성합니다
+입력으로 받는 deadline은 YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z] 포멧으로 작성되야 합니다\n
+(ex. 2020-02-01T00:00, 2020-02-01T23:59:59)
     ''',
-            201: 
+            201:
     '''
-    Successfully post homework
-successfully input homework
+    해당 수업의 숙제를 생성했습니다
+    '''
+        },
+        'retrieve': {
+            'description':
+    '''
+    lecture_pk의 특정 숙제 상세정보를 확인합니다
+    ''',
+            200:
+    '''
+    수업 상세정보를 성공적으로 조회했습니다
     ''',
         },
-    },
-    'HomeworkDetailView': {
-        'get': {
-            'description': 
+        'update': {
+            'description':
     '''
-    Get homework information
-Use lecture_pk and homework_pk, return homework information
+    lecture_pk의 특정 숙제 정보를 수정합니다
     ''',
-            200: 
+            201:
     '''
-    Successfully get homework information
-successfully get homework information from lecture_pk and homework_pk
+    수업 정보 수정이 완료되었습니다
     ''',
         },
-        'put': {
-            'description': 
+        'destroy': {
+            'description':
     '''
-    Change homework information
-homework information changed
+    lecture_pk의 특정 숙제를 삭제합니다
     ''',
-            201: 
+            204:
     '''
-    Successfully Put homework
-successfully change homework
-    ''',
-        },
-        'delete': {
-            'description': 
-    '''
-    Delete homework information
-homework information deleted
-    ''',
-            204: 
-    '''
-    Successfully Delete homework
-successfully deleted homework
+    성공적으로 삭제되었습니다
     ''',
         },
     },
@@ -201,14 +191,12 @@ successfully get total teacher information from school_pk
 }
 
 summaries = {
-    'HomeworkView': {
-        'get' : 'Get detail homework information',
-        'post' : 'Post homework of lecture',
-    },
-    'HomeworkDetailView': {
-        'get' : 'Get detail homework information',
-        'put' : 'Put homework information',
-        'delete' : 'Delete homework' 
+    'HomeworkViewSet': {
+        'list': '수업의 모든 숙제',
+        'create': '수업의 숙제 생성',
+        'retrieve': '수업 숙제 상세 정보',
+        'update': '수업 숙제 정보 변경',
+        'destroy': '수업 숙제 삭제',
     },
     'ClassroomView': {
         'get' : 'Get classroom information',
@@ -235,107 +223,81 @@ summaries = {
 }
 
 examples = {
-    'HomeworkView': {
-        'get': {
-            200: [
+    'HomeworkViewSet': {
+        'homework_list':  [
             OpenApiExample(
-                name='user',
-                value={
-                    "id": 0,
-                    "title": "string",
-                    "content": "string",
-                    "created_at": "2022-01-24T02:05:04.172Z",
-                    "deadline": "2022-01-24T02:05:04.172Z",
-                    "writer_pk": 0,
-                    "writer_name": "string",
-                    "lecture": 0
-                },
+                name='homework list',
+                value=[
+                    {
+                        "id": 1,
+                        "title": "수학 숙제",
+                        "content": "수학 익힘책 인수분해 문제 풀기",
+                        "createdAt": "2022-02-01T02:00:00.000000",
+                        "deadline": "2022-02-08T00:00:00",
+                        "writer": 4,
+                        "lecture": 1
+                    },
+                ],
+                status_codes=['200', '201',],
+                response_only=True,
             ),
+        ],
+        'homework_detail': [
+            OpenApiExample(
+                name='homework list',
+                value=[
+                    {
+                        'id': 1,
+                        'title': '수학 숙제',
+                        'content': '수학 익힘책 인수분해 문제 풀기',
+                        'createdAt': '2022-02-01T02:00:00.000000',
+                        'deadline': '2022-02-08T00:00:00',
+                        'writer': 4,
+                        'lecture': 1
+                    },
+                ],
+                status_codes=['200', '201',],
+                response_only=True,
+            ),
+        ],
+        'create': {
+            'request': [
+                OpenApiExample(
+                    name='request',
+                    value={
+                        'title': '수학 숙제',
+                        'content': '수학 익힘책 인수분해 문제 풀기',
+                        'deadline': '2022-02-08T00:00:00',
+                    },
+                    request_only=True,
+                ),
             ],
         },
-        'post': {
-            'input': OpenApiExample(
-                name='input example',
-                value={
-                    "title": "string",
-                    "content": "string",
-                    "deadline": "2022-01-25T05:49:19.152Z",
-                },
-                request_only=True,
-            ),
-            201: [
-            OpenApiExample(
-                name='user',
-                value={
-                    "id": 0,
-                    "title": "string",
-                    "content": "string",
-                    "created_at": "2022-01-24T02:05:04.172Z",
-                    "deadline": "2022-01-24T02:05:04.172Z",
-                    "writer_pk": 0,
-                    "writer_name": "string",
-                    "lecture": 0
-                },
-            ),
-            ],
-        }
-    },
-    'HomeworkDetailView': {
-        'get': {
-            200: [
-            OpenApiExample(
-                name='user',
-                value={
-                    "id": 0,
-                    "title": "string",
-                    "content": "string",
-                    "created_at": "2022-01-24T02:05:04.172Z",
-                    "deadline": "2022-01-24T02:05:04.172Z",
-                    "writer_pk": 0,
-                    "writer_name": "string",
-                    "lecture": 0
-                },
-            ),
+        'update': {
+            'request': [
+                OpenApiExample(
+                    name='request',
+                    value={
+                        'title': '수학 숙제',
+                        'content': '수학 익힘책 인수분해 문제 풀기',
+                        'deadline': '2022-02-08T00:00:00',
+                    },
+                    request_only=True,
+                ),
             ],
         },
-        'put': {
-            'input': OpenApiExample(
-                name='input example',
-                value={
-                    "title": "string",
-                    "content": "string",
-                    "deadline": "2022-01-25T05:49:19.152Z",
-                },
-                request_only=True,
-            ),
-            201: [
-            OpenApiExample(
-                name='user',
-                value={
-                    "id": 0,
-                    "title": "string",
-                    "content": "string",
-                    "created_at": "2022-01-24T02:05:04.172Z",
-                    "deadline": "2022-01-24T02:05:04.172Z",
-                    "writer_pk": 0,
-                    "writer_name": "string",
-                    "lecture": 0
-                },
-            ),
-            ],
-        },
-        'delete': {
+        'destroy': {
             204: [
-            OpenApiExample(
-                name='user',
-                value={
-                    'OK': 'No Content'
-                },
-                status_codes=['204'],
-                response_only=True
-            ),
+                OpenApiExample(
+                    name='user',
+                    value={
+                        'OK': 'No Content'
+                    },
+                    status_codes=['204'],
+                    response_only=True
+                ),
             ],
-        }
+        },
     },
     'ClassroomView': {
         'get': {

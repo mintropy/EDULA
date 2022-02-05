@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import School, Classroom, Lecture
-from accounts.models import SchoolAdmin, Teacher, Student
+from .models import School, Classroom, Lecture, Homework
+from accounts.models import SchoolAdmin, Teacher, Student, User
 
 # Register your models here.
 class SchoolAdminInline(admin.TabularInline):
@@ -34,6 +34,18 @@ class CustomSchoolAdmin(ModelAdmin):
     def student(self, school):
         return f'{school.student_list.count()}명'
 
-# admin.site.register(School)
 admin.site.register(Classroom)
-admin.site.register(Lecture)
+
+@admin.register(Lecture)
+class LectureAdmin(ModelAdmin):
+    list_display = ('id', 'name', 'school', 'teacher', 'student')
+    list_display_links = ('name',)
+    
+    def student(self, lecture):
+        return f'{lecture.student_list.count()}명'
+
+
+@admin.register(Homework)
+class HomeworkAdmin(ModelAdmin):
+    list_display = ('id', 'title', 'created_at', 'deadline',)
+    list_display_links = ('title',)

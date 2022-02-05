@@ -50,6 +50,9 @@ class Lecture(models.Model):
         'accounts.Student',
         related_name="lecture_list",
     )
+    
+    def __str__(self):
+        return f'{self.school} {self.name}'
 
 
 class Homework(models.Model):
@@ -57,19 +60,16 @@ class Homework(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField()
-    writer_pk = models.IntegerField(
-        null=True,
-        blank=True
-    )
-    writer_name = models.CharField(
-        max_length=10,
-        null=True,
-        blank=True
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='homework_list',
+        on_delete=models.CASCADE,
     )
     lecture = models.ForeignKey(
         Lecture,
         related_name="homework_list",
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
     )
+    
+    def __str__(self):
+        return self.title
