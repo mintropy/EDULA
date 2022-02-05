@@ -6,6 +6,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FileUploadParser
@@ -90,3 +91,9 @@ class HomeworkSubmissionViewSet(ViewSet):
             return Response(
                 serializer.errors,
             )
+    
+    @extend_schema(
+        tags=['숙제',]
+    )
+    def retrieve(self, request, lecture_pk, submission_pk):
+        pass
