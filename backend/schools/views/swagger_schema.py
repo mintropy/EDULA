@@ -56,6 +56,34 @@ descriptions = {
     ''',
         },
     },
+    'HomeworkSubmissionViewSet': {
+        'list': {
+            'description':
+    '''
+    homework_pk의 모든 숙제를 확인합니다
+homework_pk와 lecture_pk를 모두 확인한 후 요청이 정당한 경우 모든 숙제를 반환합니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우
+다음의 경우 404를 반환합니다
+- homework_pk가 존재하지 않는 경우
+- homework_pk가 lecture_pk의 수업이 아닌경우
+    ''',
+        },
+        'create': {
+            'description':
+    '''
+    숙제를 제출(생성)합니다
+추가 파일이 있으면 file이름으로 전송합니다
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우
+다음의 경우 404를 반환합니다
+- homework_pk가 존재하지 않는 경우
+- homework_pk가 lecture_pk의 수업이 아닌경우
+    ''',
+        },
+    },
     'ClassroomView': {
         'get': {
             'description': 
@@ -197,6 +225,10 @@ summaries = {
         'retrieve': '수업 숙제 상세 정보',
         'update': '수업 숙제 정보 변경',
         'destroy': '수업 숙제 삭제',
+    },
+    'HomeworkSubmissionViewSet': {
+        'list': '숙제의 모든 제출 확인',
+        'create': '숙제 제출',
     },
     'ClassroomView': {
         'get' : 'Get classroom information',

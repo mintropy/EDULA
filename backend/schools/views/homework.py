@@ -1,4 +1,3 @@
-from msvcrt import kbhit
 from django.shortcuts import get_object_or_404
 
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
@@ -7,15 +6,14 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
 from accounts.views.user import decode_JWT
 from server import basic_swagger_schema
 from . import swagger_schema
-from ..models import Homework
-from ..serializers import HomeworkSerializer
+from ..models import Homework, HomeworkSubmission
+from ..serializers import HomeworkSerializer, HomeworkDetailSerializer
 
 
 class HomeworkViewSet(ViewSet):
@@ -24,9 +22,21 @@ class HomeworkViewSet(ViewSet):
     """
     model = Homework
     queryset = Homework.objects.all()
-    serializer_class = HomeworkSerializer
+    serializer_classes = {
+        'list': HomeworkSerializer,
+        'create': HomeworkSerializer,
+        'retrieve': HomeworkDetailSerializer,
+        'update': HomeworkDetailSerializer,
+        'destroy': HomeworkDetailSerializer,
+    }
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
+    
+    def get_serializer_class(self):
+        try:
+            return self.serializer_classes[self.action]
+        except:
+            return HomeworkSerializer
     
     @extend_schema(
         responses={
@@ -98,9 +108,9 @@ class HomeworkViewSet(ViewSet):
     @extend_schema(
         responses={
             200: OpenApiResponse(
-                response=HomeworkSerializer,
+                response=HomeworkDetailSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['retrieve'][200],
-                examples=swagger_schema.examples['HomeworkViewSet']['homework_detail']
+                # examples=swagger_schema.examples['HomeworkViewSet']['homework_detail']
             ),
             401: basic_swagger_schema.open_api_response[401],
         },
@@ -119,15 +129,17 @@ class HomeworkViewSet(ViewSet):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
-        serializer = HomeworkSerializer(homework)
-        return Response(serializer.data)
+        serializer = HomeworkDetailSerializer(homework)
+        return Response(
+            serializer.data,
+        )
     
     @extend_schema(
         responses={
             201: OpenApiResponse(
-                response=HomeworkSerializer,
+                response=HomeworkDetailSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['update'][201],
-                examples=swagger_schema.examples['HomeworkViewSet']['homework_detail'],
+                # examples=swagger_schema.examples['HomeworkViewSet']['homework_detail'],
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401],
@@ -157,9 +169,9 @@ class HomeworkViewSet(ViewSet):
     @extend_schema(
         responses={
             204: OpenApiResponse(
-                response=HomeworkSerializer,
+                response=HomeworkDetailSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['destroy'][204],
-                examples=swagger_schema.examples['HomeworkViewSet']['destroy'][204],
+                # examples=swagger_schema.examples['HomeworkViewSet']['destroy'][204],
             ),
             401: basic_swagger_schema.open_api_response[401],
             404: basic_swagger_schema.open_api_response[404],

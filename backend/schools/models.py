@@ -73,3 +73,30 @@ class Homework(models.Model):
     
     def __str__(self):
         return self.title
+
+
+class HomeworkSubmission(models.Model):
+    def homework_submission_path(instance, filename):
+        return f'submission/{instance.homework.title}/{instance.writer.username}/{filename}'
+    
+    homework = models.ForeignKey(
+        Homework,
+        related_name='submission',
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=20)
+    content = models.TextField()
+    creted_ad = models.DateTimeField(auto_now_add=True)
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='homework_submission_list',
+        on_delete=models.CASCADE,
+    )
+    file = models.FileField(
+        upload_to=homework_submission_path,
+        null=True,
+        blank=True,
+    )
+    
+    def __str__(self):
+        return f'{self.homework} : {self.title}'

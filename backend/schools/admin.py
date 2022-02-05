@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import School, Classroom, Lecture, Homework
-from accounts.models import SchoolAdmin, Teacher, Student, User
+from .models import (
+    School, Classroom, Lecture, 
+    Homework, HomeworkSubmission
+)
+from accounts.models import SchoolAdmin, Teacher, Student
 
 # Register your models here.
 class SchoolAdminInline(admin.TabularInline):
@@ -49,3 +52,15 @@ class LectureAdmin(ModelAdmin):
 class HomeworkAdmin(ModelAdmin):
     list_display = ('id', 'title', 'created_at', 'deadline',)
     list_display_links = ('title',)
+
+
+@admin.register(HomeworkSubmission)
+class HomeworkSubmissionAdmin(ModelAdmin):
+    list_display = ('id', 'title', 'homework', 'file_exist',)
+    list_display_links = ('title',)
+    
+    @admin.display(
+        boolean=True,
+    )
+    def file_exist(self, homework_submission):
+        return True if homework_submission.file else False
