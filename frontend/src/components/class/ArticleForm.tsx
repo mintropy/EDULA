@@ -18,7 +18,7 @@ interface InnerProps {
 }
 
 function Form(props: InnerProps) {
-	const { articleId } = useParams();
+	const { lectureId, articleId } = useParams();
 	const { type, originTitle, originContent, originDeadline } = props;
 	const {
 		register,
@@ -34,16 +34,18 @@ function Form(props: InnerProps) {
 	const onValidCreate: SubmitHandler<ArticleInput> = async () => {
 		const { title, content, deadline } = getValues();
 
-		try {
-			await apiPostHomework(1, title, content, deadline)
-				.then(() => {})
-				.catch(() => {
-					// console.log(err);
-				});
-			// 해당 클래스 숫자!!
-			navigate(`/class/1`);
-		} catch (error) {
-			// console.log(error);
+		if (lectureId) {
+			try {
+				await apiPostHomework(parseInt(lectureId, 10), title, content, deadline)
+					.then(() => {})
+					.catch(() => {
+						// console.log(err);
+					});
+				// 해당 클래스 숫자!!
+				navigate(`/lecture/${lectureId}`);
+			} catch (error) {
+				// console.log(error);
+			}
 		}
 	};
 
@@ -63,7 +65,7 @@ function Form(props: InnerProps) {
 					.catch(() => {
 						// console.log(err);
 					});
-				navigate(`/article/${articleId}`);
+				navigate(`/${lectureId}/article/${articleId}`);
 			} catch (error) {
 				// console.log(error);
 			}

@@ -17,16 +17,18 @@ interface HomeworkDataType {
 }
 
 function ArticleDetail() {
-	const { articleId } = useParams();
+	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
-	if (articleId) {
+	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(1, parseInt(articleId, 10)).then(res => {
-				setHomeworkData(res.data);
-			});
+			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
+				res => {
+					setHomeworkData(res.data);
+				}
+			);
 		}, [articleId]);
 	}
 
@@ -39,7 +41,7 @@ function ArticleDetail() {
 				{homeworkData.writerName} / {homeworkData.deadline}
 			</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
-			<Link to={`/articleUpdate/${articleId}`}>
+			<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
 				<StyledButton>수정</StyledButton>
 			</Link>
 			<input
@@ -47,16 +49,16 @@ function ArticleDetail() {
 				value='삭제'
 				onClick={e => {
 					e.preventDefault();
-					if (articleId) {
+					if (articleId && lectureId) {
 						try {
-							apiDeleteHomework(1, parseInt(articleId, 10))
+							apiDeleteHomework(parseInt(lectureId, 10), parseInt(articleId, 10))
 								.then(res => {})
 								.catch(err => {
 									// console.log(err);
 								});
 
 							// 해당 클래스 숫자!!
-							navigate(`/class/1`);
+							navigate(`/lecture/${lectureId}`);
 						} catch (error) {
 							// console.log(error);
 						}

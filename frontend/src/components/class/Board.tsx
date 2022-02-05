@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import routes from '../../routes';
 import StyledTitle from './StyledTitle';
 import StyledButton from './StyledButton';
@@ -34,13 +34,15 @@ interface BoardProps {
 	}[];
 }
 function Board({ articles }: BoardProps) {
+	const { lectureId } = useParams();
+
 	return (
 		<div>
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
 				{articles &&
 					articles.map(article => (
-						<StyledLink to={`/article/${article.id}`} key={article.id}>
+						<StyledLink to={`/${lectureId}/article/${article.id}`} key={article.id}>
 							<StyledListItem>
 								<h1>{article.title}</h1>
 								<p>{article.content}</p>
@@ -48,7 +50,7 @@ function Board({ articles }: BoardProps) {
 						</StyledLink>
 					))}
 			</ul>
-			<Link to={routes.createarticle}>
+			<Link to={`/${lectureId}/articleCreate`}>
 				<StyledButton>글쓰기</StyledButton>
 			</Link>
 		</div>

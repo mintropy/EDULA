@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = `http://${window.location.hostname}:8000/api`;
+const BASE_URL = `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}/api`;
 
 const setToken = () => {
 	const token = localStorage.getItem('access') || ``;
@@ -67,14 +67,11 @@ export const apiUpdateHomework = (
 		},
 	});
 
-export const apiDeleteHomework = (
-	lectureId: number,
-	homeworkId: number,
-) =>
+export const apiDeleteHomework = (lectureId: number, homeworkId: number) =>
 	axios({
 		method: 'delete',
 		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
-		}
+		},
 	});

@@ -51,7 +51,7 @@ function ScheduleContainer() {
 				<ScheduleDate />
 
 				{scheduleData.map(sub => (
-					<StyledLink key={sub.id} to={`/class/${sub.id}/`}>
+					<StyledLink key={sub.id} to={`/lecture/${sub.id}/`}>
 						<ScheduleItem
 							key={sub.id}
 							name={sub.name}

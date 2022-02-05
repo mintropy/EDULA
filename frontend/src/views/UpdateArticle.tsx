@@ -20,15 +20,17 @@ interface HomeworkDataType {
 }
 
 function UpdateArticle() {
-	const { articleId } = useParams();
+	const { lectureId, articleId } = useParams();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
-	if (articleId) {
+	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(1, parseInt(articleId, 10)).then(res => {
-				setHomeworkData(res.data);
-			});
+			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
+				res => {
+					setHomeworkData(res.data);
+				}
+			);
 		}, [articleId]);
 	}
 
