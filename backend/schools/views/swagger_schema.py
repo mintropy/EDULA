@@ -50,7 +50,7 @@ descriptions = {
     '''
     lecture_pk의 특정 숙제를 삭제합니다
     ''',
-            204:
+            200:
     '''
     성공적으로 삭제되었습니다
     ''',
@@ -258,20 +258,51 @@ examples = {
     'HomeworkViewSet': {
         'homework_list':  [
             OpenApiExample(
-                name='homework list',
+                name='homework list teacher',
                 value=[
                     {
-                        "id": 1,
-                        "title": "수학 숙제",
-                        "content": "수학 익힘책 인수분해 문제 풀기",
-                        "createdAt": "2022-02-01T02:00:00.000000",
-                        "deadline": "2022-02-08T00:00:00",
-                        "writer": 4,
-                        "lecture": 1
+                        'id': 1,
+                        'title': '수학 숙제',
+                        'content': '수학 익힘책 인수분해 문제 풀기',
+                        'createdAt': '2022-02-01T02:00:00.000000',
+                        'deadline': '2022-02-08T00:00:00',
+                        'writer': {
+                            'id': 5,
+                            'username': '김싸피',
+                        },
+                        'lecture': 1,
+                        'submission_list': [
+                            {
+                                'id': 10,
+                                'username': '박싸피',
+                            },
+                            {
+                                'id': 15,
+                                'username': '황싸피',
+                            },
+                        ],
                     },
                 ],
                 status_codes=['200', '201',],
                 response_only=True,
+            ),
+            OpenApiExample(
+                name='homework list student',
+                value=[
+                    {
+                        'id': 1,
+                        'title': '수학 숙제',
+                        'content': '수학 익힘책 인수분해 문제 풀기',
+                        'createdAt': '2022-02-01T02:00:00.000000',
+                        'deadline': '2022-02-08T00:00:00',
+                        'writer': {
+                            'id': 5,
+                            'username': '김싸피',
+                        },
+                        'lecture': 1,
+                        'submission': True,
+                    },
+                ],
             ),
         ],
         'homework_detail': [
@@ -285,7 +316,18 @@ examples = {
                         'createdAt': '2022-02-01T02:00:00.000000',
                         'deadline': '2022-02-08T00:00:00',
                         'writer': 4,
-                        'lecture': 1
+                        'lecture': 1,
+                        'submission': [
+                            {
+                                'id': 1,
+                                'title': '수학 숙제!!',
+                                'content': '다 풀었습니다~',
+                                'createdAt': '2022-02-01T02:00:00.000000',
+                                'file': None,
+                                'homework': 1,
+                                'writer': 10,
+                            },
+                        ],
                     },
                 ],
                 status_codes=['200', '201',],
@@ -304,6 +346,24 @@ examples = {
                     request_only=True,
                 ),
             ],
+            201: [
+                OpenApiExample(
+                    name='homework list',
+                    value=[
+                        {
+                            'id': 1,
+                            'title': '수학 숙제',
+                            'content': '수학 익힘책 인수분해 문제 풀기',
+                            'createdAt': '2022-02-01T02:00:00.000000',
+                            'deadline': '2022-02-08T00:00:00',
+                            'writer': 4,
+                            'lecture': 1
+                        },
+                    ],
+                    status_codes=['200', '201',],
+                    response_only=True,
+                ),
+            ]
         },
         'update': {
             'request': [
@@ -317,15 +377,33 @@ examples = {
                     request_only=True,
                 ),
             ],
+            201: [
+                OpenApiExample(
+                    name='homework list',
+                    value=[
+                        {
+                            'id': 1,
+                            'title': '수학 숙제',
+                            'content': '수학 익힘책 인수분해 문제 풀기',
+                            'createdAt': '2022-02-01T02:00:00.000000',
+                            'deadline': '2022-02-08T00:00:00',
+                            'writer': 4,
+                            'lecture': 1
+                        },
+                    ],
+                    status_codes=['200', '201',],
+                    response_only=True,
+                ),
+            ],
         },
         'destroy': {
-            204: [
+            200: [
                 OpenApiExample(
                     name='user',
                     value={
                         'OK': 'No Content'
                     },
-                    status_codes=['204'],
+                    status_codes=['200'],
                     response_only=True
                 ),
             ],

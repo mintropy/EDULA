@@ -61,16 +61,67 @@ class HomeworkViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        homeworks = Homework.objects.filter(lecture_id=lecture_pk)
-        serializer = HomeworkSerializer(homeworks, many=True)  
-        return Response(serializer.data)
+        homeworks = Homework.objects.filter(lecture_id=lecture_pk)\
+            .prefetch_related('submission')
+        if user.status == 'ST':
+            data = {
+                'homework_count': homeworks.count(),
+                'homework': [
+                    {
+                        'id': homework.pk,
+                        'title': homework.title,
+                        'content': homework.content,
+                        'created_at': homework.created_at,
+                        'deadline': homework.deadline,
+                        'writer': {
+                            'id': homework.writer.pk,
+                            'username': homework.writer.username,
+                        },
+                        'lecture': homework.lecture.pk,
+                        'submission': homework.submission.filter(writer=user.pk).exists(),
+                    } for homework in homeworks
+                ],
+            }
+            return Response(
+                data,
+                status=status.HTTP_200_OK,
+            )
+        elif user.status in ['TE', 'SA']:
+            data = {
+                'homework_count': homeworks.count(),
+                'homework': [
+                    {
+                        'id': homework.pk,
+                        'title': homework.title,
+                        'content': homework.content,
+                        'created_at': homework.created_at,
+                        'deadline': homework.deadline,
+                        'writer': {
+                            'id': homework.writer.pk,
+                            'username': homework.writer.username,
+                        },
+                        'lecture': homework.lecture.pk,
+                        'submission_list': [
+                            {
+                                'id': submission.writer.pk,
+                                'username': submission.writer.username,
+                            }
+                            for submission in homework.submission.all()
+                        ],
+                    } for homework in homeworks
+                ],
+            }
+            return Response(
+                data,
+                status=status.HTTP_200_OK,
+            )
     
     @extend_schema(
         responses={
             201: OpenApiResponse(
                 response=HomeworkSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['create'][201],
-                examples=swagger_schema.examples['HomeworkViewSet']['homework_detail'],
+                examples=swagger_schema.examples['HomeworkViewSet']['create'][201],
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401],
@@ -86,7 +137,7 @@ class HomeworkViewSet(ViewSet):
     )
     def create(self, request, lecture_pk):
         user = decode_JWT(request)
-        if user == None:
+        if user == None or user.status == 'ST':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -110,7 +161,7 @@ class HomeworkViewSet(ViewSet):
             200: OpenApiResponse(
                 response=HomeworkDetailSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['retrieve'][200],
-                # examples=swagger_schema.examples['HomeworkViewSet']['homework_detail']
+                examples=swagger_schema.examples['HomeworkViewSet']['homework_detail']
             ),
             401: basic_swagger_schema.open_api_response[401],
         },
@@ -139,7 +190,7 @@ class HomeworkViewSet(ViewSet):
             201: OpenApiResponse(
                 response=HomeworkDetailSerializer,
                 description=swagger_schema.descriptions['HomeworkViewSet']['update'][201],
-                # examples=swagger_schema.examples['HomeworkViewSet']['homework_detail'],
+                examples=swagger_schema.examples['HomeworkViewSet']['update'][201],
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401],
@@ -155,23 +206,35 @@ class HomeworkViewSet(ViewSet):
     )
     def update(self, request, lecture_pk, homework_pk):
         user = decode_JWT(request)
-        if user == None:
+        if user == None or user.status == 'ST':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
-        serializer = HomeworkSerializer(instance=homework, data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        data = {
+            'title': request.data.get('title', homework.title),
+            'content': request.data.get('content', homework.content),
+            'deadline': request.data.get('deadline', homework.deadline),
+            'writer': request.data.get('writer', user.pk),
+            'lecture': lecture_pk,
+        }
+        serializer = HomeworkSerializer(instance=homework, data=data)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     
     @extend_schema(
         responses={
-            204: OpenApiResponse(
+            200: OpenApiResponse(
                 response=HomeworkDetailSerializer,
-                description=swagger_schema.descriptions['HomeworkViewSet']['destroy'][204],
-                # examples=swagger_schema.examples['HomeworkViewSet']['destroy'][204],
+                description=swagger_schema.descriptions['HomeworkViewSet']['destroy'][200],
+                examples=swagger_schema.examples['HomeworkViewSet']['destroy'][200],
             ),
             401: basic_swagger_schema.open_api_response[401],
             404: basic_swagger_schema.open_api_response[404],
@@ -193,4 +256,7 @@ class HomeworkViewSet(ViewSet):
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
         homework.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'OK': 'No Content'},
+            status=status.HTTP_200_OK
+        )

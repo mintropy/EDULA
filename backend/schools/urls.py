@@ -35,10 +35,20 @@ homework_submission_detail = homework_submission.HomeworkSubmissionViewSet.as_vi
 urlpatterns = [
     path(
         '<int:school_pk>/', include([
+            # 유저
+            path('student/', student.StudentView.as_view()),
+            path('teacher/', teacher.TeacherView.as_view()),
+            # 교실
+            path('classroom/', classroom_list),
+            path('classroom/<int:classroom_pk>/', classroom_detail)
+        ]),
+    ),
+    path(
+        'lecture/', include([
             # 수업
-            path('lecture/', lecture.LectureView.as_view()),
+            path('', lecture.LectureView.as_view()),
             path(
-                'lecture/<int:lecture_pk>/', include([
+                '<int:lecture_pk>/', include([
                     # 수업
                     path('', lecture.LectureDetailView.as_view()),
                     # 숙제
@@ -54,12 +64,7 @@ urlpatterns = [
                     ),
                 ]),
             ), 
-            # 유저
-            path('student/', student.StudentView.as_view()),
-            path('teacher/', teacher.TeacherView.as_view()),
-            # 교실
-            path('classroom/', classroom_list),
-            path('classroom/<int:classroom_pk>/', classroom_detail)
+            
         ]),
     ),
 ]

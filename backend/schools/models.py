@@ -86,7 +86,7 @@ class HomeworkSubmission(models.Model):
     )
     title = models.CharField(max_length=20)
     content = models.TextField()
-    creted_ad = models.DateTimeField(auto_now_add=True)
+    creted_at = models.DateTimeField(auto_now_add=True)
     writer = models.ForeignKey(
         'accounts.User',
         related_name='homework_submission_list',
