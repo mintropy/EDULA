@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Board from '../components/class/Board';
 import HomeworkViewer from '../components/class/HomeworkViewer';
@@ -54,18 +55,23 @@ const StyledHomeworkViewer = styled(HomeworkViewer)`
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
+	const { lectureId } = useParams();
 
 	useEffect(() => {
-		// 학교, 강의 pk로 바꾸기!!
-		apiGetLectureDetail(1, 1).then(res => {
-			setLectureData(res.data);
-		});
+		if (lectureId) {
+			// 학교 pk로 바꾸기!!
+			apiGetLectureDetail(1, parseInt(lectureId, 10)).then(res => {
+				setLectureData(res.data);
+			});
+		}
 	}, []);
 
 	useEffect(() => {
-		apiGetHomeworks(1).then(res => {
-			setHomeworkData(res.data);
-		});
+		if (lectureId) {
+			apiGetHomeworks(parseInt(lectureId, 10)).then(res => {
+				setHomeworkData(res.data);
+			});
+		}
 	}, []);
 
 	if (lectureData) {

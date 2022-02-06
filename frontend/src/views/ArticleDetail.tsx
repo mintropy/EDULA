@@ -57,7 +57,6 @@ function ArticleDetail() {
 									// console.log(err);
 								});
 
-							// 해당 클래스 숫자!!
 							navigate(`/lecture/${lectureId}`);
 						} catch (error) {
 							// console.log(error);
