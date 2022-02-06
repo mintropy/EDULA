@@ -3,7 +3,8 @@ from django.contrib.admin import ModelAdmin
 
 from .models import (
     School, Classroom, Lecture, 
-    Homework, HomeworkSubmission
+    Homework, HomeworkSubmission,
+    Article
 )
 from accounts.models import SchoolAdmin, Teacher, Student
 
@@ -64,3 +65,15 @@ class HomeworkSubmissionAdmin(ModelAdmin):
     )
     def file_exist(self, homework_submission):
         return True if homework_submission.file else False
+
+
+@admin.register(Article)
+class ArticleAdmin(ModelAdmin):
+    list_display = ('id', 'title', 'writer', 'notice',)
+    list_display_links = ('title',)
+    
+    @admin.display(
+        boolean=True
+    )
+    def notice(self, article):
+        return article.notice

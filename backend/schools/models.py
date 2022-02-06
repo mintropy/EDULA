@@ -100,3 +100,26 @@ class HomeworkSubmission(models.Model):
     
     def __str__(self):
         return f'{self.homework} : {self.title}'
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=20)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    notice = models.BooleanField(
+        default=False,
+    )
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='article_list',
+        on_delete=models.CASCADE,
+    )
+    lecture = models.ForeignKey(
+        Lecture,
+        related_name="article_list",
+        on_delete=models.CASCADE,
+    )
+    
+    def __str__(self):
+        return self.title

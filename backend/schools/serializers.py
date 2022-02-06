@@ -3,6 +3,7 @@ from rest_framework import serializers
 from . models import (
     School, Lecture, Classroom,
     Homework, HomeworkSubmission,
+    Article
 )
 
 
@@ -46,4 +47,11 @@ class HomeworkDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Homework
+        fields = '__all__'
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Article
         fields = '__all__'

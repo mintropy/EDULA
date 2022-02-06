@@ -1,7 +1,8 @@
 from django.urls import path, include
 from .views import (
     classroom, lecture, student, teacher, 
-    homework, homework_submission
+    homework, homework_submission,
+    article
 )
 
 
@@ -29,6 +30,16 @@ homework_submission_list = homework_submission.HomeworkSubmissionViewSet.as_view
 })
 homework_submission_detail = homework_submission.HomeworkSubmissionViewSet.as_view({
     'get': 'retrieve',
+    'delete': 'destroy',
+})
+
+article_list = article.ArticleViewSet.as_view({
+    'get': 'list',
+    'post': 'create',
+})
+article_detail = article.ArticleViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
     'delete': 'destroy',
 })
 
@@ -64,7 +75,9 @@ urlpatterns = [
                         homework_submission_detail
                     ),
                 ]),
-            ), 
+            ),
+            path('article/', article_list),
+            path('article/<int:article_pk>/', article_detail),
         ]),
     ),
 ]
