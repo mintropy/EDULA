@@ -60,8 +60,34 @@ descriptions = {
         'list': {
             'description':
     '''
-    homework_pk의 모든 숙제를 확인합니다
-homework_pk와 lecture_pk를 모두 확인한 후 요청이 정당한 경우 모든 숙제를 반환합니다\n
+    homework_pk의 모든 숙제 제출을 확인합니다
+homework_pk와 lecture_pk를 모두 확인한 후 요청이 정당한 경우 제출될 숙제를 반환합니다\n
+- 학생의 경우 자신의 숙제만 반환하거나, 없다면 204를 반환합니다 
+- 교사 또는 학교 관리자는 해당 숙제의 모든 제출을 확입합니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
+다음의 경우 404를 반환합니다
+- homework_pk가 존재하지 않는 경우
+- homework_pk가 lecture_pk의 수업이 아닌경우
+    ''',
+            200:
+    '''
+    제출된 숙제 목록입니다
+학생이 요청하면, 제출한 숙제가 있을 때만 200번 반환이 있습니다\n
+교사 또는 학교 관리자는 해당 숙제의 모든 제출(없더라도) 확입합니다
+    ''',
+            204:
+    '''
+    학생이 요청하고, 제출한 숙제가 없는 경우입니다
+    ''',
+        },
+        'create': {
+            'description':
+    '''
+    숙제를 제출(생성)합니다
+추가 파일이 있으면 file이름으로 전송합니다\n
+기존 숙제가 있으면, 숙제 내용을 수정하고, 없으면 생성합니다\n
 다음의 경우 401을 반환합니다
 - 토큰이 존재하지 않거나 만료 된 경우
 - 허가되지 않은 사용자인 경우
@@ -69,18 +95,41 @@ homework_pk와 lecture_pk를 모두 확인한 후 요청이 정당한 경우 모
 - homework_pk가 존재하지 않는 경우
 - homework_pk가 lecture_pk의 수업이 아닌경우
     ''',
+            201:
+    '''
+    숙제 생성이 완료되었습니다
+    '''
         },
-        'create': {
+        'retrieve': {
             'description':
     '''
-    숙제를 제출(생성)합니다
-추가 파일이 있으면 file이름으로 전송합니다
-다음의 경우 401을 반환합니다
-- 토큰이 존재하지 않거나 만료 된 경우
-- 허가되지 않은 사용자인 경우
-다음의 경우 404를 반환합니다
-- homework_pk가 존재하지 않는 경우
-- homework_pk가 lecture_pk의 수업이 아닌경우
+    유저의 숙제를 확인합니다
+학생의 경우 user_pk없이 GET 방식과 동일하게 작동합니다\n
+교사의 경우 숙제의 상세정보 확인할 때 사용할 수 있습니다
+    ''',
+            200:
+    '''
+    해당 학생이 제출한 숙제를 성공적으로 받았습니다
+    ''',
+            204:
+    '''
+    해당 학생이 제출한 숙제가 없습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    유저의 숙제를 삭제합니다
+제출한 숙제가 없으면 204를 반환합니다\n
+올바르지 않은 parameter가 있을 경우 404를 반환할 수 있습니다
+    ''',
+            200:
+    '''
+    유저의 숙제 삭제를 완료하였습니다
+    ''',
+            204:
+    '''
+    유저가 제출한 숙제가 없습니다
     ''',
         },
     },
@@ -229,6 +278,8 @@ summaries = {
     'HomeworkSubmissionViewSet': {
         'list': '숙제의 모든 제출 확인',
         'create': '숙제 제출',
+        'retrieve': '숙제 상세 확인',
+        'destroy': '숙제 제출 삭제',
     },
     'ClassroomView': {
         'get' : 'Get classroom information',
@@ -408,6 +459,61 @@ examples = {
                 ),
             ],
         },
+    },
+    'HomeworkSubmissionViewSet': {
+        'submission_list': [
+            OpenApiExample(
+                name='teacher',
+                value=[
+                    {
+                        'id': 1,
+                        'title': '수학 숙제 제출',
+                        'content': '다 풀었습니다',
+                        'cretedAt': '2022-02-05T17:05:27.928675',
+                        'file': None,
+                        'homework': 1,
+                        'writer': 10,
+                    },
+                    {
+                        'id': 2,
+                        'title': '이번 숙제 너무 어려워요 ㅠㅠ',
+                        'content': '절반밖에 못풀었어요',
+                        'cretedAt': '2022-02-05T17:06:27.928675',
+                        'file': None,
+                        'homework': 1,
+                        'writer': 15,
+                    },
+                ],
+                status_codes=['200'],
+                response_only=True,
+            ),
+            OpenApiExample(
+                name='student',
+                value={
+                    'id': 1,
+                    'title': '수학 숙제 제출',
+                    'content': '다 풀었습니다',
+                    'cretedAt': '2022-02-05T17:05:27.928675',
+                    'file': None,
+                    'homework': 1,
+                    'writer': 10,
+                },
+            ),
+        ],
+        'submission': [
+            OpenApiExample(
+                name='submission',
+                value={
+                    'id': 1,
+                    'title': '수학 숙제 제출',
+                    'content': '다 풀었습니다',
+                    'cretedAt': '2022-02-05T17:05:27.928675',
+                    'file': None,
+                    'homework': 1,
+                    'writer': 10,
+                },
+            ),
+        ],
     },
     'ClassroomView': {
         'get': {

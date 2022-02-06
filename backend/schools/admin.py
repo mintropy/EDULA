@@ -56,7 +56,7 @@ class HomeworkAdmin(ModelAdmin):
 
 @admin.register(HomeworkSubmission)
 class HomeworkSubmissionAdmin(ModelAdmin):
-    list_display = ('id', 'title', 'homework', 'file_exist',)
+    list_display = ('id', 'title', 'homework', 'writer', 'file_exist',)
     list_display_links = ('title',)
     
     @admin.display(

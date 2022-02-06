@@ -29,6 +29,7 @@ homework_submission_list = homework_submission.HomeworkSubmissionViewSet.as_view
 })
 homework_submission_detail = homework_submission.HomeworkSubmissionViewSet.as_view({
     'get': 'retrieve',
+    'delete': 'destroy',
 })
 
 
@@ -59,12 +60,11 @@ urlpatterns = [
                         homework_submission_list
                     ),
                     path(
-                        'homework/<int:homework_pk>/submission/<int:submission_pk>/', 
+                        'homework/<int:homework_pk>/submission/<int:user_pk>/', 
                         homework_submission_detail
                     ),
                 ]),
             ), 
-            
         ]),
     ),
 ]
