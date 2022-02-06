@@ -11,6 +11,7 @@ const routes = {
 	updatearticle: '/:lectureId/articleUpdate/:articleId',
 	articleDetail: '/:lectureId/article/:articleId',
 	articleform: '/articleform',
+	schedule:'/schedule',
 	// Admin Page
 	admin: '/manage',
 	studentManager: '/manage/student',

@@ -114,3 +114,12 @@ export const apiPutTeacherInfo = (teacherId: string, user: object) =>
 			user,
 		},
 	});
+
+export const apiGetStudentLectureList = (studentId: string) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/accounts/student/${studentId}/lecture/`,
+		headers: {
+			...setToken(),
+		},
+	});

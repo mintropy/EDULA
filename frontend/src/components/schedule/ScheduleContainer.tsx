@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import ScheduleItem from './ScheduleItem';
 import ScheduleDate from './ScheduleDate';
 import { apiGetLectures } from '../../api/lecture';
+import { apiGetStudentLectureList } from '../../api/user';
 
 const StyledContainer = styled.div`
 	height: 100%;
@@ -22,26 +23,24 @@ interface ScheduleDataType {
 	name: string;
 	timeList: {
 		count: number;
-		lectures: [
-			{
-				day: string;
-				st: string;
-				end: string;
-			}
-		];
+		lectures: {
+			day: string;
+			st: string;
+			end: string;
+		}[];
 	};
 	school: number;
 	teacher: number;
-	studentList: [number];
+	studentList: number[];
 }
 
 function ScheduleContainer() {
 	const [scheduleData, setScheduleData] = useState([{} as ScheduleDataType]);
 
-	// api로 그 사람(학생 or 교사) 그날 시간표 받아오기
 	useEffect(() => {
-		apiGetLectures(1).then(res => {
-			setScheduleData(res.data);
+		apiGetStudentLectureList('1').then(res => {
+			setScheduleData(res.data.lectureList);
+			console.log(res.data);
 		});
 	}, []);
 
