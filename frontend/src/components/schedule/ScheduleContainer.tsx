@@ -1,9 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import ScheduleItem from './ScheduleItem';
 import ScheduleDate from './ScheduleDate';
-import { apiGetLectures } from '../../api/lecture';
 import {
 	apiGetStudentLectureList,
 	apiGetUserStatus,
@@ -19,9 +17,6 @@ const StyledContainer = styled.div`
 	color: ${props => props.theme.fontColor};
 	background-color: ${props => props.theme.subBgColor};
 `;
-const StyledLink = styled(Link)`
-	text-decoration: none;
-`;
 
 interface ScheduleDataType {
 	id: number;
@@ -30,19 +25,58 @@ interface ScheduleDataType {
 		count: number;
 		lectures: {
 			day: string;
-			st: string;
-			end: string;
+			startAt: string;
+			endAt: string;
 		}[];
 	};
 	school: number;
 	teacher: number;
 	studentList: number[];
 }
+interface ScheduleItemProps {
+	day: string;
+	startAt: string;
+	endAt: string;
+}
 
 function ScheduleContainer() {
+	const [dayName, setDayName] = useState('');
+
+	const today = new Date();
+	const dayIdx = today.getDay();
+
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
 	const [scheduleData, setScheduleData] = useState([{} as ScheduleDataType]);
+
+	useEffect(() => {
+		switch (dayIdx) {
+			case 0:
+				setDayName('sun');
+				break;
+			case 1:
+				setDayName('mon');
+				break;
+			case 2:
+				setDayName('tues');
+				break;
+			case 3:
+				setDayName('wed');
+				break;
+			case 4:
+				setDayName('thus');
+				break;
+			case 5:
+				setDayName('fri');
+				break;
+			case 6:
+				setDayName('sat');
+				break;
+
+			default:
+				break;
+		}
+	}, []);
 
 	useEffect(() => {
 		if (userId) {
@@ -61,14 +95,32 @@ function ScheduleContainer() {
 			switch (userStat) {
 				case 'ST':
 					apiGetStudentLectureList(userId || '').then(res => {
-						setScheduleData(res.data.lectureList);
+						const dayLectureData = [] as ScheduleDataType[];
+						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
+							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
+								if (idx.day === dayName) {
+									dayLectureData.push(lecture);
+								}
+							});
+						});
+						setScheduleData(dayLectureData);
 					});
 					break;
+
 				case 'TE':
 					apiGetTeacherLectureList(userId || '').then(res => {
-						setScheduleData(res.data.lectureList);
+						const dayLectureData = [] as ScheduleDataType[];
+						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
+							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
+								if (idx.day === dayName) {
+									dayLectureData.push(lecture);
+								}
+							});
+						});
+						setScheduleData(dayLectureData);
 					});
 					break;
+
 				default:
 					break;
 			}
@@ -81,15 +133,15 @@ function ScheduleContainer() {
 				<ScheduleDate />
 
 				{scheduleData.map(sub => (
-					<StyledLink key={sub.id} to={`/lecture/${sub.id}/`}>
-						<ScheduleItem
-							name={sub.name}
-							startAt='11:00'
-							endAt='12:00'
-							// startAt={sub.timeList.lectures[0].st}
-							// endAt={sub.timeList.lectures[0].end}
-						/>
-					</StyledLink>
+					<ScheduleItem
+						key={sub.id}
+						id={sub.id}
+						name={sub.name}
+						startAt='11'
+						endAt='12'
+						// startAt={sub.timeList.lectures[0].st || '미정'}
+						// endAt={sub.timeList.lectures[0].end || '미정'}
+					/>
 				))}
 			</StyledContainer>
 		);

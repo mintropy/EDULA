@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledItem = styled.div`
@@ -9,17 +10,27 @@ const StyledItem = styled.div`
 `;
 
 interface ScheduleItemProps {
+	id: number;
 	name: string;
 	startAt: string;
 	endAt: string;
 }
 
-function ScheduleItem({ name, startAt, endAt }: ScheduleItemProps) {
-	return (
-		<StyledItem>
-			{startAt} ~ {endAt} {name}
-		</StyledItem>
-	);
+const StyledLink = styled(Link)`
+	text-decoration: none;
+`;
+
+function ScheduleItem({ id, name, startAt, endAt }: ScheduleItemProps) {
+	if (name) {
+		return (
+			<StyledLink key={id} to={`/lecture/${id}/`}>
+				<StyledItem>
+					{startAt} ~ {endAt} {name}
+				</StyledItem>
+			</StyledLink>
+		);
+	}
+	return <h1>수업 없다 !</h1>;
 }
 
 export default ScheduleItem;
