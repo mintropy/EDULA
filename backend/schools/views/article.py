@@ -26,17 +26,32 @@ class ArticleViewSet(ViewSet):
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
+    @extend_schema(
+        tags=['게시판',]
+    )
     def list(self):
         pass
     
+    @extend_schema(
+        tags=['게시판',]
+    )
     def create(self):
         pass
     
+    @extend_schema(
+        tags=['게시판',]
+    )
     def retrieve(self):
         pass
     
+    @extend_schema(
+        tags=['게시판',]
+    )
     def update(self):
         pass
     
+    @extend_schema(
+        tags=['게시판',]
+    )
     def destroy(self):
         pass

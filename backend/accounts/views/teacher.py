@@ -38,7 +38,7 @@ class TeacherView(APIView):
         },
         description=swagger_schema.descriptions['TeacherView']['get']['description'],
         summary=swagger_schema.summaries['TeacherView']['get'],
-        tags=['user', 'teacher'],
+        tags=['교사',],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
@@ -67,7 +67,7 @@ class TeacherView(APIView):
         },
         description=swagger_schema.descriptions['TeacherView']['put']['description'],
         summary=swagger_schema.summaries['TeacherView']['put'],
-        tags=['user', 'teacher'],
+        tags=['교사',],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
@@ -127,7 +127,7 @@ class TeacherLectureView(APIView):
         },
         description=swagger_schema.descriptions['TeacherLectureView']['get']['description'],
         summary=swagger_schema.summaries['TeacherLectureView']['get'],
-        tags=['teacher', 'lecture'],
+        tags=['교사', '수업',],
         examples=[
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404],

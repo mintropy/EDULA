@@ -34,7 +34,7 @@ class ClassroomViewSet(ViewSet):
         },
         description=swagger_schema.descriptions['ClassroomView']['get']['description'],
         summary=swagger_schema.summaries['ClassroomView']['get'],
-        tags=['classroom','schooladmin'],
+        tags=['교실',],
         examples=[
             basic_swagger_schema.examples[401]
         ],
@@ -66,7 +66,7 @@ class ClassroomViewSet(ViewSet):
         },
         description=swagger_schema.descriptions['ClassroomView']['post']['description'],
         summary=swagger_schema.summaries['ClassroomView']['post'],
-        tags=['classroom','schooladmin'],
+        tags=['교실',],
         examples=[
             swagger_schema.examples['ClassroomView']['post']['input'],
             basic_swagger_schema.examples[400],
@@ -90,7 +90,7 @@ class ClassroomViewSet(ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     @extend_schema(
-        tags=['classroom',]
+        tags=['교실',]
     )
     def retrieve(self, request, school_pk, classroom_pk):
         pass

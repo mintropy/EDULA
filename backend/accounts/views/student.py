@@ -41,7 +41,7 @@ class StudentView(APIView):
         },
         description=swagger_schema.descriptions['StudentView']['get']['description'],
         summary=swagger_schema.summaries['StudentView']['get'],
-        tags=['user', 'student'],
+        tags=['학생',],
         examples=[
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404],
@@ -70,7 +70,7 @@ class StudentView(APIView):
         },
         description=swagger_schema.descriptions['StudentView']['put']['description'],
         summary=swagger_schema.summaries['StudentView']['put'],
-        tags=['user', 'student'],
+        tags=['학생'],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
@@ -134,7 +134,7 @@ class StudentLectureView(APIView):
         },
         description=swagger_schema.descriptions['StudentLectureView']['get']['description'],
         summary=swagger_schema.summaries['StudentLectureView']['get'],
-        tags=['student', 'lecture'],
+        tags=['학생', '수업'],
         examples=[
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404],

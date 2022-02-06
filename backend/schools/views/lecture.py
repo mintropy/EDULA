@@ -32,7 +32,7 @@ class LectureView(APIView):
         },
         description=swagger_schema.descriptions['LectureView']['get']['description'],
         summary=swagger_schema.summaries['LectureView']['get'],
-        tags=['lecture',],
+        tags=['수업',],
         examples=[
             basic_swagger_schema.examples[401]
         ],
@@ -64,7 +64,7 @@ class LectureView(APIView):
         },
         description=swagger_schema.descriptions['LectureView']['post']['description'],
         summary=swagger_schema.summaries['LectureView']['post'],
-        tags=['lecture',],
+        tags=['수업',],
         examples=[
             swagger_schema.examples['LectureView']['post']['input'],
             basic_swagger_schema.examples[400],
@@ -103,7 +103,7 @@ class LectureDetailView(APIView):
         },
         description=swagger_schema.descriptions['LectureDetailView']['get']['description'],
         summary=swagger_schema.summaries['LectureDetailView']['get'],
-        tags=['lecture',],
+        tags=['수업',],
         examples=[
             basic_swagger_schema.examples[401]
         ],
@@ -134,7 +134,7 @@ class LectureDetailView(APIView):
         },
         description=swagger_schema.descriptions['LectureDetailView']['put']['description'],
         summary=swagger_schema.summaries['LectureDetailView']['put'],
-        tags=['lecture',],
+        tags=['수업',],
         examples=[
             swagger_schema.examples['LectureDetailView']['put']['input'],
             basic_swagger_schema.examples[400],
@@ -171,7 +171,7 @@ class LectureDetailView(APIView):
         },
         description=swagger_schema.descriptions['LectureDetailView']['delete']['description'],
         summary=swagger_schema.summaries['LectureDetailView']['delete'],
-        tags=['lecture',],
+        tags=['수업',],
         examples=[
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404]
