@@ -37,13 +37,24 @@ class LectureView(APIView):
             basic_swagger_schema.examples[401]
         ],
     )
-    def get(self, request,school_pk):
+    def get(self, request):
         """Get total lecture of school information
         
         Use school_pk, return total lecture of school infromation
         """
         user = decode_JWT(request)
         if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if user.status == 'ST':
+            school_pk = user.student.school.pk
+        elif user.status == 'TE':
+            school_pk = user.teacher.school.pk
+        elif user.status == 'ST':
+            school_pk = user.schoo_admin.school.pk
+        else:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -108,7 +119,7 @@ class LectureDetailView(APIView):
             basic_swagger_schema.examples[401]
         ],
     )
-    def get(self, request, lecture_pk, school_pk):
+    def get(self, request, lecture_pk):
         """Get lecture information
         
         Use school_pk and lecture_pk, return lecture of school infromation
@@ -119,7 +130,7 @@ class LectureDetailView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
         serializer = LectureSerializer(lecture)
         return Response(serializer.data)
     
@@ -141,7 +152,7 @@ class LectureDetailView(APIView):
             basic_swagger_schema.examples[401]
         ],
     )
-    def put(self, request, lecture_pk, school_pk):
+    def put(self, request, lecture_pk):
         """Put lecture of school information
         
         Update lecture of school infromation
@@ -152,9 +163,8 @@ class LectureDetailView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
         serializer = LectureSerializer(instance=lecture, data=request.data)
-        print(serializer)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -177,7 +187,7 @@ class LectureDetailView(APIView):
             basic_swagger_schema.examples[404]
         ],
     )
-    def delete(self, request, lecture_pk, school_pk):
+    def delete(self, request, lecture_pk):
         """Delete lecture information
         
         Delete lecture information
@@ -188,6 +198,6 @@ class LectureDetailView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        lecture = get_object_or_404(Lecture, pk=lecture_pk, school_id=school_pk)
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
