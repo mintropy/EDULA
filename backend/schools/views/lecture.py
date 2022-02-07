@@ -11,8 +11,23 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from accounts.views.user import decode_JWT
 from . import swagger_schema
 from ..models import Lecture
+from accounts.models import User
 from ..serializers import LectureSerializer
 from server import basic_swagger_schema
+
+
+def verify_user_lecture(user: User, lecture_pk: int) -> bool:
+    lecture = Lecture.objects.get(pk=lecture_pk)
+    if user.status == 'ST':
+        if lecture.student_list.filter(user_id=user.pk).exists():
+            return True
+    elif user.status == 'TE':
+        if lecture.teacher.pk == user.pk:
+            return True
+    elif user.status == 'SA':
+        if lecture.school.pk == user.school_admin.school.pk:
+            return True
+    return False
 
 
 class LectureView(APIView):
@@ -53,7 +68,7 @@ class LectureView(APIView):
         elif user.status == 'TE':
             school_pk = user.teacher.school.pk
         elif user.status == 'ST':
-            school_pk = user.schoo_admin.school.pk
+            school_pk = user.school_admin.school.pk
         else:
             return Response(
                 {'error': 'Unauthorized'},

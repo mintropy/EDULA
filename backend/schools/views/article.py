@@ -13,8 +13,9 @@ from rest_framework.pagination import PageNumberPagination
 from accounts.views.user import decode_JWT
 from server import basic_swagger_schema
 from . import swagger_schema
-from ..models import Article
+from ..models import Lecture, Article
 from ..serializers import ArticleSerializer, ArticleDetailSerializer
+from .lecture import verify_user_lecture
 
 
 class ArticlePagination(PageNumberPagination):
@@ -24,14 +25,14 @@ class ArticlePagination(PageNumberPagination):
 
 
 class ArticleViewSet(ViewSet):
-    """About Homework
+    """About article from lecture
     
     """
     model = Article
     queryset = Article.objects.all()
     serializer_classes = {
         'list': ArticleSerializer,
-        'detail': ArticleSerializer,
+        'create': ArticleSerializer,
         'retrieve': ArticleDetailSerializer,
         'update': ArticleSerializer,
         'destroy': ArticleSerializer,
@@ -47,11 +48,36 @@ class ArticleViewSet(ViewSet):
             return ArticleSerializer
     
     @extend_schema(
-        tags=['게시판',]
+        responses={
+            200: OpenApiResponse(
+                response=ArticleSerializer,
+                description=swagger_schema.descriptions['ArticleViewSet']['list'][200],
+                examples=swagger_schema.examples['ArticleViewSet']['article_list'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ArticleViewSet']['list']['description'],
+        summary=swagger_schema.summaries['ArticleViewSet']['list'],
+        tags=['게시판',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
     )
     def list(self, request, lecture_pk):
         user = decode_JWT(request)
         if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        elif not Lecture.objects.filter(pk=lecture_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        elif not verify_user_lecture(user, lecture_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -65,12 +91,28 @@ class ArticleViewSet(ViewSet):
         augmented_serializer = {
             'totla_count': articles.count(),
             'page_count': len(serializer.data),
-            'result': list(serializer.data),
+            'articles': list(serializer.data),
         }
         return Response(augmented_serializer)
     
     @extend_schema(
-        tags=['게시판',]
+        responses={
+            201: OpenApiResponse(
+                response=ArticleSerializer,
+                description=swagger_schema.descriptions['ArticleViewSet']['create'][201],
+                examples=swagger_schema.examples['ArticleViewSet']['article'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ArticleViewSet']['create']['description'],
+        summary=swagger_schema.summaries['ArticleViewSet']['create'],
+        tags=['게시판',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            *swagger_schema.examples['ArticleViewSet']['create_article'],
+        ]
     )
     def create(self, request, lecture_pk):
         user = decode_JWT(request)
@@ -79,7 +121,17 @@ class ArticleViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        notice = request.data.get('notice', None)
+        elif not Lecture.objects.filter(pk=lecture_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        elif not verify_user_lecture(user, lecture_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        notice = request.data.get('notice', False)
         if notice:
             if user.status == 'ST':
                 notice = False
@@ -104,11 +156,36 @@ class ArticleViewSet(ViewSet):
             )
     
     @extend_schema(
-        tags=['게시판',]
+        responses={
+            200: OpenApiResponse(
+                response=ArticleDetailSerializer,
+                description=swagger_schema.descriptions['ArticleViewSet']['retrieve'][200],
+                examples=swagger_schema.examples['ArticleViewSet']['article_detail'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ArticleViewSet']['retrieve']['description'],
+        summary=swagger_schema.summaries['ArticleViewSet']['retrieve'],
+        tags=['게시판',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
     )
     def retrieve(self, request, lecture_pk, article_pk):
         user = decode_JWT(request)
         if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        elif not Lecture.objects.filter(pk=lecture_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        elif not verify_user_lecture(user, lecture_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -120,14 +197,41 @@ class ArticleViewSet(ViewSet):
         serialier = ArticleDetailSerializer(article)
         return Response(
             serialier.data,
+            status=status.HTTP_200_OK
         )
     
     @extend_schema(
-        tags=['게시판',]
+        responses={
+            201: OpenApiResponse(
+                response=ArticleSerializer,
+                description=swagger_schema.descriptions['ArticleViewSet']['update'][201],
+                examples=swagger_schema.examples['ArticleViewSet']['article'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ArticleViewSet']['update']['description'],
+        summary=swagger_schema.summaries['ArticleViewSet']['update'],
+        tags=['게시판',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            *swagger_schema.examples['ArticleViewSet']['create_article'],
+        ]
     )
     def update(self, request, lecture_pk, article_pk):
         user = decode_JWT(request)
         if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        elif not Lecture.objects.filter(pk=lecture_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        elif not verify_user_lecture(user, lecture_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -169,7 +273,22 @@ class ArticleViewSet(ViewSet):
             )
     
     @extend_schema(
-        tags=['게시판',]
+        responses={
+            200: OpenApiResponse(
+                response=ArticleSerializer,
+                description=swagger_schema.descriptions['ArticleViewSet']['destroy'][200],
+                examples=swagger_schema.examples['ArticleViewSet']['destroy'][200],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ArticleViewSet']['destroy']['description'],
+        summary=swagger_schema.summaries['ArticleViewSet']['destroy'],
+        tags=['게시판',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
     )
     def destroy(self, request, lecture_pk, article_pk):
         user = decode_JWT(request)
@@ -178,11 +297,28 @@ class ArticleViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        elif not Lecture.objects.filter(pk=lecture_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        elif not verify_user_lecture(user, lecture_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         article = get_object_or_404(
             Article.objects.filter(lecture=lecture_pk), 
             id=article_pk,
         )
-        article.delete()
-        return Response(
-            status=status.HTTP_200_OK,
-        )
+        if article.writer.pk == user.pk or user.status in ['TE', 'SA']:
+            article.delete()
+            return Response(
+                {'OK': 'deleted'},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )

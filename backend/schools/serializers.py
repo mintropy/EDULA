@@ -61,7 +61,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     writer = UserBasicSerializer()
-    lecture = LectureSerializer()
     
     class Meta:
         model = Article
