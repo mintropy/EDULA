@@ -1,14 +1,5 @@
 import axios from 'axios';
-
-const BASE_URL = `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}/api`;
-
-const setToken = () => {
-	const token = localStorage.getItem('access') || ``;
-	const config = {
-		Authorization: `JWT ${token}`,
-	};
-	return config;
-};
+import { BASE_URL, setToken } from './utils';
 
 export const apiLogin = (userId: string, password: string) =>
 	axios({
@@ -112,5 +103,43 @@ export const apiPutTeacherInfo = (teacherId: string, user: object) =>
 		},
 		data: {
 			user,
+		},
+	});
+
+export const apiChangePassword = (
+	oldPassword: string,
+	newPassword: string,
+	newPasswordConfirmation: string
+) =>
+	axios({
+		method: 'put',
+		url: `${BASE_URL}/accounts/password/change/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			oldPassword,
+			newPassword,
+			newPasswordConfirmation,
+		},
+	});
+
+export const apiResetPassword = (userId: string, email: string) =>
+	axios({
+		method: 'put',
+		url: `${BASE_URL}/accounts/password/reset/`,
+		data: {
+			username: userId,
+			email,
+		},
+	});
+
+export const apiFindId = (name: string, email: string) =>
+	axios({
+		method: 'post',
+		url: `${BASE_URL}/accounts/username/find/`,
+		data: {
+			firstName: name,
+			email,
 		},
 	});
