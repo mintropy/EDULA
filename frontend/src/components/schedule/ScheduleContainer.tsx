@@ -25,18 +25,29 @@ interface ScheduleDataType {
 		count: number;
 		lectures: {
 			day: string;
-			startAt: string;
-			endAt: string;
+			st: string;
+			end: string;
 		}[];
 	};
 	school: number;
 	teacher: number;
 	studentList: number[];
 }
+
+interface ScheduleItemDataType {
+	id: number;
+	name: string;
+	time: {
+		day: string;
+		st: string;
+		end: string;
+	};
+}
+
 interface ScheduleItemProps {
 	day: string;
-	startAt: string;
-	endAt: string;
+	st: string;
+	end: string;
 }
 
 function ScheduleContainer() {
@@ -47,7 +58,7 @@ function ScheduleContainer() {
 
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
-	const [scheduleData, setScheduleData] = useState([{} as ScheduleDataType]);
+	const [scheduleData, setScheduleData] = useState([{} as ScheduleItemDataType]);
 
 	useEffect(() => {
 		switch (dayIdx) {
@@ -95,11 +106,19 @@ function ScheduleContainer() {
 			switch (userStat) {
 				case 'ST':
 					apiGetStudentLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleDataType[];
+						const dayLectureData = [] as ScheduleItemDataType[];
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {
-									dayLectureData.push(lecture);
+									dayLectureData.push({
+										id: lecture.id,
+										name: lecture.name,
+										time: {
+											day: idx.day,
+											st: idx.st,
+											end: idx.end,
+										},
+									});
 								}
 							});
 						});
@@ -109,11 +128,19 @@ function ScheduleContainer() {
 
 				case 'TE':
 					apiGetTeacherLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleDataType[];
+						const dayLectureData = [] as ScheduleItemDataType[];
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {
-									dayLectureData.push(lecture);
+									dayLectureData.push({
+										id: lecture.id,
+										name: lecture.name,
+										time: {
+											day: idx.day,
+											st: idx.st,
+											end: idx.end,
+										},
+									});
 								}
 							});
 						});
@@ -132,15 +159,13 @@ function ScheduleContainer() {
 			<StyledContainer>
 				<ScheduleDate />
 
-				{scheduleData.map(sub => (
+				{scheduleData.map((sub) => (
 					<ScheduleItem
 						key={sub.id}
 						id={sub.id}
 						name={sub.name}
-						startAt='11'
-						endAt='12'
-						// startAt={sub.timeList.lectures[0].st || '미정'}
-						// endAt={sub.timeList.lectures[0].end || '미정'}
+						startAt={sub.time?.st}
+						endAt={sub.time?.end}
 					/>
 				))}
 			</StyledContainer>
