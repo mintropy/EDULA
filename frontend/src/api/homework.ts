@@ -13,7 +13,7 @@ const setToken = () => {
 export const apiGetHomeworks = (lectureId: number) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${lectureId}/homework/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/`,
 		headers: {
 			...setToken(),
 		},
@@ -22,7 +22,7 @@ export const apiGetHomeworks = (lectureId: number) =>
 export const apiGetHomeworkDetail = (lectureId: number, homeworkId: number) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
 		},
@@ -36,7 +36,7 @@ export const apiPostHomework = (
 ) =>
 	axios({
 		method: 'post',
-		url: `${BASE_URL}/schools/${lectureId}/homework/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/`,
 		headers: {
 			...setToken(),
 		},
@@ -56,7 +56,7 @@ export const apiUpdateHomework = (
 ) =>
 	axios({
 		method: 'put',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
 		},
@@ -70,7 +70,7 @@ export const apiUpdateHomework = (
 export const apiDeleteHomework = (lectureId: number, homeworkId: number) =>
 	axios({
 		method: 'delete',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
 		},
