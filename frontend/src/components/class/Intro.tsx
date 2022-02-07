@@ -18,12 +18,16 @@ const StyledIntro = styled.div`
 	width: 100%;
 	height: 10em;
 `;
-function Intro() {
-	const [title] = useState('서양사');
+interface IntroProps {
+	id: number;
+	name: string;
+}
+
+function Intro({ id, name }: IntroProps) {
 	return (
 		<>
 			<StyledIntro>
-				<StyledTitle>{title}</StyledTitle>
+				<StyledTitle>{name}</StyledTitle>
 			</StyledIntro>
 			;
 		</>

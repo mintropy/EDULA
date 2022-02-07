@@ -1,21 +1,25 @@
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
-import routes from '../../routes';
+import { apiPostHomework, apiUpdateHomework } from '../../api/homework';
 
 type ArticleInput = {
 	title: string;
 	content: string;
+	deadline: string;
 };
 
 interface InnerProps {
+	type: string;
 	originTitle: string;
 	originContent: string;
+	originDeadline: string;
 }
 
 function Form(props: InnerProps) {
-	const { originTitle, originContent } = props;
+	const { lectureId, articleId } = useParams();
+	const { type, originTitle, originContent, originDeadline } = props;
 	const {
 		register,
 		handleSubmit,
@@ -27,13 +31,44 @@ function Form(props: InnerProps) {
 
 	const navigate = useNavigate();
 
-	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
-		// 글쓰기 로직
-		// const { title, content } = getValues();
-		try {
-			navigate(routes.main);
-		} catch (error) {
-			// console.log(error);
+	const onValidCreate: SubmitHandler<ArticleInput> = async () => {
+		const { title, content, deadline } = getValues();
+
+		if (lectureId) {
+			try {
+				await apiPostHomework(parseInt(lectureId, 10), title, content, deadline)
+					.then(() => {})
+					.catch(() => {
+						// console.log(err);
+					});
+				// 해당 클래스 숫자!!
+				navigate(`/lecture/${lectureId}`);
+			} catch (error) {
+				// console.log(error);
+			}
+		}
+	};
+
+	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
+		const { title, content, deadline } = getValues();
+
+		if (articleId) {
+			try {
+				await apiUpdateHomework(
+					1,
+					parseInt(articleId, 10),
+					title,
+					content,
+					deadline
+				)
+					.then(() => {})
+					.catch(() => {
+						// console.log(err);
+					});
+				navigate(`/${lectureId}/article/${articleId}`);
+			} catch (error) {
+				// console.log(error);
+			}
 		}
 	};
 
@@ -42,7 +77,12 @@ function Form(props: InnerProps) {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+		<form
+			onSubmit={handleSubmit(
+				type === 'update' ? onValidUpdate : onValidCreate,
+				onInValidSubmit
+			)}
+		>
 			<FormInput htmlFor='title'>
 				<div>제목</div>
 				<input
@@ -82,7 +122,19 @@ function Form(props: InnerProps) {
 					defaultValue={originContent}
 				/>
 			</FormInput>
-			<FormBtn value='글쓰기' disabled={!isValid} />
+			<FormInput htmlFor='deadline'>
+				<div>마감일</div>
+				<input
+					{...register('deadline', {
+						required: '마감일을 정하세요.',
+					})}
+					type='datetime-local'
+					placeholder='deadline'
+					defaultValue={originDeadline}
+				/>
+			</FormInput>
+			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
+			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
 		</form>
 	);
 }

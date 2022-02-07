@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import routes from '../../routes';
 import StyledTitle from './StyledTitle';
 import StyledButton from './StyledButton';
@@ -21,42 +21,36 @@ const StyledLink = styled(Link)`
 	font-size: 1em;
 `;
 
-function Board() {
-	const [articles] = useState([
-		{
-			type: 'Q&A',
-			title: '다큐멘터리 소감문 과제',
-			content: '꼭 들어가야 하는 내용이 무엇인가요?',
-			author: '김하루',
-			deadline: '2021.1.7',
-			link: '',
-		},
-		{
-			type: '자유게시판',
-			title: '마야의 도시에 관한 재미있는 기사~~ ^^',
-			content:
-				'신문에서 재미있는 기사를 봐서 추천해! http://www.handmk.com/news/articleView.html?idxno=12000 ',
-			author: '서지산',
-			deadline: '2021.1.15',
-			link: '',
-		},
-	]);
+interface BoardProps {
+	articles: {
+		content: string;
+		createdAt: string;
+		deadline: string;
+		id: number;
+		lecture: number;
+		title: string;
+		writerName: string;
+		writerPk: number;
+	}[];
+}
+function Board({ articles }: BoardProps) {
+	const { lectureId } = useParams();
 
 	return (
 		<div>
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
-				{articles.map(article => (
-					<StyledLink to='/' key={article.title}>
-						<StyledListItem>
-							<p>{article.type}</p>
-							<h1>{article.title}</h1>
-							<p>{article.author}</p>
-						</StyledListItem>
-					</StyledLink>
-				))}
+				{articles &&
+					articles.map(article => (
+						<StyledLink to={`/${lectureId}/article/${article.id}`} key={article.id}>
+							<StyledListItem>
+								<h1>{article.title}</h1>
+								<p>{article.content}</p>
+							</StyledListItem>
+						</StyledLink>
+					))}
 			</ul>
-			<Link to={routes.createarticle}>
+			<Link to={`/${lectureId}/articleCreate`}>
 				<StyledButton>글쓰기</StyledButton>
 			</Link>
 		</div>

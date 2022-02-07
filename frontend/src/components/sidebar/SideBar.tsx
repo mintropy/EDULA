@@ -29,7 +29,7 @@ function SideBar() {
 			<StyledTitle>Side Navigation</StyledTitle>
 			<ul>
 				<StyledList>
-					<StyledLink to={routes.class}>시간표</StyledLink>
+					<StyledLink to={routes.schedule}>시간표</StyledLink>
 				</StyledList>
 				<StyledList>
 					<StyledLink to={routes.class}>과제 모음</StyledLink>
