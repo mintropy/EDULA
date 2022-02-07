@@ -1,129 +1,178 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+
+from rest_framework import status
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+
 from accounts.views.user import decode_JWT
-from . import swagger_schema
-from ..models import Homework
-from ..serializers import HomeworkSerializer
 from server import basic_swagger_schema
+from . import swagger_schema
+from ..models import Homework, HomeworkSubmission
+from ..serializers import HomeworkSerializer, HomeworkDetailSerializer
 
 
-class HomeworkView(APIView):
-    """Homework
+class HomeworkViewSet(ViewSet):
+    """About Homework
     
     """
     model = Homework
-    serializer_class = HomeworkSerializer
+    queryset = Homework.objects.all()
+    serializer_classes = {
+        'list': HomeworkSerializer,
+        'create': HomeworkSerializer,
+        'retrieve': HomeworkDetailSerializer,
+        'update': HomeworkDetailSerializer,
+        'destroy': HomeworkDetailSerializer,
+    }
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
+    
+    def get_serializer_class(self):
+        try:
+            return self.serializer_classes[self.action]
+        except:
+            return HomeworkSerializer
     
     @extend_schema(
         responses={
             200: OpenApiResponse(
                 response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkView']['get'][200],
-                examples=swagger_schema.examples['HomeworkView']['get'][200]
+                description=swagger_schema.descriptions['HomeworkViewSet']['list'][200],
+                examples=swagger_schema.examples['HomeworkViewSet']['homework_list'],
             ),
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
         },
-        description=swagger_schema.descriptions['HomeworkView']['get']['description'],
-        summary=swagger_schema.summaries['HomeworkView']['get'],
-        tags=['homework',],
+        description=swagger_schema.descriptions['HomeworkViewSet']['list']['description'],
+        summary=swagger_schema.summaries['HomeworkViewSet']['list'],
+        tags=['숙제',],
         examples=[
-            basic_swagger_schema.examples[401]
+            basic_swagger_schema.examples[401],
         ],
     )
-    def get(self, request,lecture_pk):
+    def list(self, request, lecture_pk):
         user = decode_JWT(request)
         if user == None:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        homeworks = Homework.objects.filter(lecture_id=lecture_pk)
-        serializer = HomeworkSerializer(homeworks, many=True)  
-        return Response(serializer.data)
+        homeworks = Homework.objects.filter(lecture_id=lecture_pk)\
+            .prefetch_related('submission')
+        if user.status == 'ST':
+            data = {
+                'homework_count': homeworks.count(),
+                'homework': [
+                    {
+                        'id': homework.pk,
+                        'title': homework.title,
+                        'content': homework.content,
+                        'created_at': homework.created_at,
+                        'deadline': homework.deadline,
+                        'writer': {
+                            'id': homework.writer.pk,
+                            'username': homework.writer.username,
+                        },
+                        'lecture': homework.lecture.pk,
+                        'submission': homework.submission.filter(writer=user.pk).exists(),
+                    } for homework in homeworks
+                ],
+            }
+            return Response(
+                data,
+                status=status.HTTP_200_OK,
+            )
+        elif user.status in ['TE', 'SA']:
+            data = {
+                'homework_count': homeworks.count(),
+                'homework': [
+                    {
+                        'id': homework.pk,
+                        'title': homework.title,
+                        'content': homework.content,
+                        'created_at': homework.created_at,
+                        'deadline': homework.deadline,
+                        'writer': {
+                            'id': homework.writer.pk,
+                            'username': homework.writer.username,
+                        },
+                        'lecture': homework.lecture.pk,
+                        'submission_list': [
+                            {
+                                'id': submission.writer.pk,
+                                'username': submission.writer.username,
+                            }
+                            for submission in homework.submission.all()
+                        ],
+                    } for homework in homeworks
+                ],
+            }
+            return Response(
+                data,
+                status=status.HTTP_200_OK,
+            )
     
     @extend_schema(
         responses={
             201: OpenApiResponse(
                 response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkView']['post'][201],
-                examples=swagger_schema.examples['HomeworkView']['post'][201]
+                description=swagger_schema.descriptions['HomeworkViewSet']['create'][201],
+                examples=swagger_schema.examples['HomeworkViewSet']['create'][201],
             ),
             400: basic_swagger_schema.open_api_response[400],
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
         },
-        description=swagger_schema.descriptions['HomeworkView']['post']['description'],
-        summary=swagger_schema.summaries['HomeworkView']['post'],
-        tags=['homework',],
+        description=swagger_schema.descriptions['HomeworkViewSet']['create']['description'],
+        summary=swagger_schema.summaries['HomeworkViewSet']['create'],
+        tags=['숙제',],
         examples=[
-            swagger_schema.examples['HomeworkView']['post']['input'],
             basic_swagger_schema.examples[400],
-            basic_swagger_schema.examples[401]
-        ],
+            basic_swagger_schema.examples[401],
+            *swagger_schema.examples['HomeworkViewSet']['create']['request']
+        ]
     )
-    def post(self,request,lecture_pk):
+    def create(self, request, lecture_pk):
         user = decode_JWT(request)
-        if user == None:
+        if user == None or user.status == 'ST':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         data = request.data
         new_data = {
-            "title": data.get('title'),
-            "content": data.get('content'),
-            "deadline": data.get('deadline'),
-            "writer_pk": user.pk,
-            "writer_name": user.username,
-            "lecture":lecture_pk
+            'title': data.get('title'),
+            'content': data.get('content'),
+            'deadline': data.get('deadline'),
+            'writer': user.pk,
+            'lecture':lecture_pk,
         }
         serializer = HomeworkSerializer(data=new_data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
-    
-class HomeworkDetailView(APIView):
-    """Homework detail
-    
-    """
-    model = Homework
-    serializer_class = HomeworkSerializer
-    renderer_classes = [CamelCaseJSONRenderer]
-    parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
         responses={
             200: OpenApiResponse(
-                response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkDetailView']['get'][200],
-                examples=swagger_schema.examples['HomeworkDetailView']['get'][200]
+                response=HomeworkDetailSerializer,
+                description=swagger_schema.descriptions['HomeworkViewSet']['retrieve'][200],
+                examples=swagger_schema.examples['HomeworkViewSet']['homework_detail']
             ),
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
         },
-        description=swagger_schema.descriptions['HomeworkDetailView']['get']['description'],
-        summary=swagger_schema.summaries['HomeworkDetailView']['get'],
-        tags=['homework',],
+        description=swagger_schema.descriptions['HomeworkViewSet']['retrieve']['description'],
+        summary=swagger_schema.summaries['HomeworkViewSet']['retrieve'],
+        tags=['숙제',],
         examples=[
-            basic_swagger_schema.examples[401]
+            basic_swagger_schema.examples[401],
         ],
     )
-    def get(self, request, lecture_pk, homework_pk):
-        """Get homework information
-        
-        Use homework_pk and lecture_pk, return homework of lecture infromation
-        """
+    def retrieve(self, request, lecture_pk, homework_pk):
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -131,67 +180,74 @@ class HomeworkDetailView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
-        serializer = HomeworkSerializer(homework)
-        return Response(serializer.data)
+        serializer = HomeworkDetailSerializer(homework)
+        return Response(
+            serializer.data,
+        )
     
     @extend_schema(
         responses={
             201: OpenApiResponse(
-                response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkDetailView']['put'][201],
+                response=HomeworkDetailSerializer,
+                description=swagger_schema.descriptions['HomeworkViewSet']['update'][201],
+                examples=swagger_schema.examples['HomeworkViewSet']['update'][201],
             ),
             400: basic_swagger_schema.open_api_response[400],
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
         },
-        description=swagger_schema.descriptions['HomeworkDetailView']['put']['description'],
-        summary=swagger_schema.summaries['HomeworkDetailView']['put'],
-        tags=['homework',],
+        description=swagger_schema.descriptions['HomeworkViewSet']['update']['description'],
+        summary=swagger_schema.summaries['HomeworkViewSet']['update'],
+        tags=['숙제',],
         examples=[
-            swagger_schema.examples['HomeworkDetailView']['put']['input'],
             basic_swagger_schema.examples[400],
-            basic_swagger_schema.examples[401]
-        ],
+            basic_swagger_schema.examples[401],
+            *swagger_schema.examples['HomeworkViewSet']['create']['request'],
+        ]
     )
-    def put(self, request, lecture_pk, homework_pk):
-        """Put homework information
-        
-        Update homework infromation
-        """
+    def update(self, request, lecture_pk, homework_pk):
         user = decode_JWT(request)
-        if user == None:
+        if user == None or user.status == 'ST':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
-        serializer = HomeworkSerializer(instance=homework, data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        data = {
+            'title': request.data.get('title', homework.title),
+            'content': request.data.get('content', homework.content),
+            'deadline': request.data.get('deadline', homework.deadline),
+            'writer': request.data.get('writer', user.pk),
+            'lecture': lecture_pk,
+        }
+        serializer = HomeworkSerializer(instance=homework, data=data)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    
     @extend_schema(
         responses={
-            204: OpenApiResponse(
-                response=HomeworkSerializer,
-                description=swagger_schema.descriptions['HomeworkDetailView']['delete'][204],
-                examples=swagger_schema.examples['HomeworkDetailView']['delete'][204],
+            200: OpenApiResponse(
+                response=HomeworkDetailSerializer,
+                description=swagger_schema.descriptions['HomeworkViewSet']['destroy'][200],
+                examples=swagger_schema.examples['HomeworkViewSet']['destroy'][200],
             ),
             401: basic_swagger_schema.open_api_response[401],
-            404: basic_swagger_schema.open_api_response[404]
+            404: basic_swagger_schema.open_api_response[404],
         },
-        description=swagger_schema.descriptions['HomeworkDetailView']['delete']['description'],
-        summary=swagger_schema.summaries['HomeworkDetailView']['delete'],
-        tags=['homework',],
+        description=swagger_schema.descriptions['HomeworkViewSet']['destroy']['description'],
+        summary=swagger_schema.summaries['HomeworkViewSet']['destroy'],
+        tags=['숙제',],
         examples=[
             basic_swagger_schema.examples[401],
-            basic_swagger_schema.examples[404]
-        ],
+            basic_swagger_schema.examples[404],
+        ]
     )
-    def delete(self, request, lecture_pk, homework_pk):
-        """Delete homework information
-        
-        Delete homework information
-        """
+    def destroy(self, request, lecture_pk, homework_pk):
         user = decode_JWT(request)
         if user == None:
             return Response(
@@ -200,4 +256,7 @@ class HomeworkDetailView(APIView):
             )
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
         homework.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'OK': 'No Content'},
+            status=status.HTTP_200_OK
+        )

@@ -50,6 +50,9 @@ class Lecture(models.Model):
         'accounts.Student',
         related_name="lecture_list",
     )
+    
+    def __str__(self):
+        return f'{self.school} {self.name}'
 
 
 class Homework(models.Model):
@@ -57,19 +60,66 @@ class Homework(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField()
-    writer_pk = models.IntegerField(
-        null=True,
-        blank=True
-    )
-    writer_name = models.CharField(
-        max_length=10,
-        null=True,
-        blank=True
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='homework_list',
+        on_delete=models.CASCADE,
     )
     lecture = models.ForeignKey(
         Lecture,
         related_name="homework_list",
         on_delete=models.CASCADE,
+    )
+    
+    def __str__(self):
+        return self.title
+
+
+class HomeworkSubmission(models.Model):
+    def homework_submission_path(instance, filename):
+        return f'submission/{instance.homework.title}/{instance.writer.username}/{filename}'
+    
+    homework = models.ForeignKey(
+        Homework,
+        related_name='submission',
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=20)
+    content = models.TextField()
+    creted_at = models.DateTimeField(auto_now_add=True)
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='homework_submission_list',
+        on_delete=models.CASCADE,
+    )
+    file = models.FileField(
+        upload_to=homework_submission_path,
         null=True,
         blank=True,
     )
+    
+    def __str__(self):
+        return f'{self.homework} : {self.title}'
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=20)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    notice = models.BooleanField(
+        default=False,
+    )
+    writer = models.ForeignKey(
+        'accounts.User',
+        related_name='article_list',
+        on_delete=models.CASCADE,
+    )
+    lecture = models.ForeignKey(
+        Lecture,
+        related_name="article_list",
+        on_delete=models.CASCADE,
+    )
+    
+    def __str__(self):
+        return self.title

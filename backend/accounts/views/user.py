@@ -153,7 +153,7 @@ class UserView(APIView):
         },
         description=swagger_schema.descriptions['UserView']['get']['description'],
         summary=swagger_schema.summaries['UserView']['get'],
-        tags=['user',],
+        tags=['유저',],
         examples=[
             basic_swagger_schema.examples[401],
         ],
@@ -166,6 +166,49 @@ class UserView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         serializer = UserBasicSerializer(user)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class UserSpecifyingView(APIView):
+    """User specifying
+    
+    search about user's id | username | first_name | status
+    """
+    model = User
+    serializer_class = UserBasicSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=UserBasicSerializer,
+                description=swagger_schema.descriptions['UserSpecifyingView']['get'][200],
+                examples=swagger_schema.examples['UserSpecifyingView']['get'][200]
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['UserSpecifyingView']['get']['description'],
+        summary=swagger_schema.summaries['UserSpecifyingView']['get'],
+        tags=['유저',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ],
+    )
+    def get(self, request, user_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        requset_user = get_object_or_404(User, pk=user_pk)
+        serializer = UserBasicSerializer(requset_user)
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
@@ -244,49 +287,6 @@ class UserCUDView(APIView):
         )
 
 
-class UserSpecifyingView(APIView):
-    """User specifying
-    
-    search about user's id | username | first_name | status
-    """
-    model = User
-    serializer_class = UserBasicSerializer
-    renderer_classes = [CamelCaseJSONRenderer]
-    parser_classes = [CamelCaseJSONParser]
-    
-    @extend_schema(
-        responses={
-            200: OpenApiResponse(
-                response=UserBasicSerializer,
-                description=swagger_schema.descriptions['UserSpecifyingView']['get'][200],
-                examples=swagger_schema.examples['UserSpecifyingView']['get'][200]
-            ),
-            401: basic_swagger_schema.open_api_response[401],
-            404: basic_swagger_schema.open_api_response[404],
-        },
-        description=swagger_schema.descriptions['UserSpecifyingView']['get']['description'],
-        summary=swagger_schema.summaries['UserSpecifyingView']['get'],
-        tags=['user'],
-        examples=[
-            basic_swagger_schema.examples[401],
-            basic_swagger_schema.examples[404],
-        ],
-    )
-    def get(self, request, user_pk):
-        user = decode_JWT(request)
-        if user == None:
-            return Response(
-                {'error': 'Unauthorized'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        requset_user = get_object_or_404(User, pk=user_pk)
-        serializer = UserBasicSerializer(requset_user)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-
-
 class FindUsernameView(APIView):
     """Find username
     
@@ -310,7 +310,7 @@ class FindUsernameView(APIView):
         },
         description=swagger_schema.descriptions['FindUsernameView']['post']['description'],
         summary=swagger_schema.summaries['FindUsernameView']['post'],
-        tags=['user', 'user information'],
+        tags=['유저',],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
@@ -370,7 +370,7 @@ class PasswordChangeView(APIView):
         },
         description=swagger_schema.descriptions['PasswordChangeView']['put']['description'],
         summary=swagger_schema.summaries['PasswordChangeView']['put'],
-        tags=['user', 'user information',],
+        tags=['유저',],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
@@ -440,7 +440,7 @@ class PasswordResetView(APIView):
         },
         description=swagger_schema.descriptions['PasswordResetView']['put']['description'],
         summary=swagger_schema.summaries['PasswordResetView']['put'],
-        tags=['user', 'user information'],
+        tags=['유저',],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],
