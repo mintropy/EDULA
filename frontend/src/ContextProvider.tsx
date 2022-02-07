@@ -90,7 +90,7 @@ function ContextProvider({ children }: PropType) {
 		} catch (error) {
 			logout();
 		}
-	}, []);
+	}
 
 	const themeValues = useMemo(
 		() => ({ theme: mainTheme, changeTheme }),
