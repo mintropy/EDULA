@@ -74,10 +74,11 @@ urlpatterns = [
                         'homework/<int:homework_pk>/submission/<int:user_pk>/', 
                         homework_submission_detail
                     ),
+                    # 게시판
+                    path('article/', article_list),
+                    path('article/<int:article_pk>/', article_detail),
                 ]),
             ),
-            path('article/', article_list),
-            path('article/<int:article_pk>/', article_detail),
         ]),
     ),
 ]

@@ -5,6 +5,7 @@ from . models import (
     Homework, HomeworkSubmission,
     Article
 )
+from accounts.serializers.user import UserBasicSerializer
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -51,6 +52,16 @@ class HomeworkDetailSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    
+    
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+    writer = UserBasicSerializer()
+    lecture = LectureSerializer()
     
     class Meta:
         model = Article

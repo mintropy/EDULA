@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
+from django import forms
 
 from .models import (
     School, Classroom, Lecture, 
@@ -38,16 +39,33 @@ class CustomSchoolAdmin(ModelAdmin):
     def student(self, school):
         return f'{school.student_list.count()}명'
 
-admin.site.register(Classroom)
+
+@admin.register(Classroom)
+class ClassroomAdmin(ModelAdmin):
+    list_display = ('id', 'classroom_name', 'school_detail',)
+    list_display_links = ('classroom_name',)
+    list_filter = ('school',)
+    inlines = [
+        TeacherInline, StudentInline
+    ]
+    
+    def classroom_name(self, classroom):
+        return f'{classroom.class_grade}학년 {classroom.class_num}반'
+    
+    def school_detail(self, classroom):
+        return f'id : {classroom.school.pk} / name: {classroom.school}'
+
 
 @admin.register(Lecture)
 class LectureAdmin(ModelAdmin):
-    list_display = ('id', 'name', 'school', 'teacher', 'student')
+    list_display = ('id', 'name', 'school_detail', 'teacher', 'student')
     list_display_links = ('name',)
     
     def student(self, lecture):
         return f'{lecture.student_list.count()}명'
-
+    
+    def school_detail(self, classroom):
+        return f'id : {classroom.school.pk} / name: {classroom.school}'
 
 @admin.register(Homework)
 class HomeworkAdmin(ModelAdmin):
@@ -69,7 +87,7 @@ class HomeworkSubmissionAdmin(ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin):
-    list_display = ('id', 'title', 'writer', 'notice',)
+    list_display = ('id', 'title', 'lecture', 'writer', 'notice',)
     list_display_links = ('title',)
     
     @admin.display(
