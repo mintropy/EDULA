@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Board from '../components/class/Board';
@@ -6,6 +6,7 @@ import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
+import UserContext from '../context/user';
 
 const StyledContainer = styled.section`
 	display: grid;
@@ -55,14 +56,16 @@ const StyledHomeworkViewer = styled(HomeworkViewer)`
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
+	const { schoolId } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	useEffect(() => {
 		if (lectureId) {
-			// 학교 pk로 바꾸기!!
-			apiGetLectureDetail(1, parseInt(lectureId, 10)).then(res => {
-				setLectureData(res.data);
-			});
+			apiGetLectureDetail(parseInt(schoolId, 10), parseInt(lectureId, 10)).then(
+				res => {
+					setLectureData(res.data);
+				}
+			);
 		}
 	}, []);
 

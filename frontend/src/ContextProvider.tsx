@@ -1,6 +1,13 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { apiCheckRefreshToken, apiDecodeToken } from './api/user';
+import {
+	apiCheckRefreshToken,
+	apiDecodeToken,
+	apiGetAdminInfo,
+	apiGetStudentInfo,
+	apiGetTeacherInfo,
+	apiGetUserStatus,
+} from './api/user';
 import ThemeContext from './context/theme';
 import UserContext from './context/user';
 import theme, { ThemeType } from './styles/theme';
@@ -17,6 +24,7 @@ function ContextProvider({ children }: PropType) {
 	const [isLoggedIn, setIsLoggedIn] = useState(storedIsLoggedIn);
 	const [userId, setUserId] = useState('');
 	const [userStat, setUserStat] = useState('');
+	const [schoolId, setSchoolId] = useState('');
 
 	const changeTheme = (themename: string): void => {
 		setMainTheme((theme as any)[themename] || theme.base);
@@ -47,6 +55,28 @@ function ContextProvider({ children }: PropType) {
 		}
 	}, [isLoggedIn]);
 
+	useEffect(() => {
+		switch (userStat) {
+			case 'ST':
+				apiGetStudentInfo(userId || '').then(res => {
+					setSchoolId(res.data.school.id);
+				});
+				break;
+			case 'TE':
+				apiGetTeacherInfo(userId || '').then(res => {
+					setSchoolId(res.data.school.id);
+				});
+				break;
+			case 'SA':
+				apiGetAdminInfo(userId || '').then(res => {
+					setSchoolId(res.data.school.id);
+				});
+				break;
+			default:
+				break;
+		}
+	}, [userStat]);
+
 	const storedRefreshToken: string | null = localStorage.getItem('refresh');
 	if (typeof storedRefreshToken === 'string') {
 		try {
@@ -74,8 +104,9 @@ function ContextProvider({ children }: PropType) {
 			logout,
 			userId,
 			userStat,
+			schoolId,
 		}),
-		[isLoggedIn, login, logout, userId, userStat]
+		[isLoggedIn, login, logout, userId, userStat, schoolId]
 	);
 
 	return (

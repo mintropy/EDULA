@@ -6,6 +6,7 @@ const UserContext = createContext({
 	logout: () => {},
 	userId: '',
 	userStat: '',
+	schoolId: '',
 });
 
 export default UserContext;
