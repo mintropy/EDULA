@@ -49,7 +49,7 @@ class SchoolAdminView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         school_admin = get_object_or_404(SchoolAdmin, pk=school_admin_pk)
-        if user != school_admin:
+        if school_admin.user.pk != user.pk:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
