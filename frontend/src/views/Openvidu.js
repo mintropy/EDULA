@@ -277,7 +277,9 @@ class App extends Component {
 									`If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
 							)
 						) {
-							window.location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+							window.location.assign(
+								`${OPENVIDU_SERVER_URL}/openvidu/accept-certificate`
+							);
 						}
 					}
 				});
