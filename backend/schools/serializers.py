@@ -5,7 +5,23 @@ from . models import (
     Homework, HomeworkSubmission,
     Article
 )
+from accounts.models import Student, Teacher
 from accounts.serializers.user import UserBasicSerializer
+
+class StudentBasciSerializer(serializers.ModelSerializer):
+    user = UserBasicSerializer()
+    
+    class Meta:
+        model = Student
+        fields = ('user',)
+
+
+class TeacherBasicSerialzier(serializers.ModelSerializer):
+    user = UserBasicSerializer()
+    
+    class Meta:
+        model = Teacher
+        fields = ('user',)
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -16,6 +32,16 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class LectureSerializer(serializers.ModelSerializer):
+    teacher = TeacherBasicSerialzier(read_only=True)
+    
+    class Meta:
+        model = Lecture
+        fields = '__all__'
+
+
+class LectrueDetailSerializer(serializers.ModelSerializer):
+    student_list = StudentBasciSerializer(many=True)
+    teacher = TeacherBasicSerialzier()
     
     class Meta:
         model = Lecture

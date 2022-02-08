@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -36,13 +37,14 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'accounts',
     'schools',
-    
+
     'rest_framework',
     'django_extensions',
     'corsheaders',
     'rest_framework_simplejwt',
     'drf_spectacular',
-    
+    'silk',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -129,7 +132,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'django_static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -159,7 +162,6 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Edula API',
     'DESCRIPTION': 'Edula API page',
     'VERSION': '1.0.0',
-    
     # OTHER SETTINGS
     'SWAGGER_UI_SETTINGS': {
         'persistAuthorization': True,
@@ -167,8 +169,6 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),

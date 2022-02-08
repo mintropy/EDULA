@@ -6,6 +6,7 @@ from schools.serializers import (
     SchoolSerializer, LectureSerializer, ClassroomSerializer
 )
 
+
 class TeacherSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer()
     classroom = ClassroomSerializer(read_only=True)

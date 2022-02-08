@@ -3,39 +3,51 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 class School(models.Model):
+    """
+    School model
+    """
     name = models.CharField(max_length=40)
     abbreviation = models.CharField(
         max_length=10,
         unique=True,
     )
-    
+
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class Classroom(models.Model):
+    """
+    Classroom model
+    """
     class_grade = models.IntegerField(
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(6)
+            MaxValueValidator(6),
         ]
     )
     class_num = models.IntegerField()
     school = models.ForeignKey(
-        School, 
+        School,
         related_name="class_list",
         on_delete=models.CASCADE,
     )
-    
+
     def __str__(self):
         return f'{self.school} {self.class_grade}학년 {self.class_num}반'
 
 
 class Lecture(models.Model):
+    """
+    Lecture model
+    """
     name = models.CharField(max_length=10)
-    time_list = models.JSONField()
+    time_list = models.JSONField(
+        null=True,
+        blank=True,
+    )
     school = models.ForeignKey(
-        School, 
+        School,
         related_name="lecture_list",
         on_delete=models.CASCADE,
     )
@@ -50,12 +62,15 @@ class Lecture(models.Model):
         'accounts.Student',
         related_name="lecture_list",
     )
-    
+
     def __str__(self):
         return f'{self.school} {self.name}'
 
 
 class Homework(models.Model):
+    """
+    Homework model
+    """
     title = models.CharField(max_length=20)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -70,13 +85,19 @@ class Homework(models.Model):
         related_name="homework_list",
         on_delete=models.CASCADE,
     )
-    
+
     def __str__(self):
         return self.title
 
 
 class HomeworkSubmission(models.Model):
-    def homework_submission_path(instance, filename):
+    """
+    Homework submission model
+    """
+    def homework_submission_path(self, instance, filename):
+        """
+        Make homework submission media file path
+        """
         return f'submission/{instance.homework.title}/{instance.writer.username}/{filename}'
     
     homework = models.ForeignKey(
@@ -97,7 +118,7 @@ class HomeworkSubmission(models.Model):
         null=True,
         blank=True,
     )
-    
+
     def __str__(self):
         return f'{self.homework} : {self.title}'
 

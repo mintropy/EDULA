@@ -58,20 +58,26 @@ urlpatterns = [
     path(
         'lecture/', include([
             # 수업
-            path('', lecture.LectureView.as_view()),
+            path('',
+                lecture.LectureView.as_view(),
+                name='lecture_list',
+            ),
             path(
                 '<int:lecture_pk>/', include([
                     # 수업
-                    path('', lecture.LectureDetailView.as_view()),
+                    path('',
+                        lecture.LectureDetailView.as_view(),
+                        name='lecture_detail',
+                    ),
                     # 숙제
                     path('homework/', homework_list),
                     path('homework/<int:homework_pk>/', homework_detail),
                     path(
-                        'homework/<int:homework_pk>/submission/', 
+                        'homework/<int:homework_pk>/submission/',
                         homework_submission_list
                     ),
                     path(
-                        'homework/<int:homework_pk>/submission/<int:user_pk>/', 
+                        'homework/<int:homework_pk>/submission/<int:user_pk>/',
                         homework_submission_detail
                     ),
                     # 게시판
