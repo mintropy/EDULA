@@ -23,6 +23,7 @@ interface BoardProps {
 	homeworks: {
 		content: string;
 		createdAt: string;
+		deadline: string;
 		id: number;
 		lecture: number;
 		title: string;
@@ -31,20 +32,23 @@ interface BoardProps {
 }
 function HomeworkBoard({ homeworks }: BoardProps) {
 	const { lectureId } = useParams();
-
+	console.log(homeworks);
 	return (
 		<div>
 			<StyledTitle>과제</StyledTitle>
 			<ul>
-				{/* {homeworks &&
-					homeworks.map(article => (
-						<StyledLink to={`/${lectureId}/article/${article.id}`} key={article.id}>
+				{homeworks &&
+					homeworks?.map(homework => (
+						<StyledLink
+							to={`/${lectureId}/homework/${homework.id}`}
+							key={homework.id}
+						>
 							<StyledListItem>
-								<h1>{article.title}</h1>
-								<p>{article.content}</p>
+								<h1>{homework.title}</h1>
+								<p>{homework.deadline}</p>
 							</StyledListItem>
 						</StyledLink>
-					))} */}
+					))}
 			</ul>
 			<Link to={`/${lectureId}/homeworkCreate`}>
 				<StyledButton>글쓰기</StyledButton>

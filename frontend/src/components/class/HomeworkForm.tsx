@@ -52,9 +52,9 @@ function HomeworkForm(props: InnerProps) {
 	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
 		const { title, content, deadline } = getValues();
 
-		if (articleId) {
+		if (articleId && lectureId) {
 			try {
-				await apiUpdateHomework('1', articleId, title, content, deadline)
+				await apiUpdateHomework(lectureId, articleId, title, content, deadline)
 					.then(() => {})
 					.catch(() => {
 						// console.log(err);

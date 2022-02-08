@@ -11,7 +11,7 @@ const setToken = () => {
 	return config;
 };
 
-export const apiGetLectures = (schoolId: number) =>
+export const apiGetLectures = (schoolId: string) =>
 	axios({
 		method: 'get',
 		url: `${BASE_URL}/schools/lecture/`,
@@ -20,7 +20,7 @@ export const apiGetLectures = (schoolId: number) =>
 		},
 	});
 
-export const apiGetLectureDetail = (schoolId: number, lectureId: number) =>
+export const apiGetLectureDetail = (schoolId: string, lectureId: string) =>
 	axios({
 		method: 'get',
 		url: `${BASE_URL}/schools/lecture/${lectureId}/`,

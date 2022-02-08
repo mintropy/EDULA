@@ -75,29 +75,31 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetLectureDetail(parseInt(schoolId, 10), parseInt(lectureId, 10)).then(
-				res => {
-					setLectureData(res.data);
-				}
-			);
+			apiGetLectureDetail(schoolId, lectureId).then(res => {
+				setLectureData(res.data);
+			});
 		}
 	}, []);
 
 	useEffect(() => {
 		if (lectureId) {
 			apiGetHomeworks(lectureId).then(res => {
-				setHomeworkData(res.data);
+				setHomeworkData(res.data.homework);
 			});
 		}
 	}, []);
 
-	useEffect(() => {
+	const getArticles = () => {
 		if (lectureId) {
 			apiGetArticles(lectureId).then(res => {
 				setArticleData(res.data.result);
 			});
 		}
-	}, []);
+	};
+
+	useEffect(() => {
+		getArticles();
+	}, [articleData]);
 
 	if (lectureData) {
 		return (

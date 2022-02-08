@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Form from '../components/class/ArticleForm';
+import HomeworkForm from '../components/class/HomeworkForm';
 import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
@@ -9,9 +9,14 @@ const StyledContainer = styled.div`
 function CreateHomework() {
 	return (
 		<div>
-			<StyledTitle>게시물 쓰기</StyledTitle>
+			<StyledTitle>과제 만들기 📑</StyledTitle>
 			<StyledContainer>
-				<Form type='new' originTitle='' originContent='' originNotice={false} />
+				<HomeworkForm
+					type='new'
+					originTitle=''
+					originContent=''
+					originDeadline=''
+				/>
 			</StyledContainer>
 		</div>
 	);

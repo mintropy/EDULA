@@ -12,34 +12,31 @@ interface HomeworkDataType {
 	id: number;
 	lecture: number;
 	title: string;
-	writerName: string;
-	writerPk: number;
+	writer: number;
 }
 
 function HomeworkDetail() {
-	const { lectureId, articleId } = useParams();
+	const { lectureId, homeworkId } = useParams();
 	const navigate = useNavigate();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
-	if (articleId && lectureId) {
+	if (homeworkId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(lectureId, articleId).then(res => {
+			apiGetHomeworkDetail(lectureId, homeworkId).then(res => {
 				setHomeworkData(res.data);
 			});
-		}, [articleId]);
+		}, []);
 	}
 
-	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
+	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록. 삭제 함수 따로 위로 빼기
 
 	return (
 		<div>
 			<StyledTitle>{homeworkData.title}</StyledTitle>
-			<StyledContent>
-				{homeworkData.writerName} / {homeworkData.deadline}
-			</StyledContent>
+			<StyledContent>마감 기한: {homeworkData.deadline}</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
-			<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
+			<Link to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
 				<StyledButton>수정</StyledButton>
 			</Link>
 			<input
@@ -47,9 +44,9 @@ function HomeworkDetail() {
 				value='삭제'
 				onClick={e => {
 					e.preventDefault();
-					if (articleId && lectureId) {
+					if (lectureId && homeworkId) {
 						try {
-							apiDeleteHomework(lectureId, articleId)
+							apiDeleteHomework(lectureId, homeworkId)
 								.then(res => {})
 								.catch(err => {
 									// console.log(err);
