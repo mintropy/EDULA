@@ -25,12 +25,9 @@ interface IntroProps {
 
 function Intro({ id, name }: IntroProps) {
 	return (
-		<>
-			<StyledIntro>
-				<StyledTitle>{name}</StyledTitle>
-			</StyledIntro>
-			;
-		</>
+		<StyledIntro>
+			<StyledTitle>{name}</StyledTitle>
+		</StyledIntro>
 	);
 }
 
