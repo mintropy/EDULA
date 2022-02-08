@@ -18,5 +18,7 @@ deploy:
   script:
     - docker-compose up -d
     - cp -r ~/cert ./docker/nginx
+    - cp -r /opt/openvidu/owncert ./owncert
+    - openvidu/openvidu start
   tags:
     - first
