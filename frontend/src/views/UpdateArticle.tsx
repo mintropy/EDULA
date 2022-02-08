@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
-import Form from '../components/class/ArticleForm';
+import ArticleForm from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetArticleDetail } from '../api/article';
 
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
+
 interface ArticleDataType {
 	content: string;
 	createdAt: string;
@@ -15,8 +16,13 @@ interface ArticleDataType {
 	id: number;
 	lecture: number;
 	title: string;
-	writerName: string;
-	writerPk: number;
+	writer: {
+		id: number;
+		username: string;
+		firstName: string;
+		status: string;
+	};
+	updatedAt: string;
 }
 
 function UpdateArticle() {
@@ -36,7 +42,7 @@ function UpdateArticle() {
 		<div>
 			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
-				<Form
+				<ArticleForm
 					type='update'
 					originTitle={homeworkData.title}
 					originContent={homeworkData.content}

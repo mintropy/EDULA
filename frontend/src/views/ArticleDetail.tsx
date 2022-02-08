@@ -32,7 +32,7 @@ function ArticleDetail() {
 			apiGetArticleDetail(lectureId, articleId).then(res => {
 				setArticleData(res.data);
 			});
-		}, [articleId]);
+		}, []);
 	}
 
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록

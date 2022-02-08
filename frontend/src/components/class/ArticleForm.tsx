@@ -19,8 +19,8 @@ interface InnerProps {
 	originNotice: boolean;
 }
 
-function Form(props: InnerProps) {
-	const { userId: loggedInUserId } = useContext(UserContext);
+function ArticleForm(props: InnerProps) {
+	const { userId } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
 	const { type, originTitle, originContent, originNotice } = props;
 	const {
@@ -39,7 +39,14 @@ function Form(props: InnerProps) {
 
 		if (lectureId) {
 			try {
-				await apiPostArticle(lectureId, title, content, notice, '1', lectureId)
+				await apiPostArticle(
+					lectureId,
+					title,
+					content,
+					notice,
+					userId.toString(),
+					lectureId
+				)
 					.then(() => {})
 					.catch(() => {
 						// console.log(err);
@@ -62,7 +69,7 @@ function Form(props: InnerProps) {
 					title,
 					content,
 					notice,
-					'1',
+					userId.toString(),
 					lectureId
 				)
 					.then(() => {})
@@ -128,13 +135,7 @@ function Form(props: InnerProps) {
 			</FormInput>
 			<FormInput htmlFor='notice'>
 				<div>공지 여부</div>
-				<input
-					{...register('notice', {
-						required: '공지 사항 여부를 정하세요.',
-					})}
-					type='checkbox'
-					placeholder='notice'
-				/>
+				<input {...register('notice', {})} type='checkbox' placeholder='notice' />
 			</FormInput>
 			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
 			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
@@ -142,4 +143,4 @@ function Form(props: InnerProps) {
 	);
 }
 
-export default Form;
+export default ArticleForm;
