@@ -18,7 +18,7 @@ interface InnerProps {
 }
 
 function HomeworkForm(props: InnerProps) {
-	const { lectureId, articleId } = useParams();
+	const { lectureId, homeworkId } = useParams();
 	const { type, originTitle, originContent, originDeadline } = props;
 	const {
 		register,
@@ -52,14 +52,13 @@ function HomeworkForm(props: InnerProps) {
 	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
 		const { title, content, deadline } = getValues();
 
-		if (articleId && lectureId) {
+		if (homeworkId && lectureId) {
+			console.log('업데이틍!!');
 			try {
-				await apiUpdateHomework(lectureId, articleId, title, content, deadline)
+				await apiUpdateHomework(lectureId, homeworkId, title, content, deadline)
 					.then(() => {})
-					.catch(() => {
-						// console.log(err);
-					});
-				navigate(`/${lectureId}/article/${articleId}`);
+					.catch(() => {});
+				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);
 			}

@@ -99,7 +99,7 @@ function Class() {
 
 	useEffect(() => {
 		getArticles();
-	}, [articleData]);
+	}, []);
 
 	if (lectureData) {
 		return (

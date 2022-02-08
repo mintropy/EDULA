@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetHomeworkDetail } from '../api/homework';
+import HomeworkForm from '../components/class/HomeworkForm';
 
 const StyledContainer = styled.div`
 	margin: 3em;
@@ -19,35 +20,32 @@ interface HomeworkDataType {
 }
 
 function UpdateHomework() {
-	const { lectureId, articleId } = useParams();
+	const { lectureId, homeworkId } = useParams();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
-	if (articleId && lectureId) {
+	if (homeworkId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(lectureId, articleId).then(
-				res => {
-					setHomeworkData(res.data);
-				}
-			);
-		}, [articleId]);
+			apiGetHomeworkDetail(lectureId, homeworkId).then(res => {
+				setHomeworkData(res.data);
+			});
+		}, [homeworkId]);
 	}
 
 	return (
 		<div>
-			{/* <StyledTitle>게시물 수정</StyledTitle>
+			<StyledTitle>과제 수정</StyledTitle>
 			<StyledContainer>
-				<Form
+				<HomeworkForm
 					type='update'
 					originTitle={homeworkData.title}
 					originContent={homeworkData.content}
 					originDeadline={homeworkData.deadline?.slice(
 						0,
-						homeworkData.deadline.length - 1
+						homeworkData.deadline.length
 					)}
 				/>
-			</StyledContainer> */}
-			수정
+			</StyledContainer>
 		</div>
 	);
 }
