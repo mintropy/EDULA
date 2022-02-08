@@ -13,6 +13,7 @@ const routes = {
 	createHomework: '/:lectureId/homeworkCreate',
 	updateHomework: '/:lectureId/homeworkUpdate/:homeworkId',
 	homeworkDetail: '/:lectureId/homework/:homeworkId',
+	homeworkSubmit: '/:lectureId/homework/:homeworkId/submit',
 	schedule: '/schedule',
 	// Admin Page
 	admin: '/manage',

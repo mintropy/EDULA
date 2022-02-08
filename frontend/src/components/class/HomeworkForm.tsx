@@ -53,7 +53,6 @@ function HomeworkForm(props: InnerProps) {
 		const { title, content, deadline } = getValues();
 
 		if (homeworkId && lectureId) {
-			console.log('업데이틍!!');
 			try {
 				await apiUpdateHomework(lectureId, homeworkId, title, content, deadline)
 					.then(() => {})

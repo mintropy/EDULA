@@ -25,6 +25,7 @@ import Schedule from './views/Schedule';
 import CreateHomework from './views/CreateHomework';
 import UpdateHomework from './views/UpdateHomework';
 import HomeworkDetail from './views/HomeworkDetail';
+import HomeworkSubmitForm from './views/HomeworkSubmitForm';
 
 function App() {
 	return (
@@ -47,6 +48,7 @@ function App() {
 						<Route path={routes.createHomework} element={<CreateHomework />} />
 						<Route path={routes.updateHomework} element={<UpdateHomework />} />
 						<Route path={routes.homeworkDetail} element={<HomeworkDetail />} />
+						<Route path={routes.homeworkSubmit} element={<HomeworkSubmitForm />} />
 						<Route path={routes.schedule} element={<Schedule />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />
