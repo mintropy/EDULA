@@ -34,7 +34,7 @@ class SchoolAdminView(APIView):
         },
         description=swagger_schema.descriptions['SchoolAdminView']['get']['description'],
         summary=swagger_schema.summaries['SchoolAdminView']['get'],
-        tags=['user', 'school admin'],
+        tags=['학교 관리자'],
         examples=[
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404],
@@ -49,7 +49,7 @@ class SchoolAdminView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         school_admin = get_object_or_404(SchoolAdmin, pk=school_admin_pk)
-        if user != school_admin:
+        if school_admin.user.pk != user.pk:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -69,7 +69,7 @@ class SchoolAdminView(APIView):
         },
         description=swagger_schema.descriptions['SchoolAdminView']['put']['description'],
         summary=swagger_schema.summaries['SchoolAdminView']['put'],
-        tags=['user', 'school admin'],
+        tags=['학교 관리자'],
         examples=[
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401],

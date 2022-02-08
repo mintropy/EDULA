@@ -32,10 +32,23 @@ urlpatterns = [
     path(base_api_url + api_version + 'accounts/', include('accounts.urls')),
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
     # JWT
-    path(base_api_url + api_version + 'token/', TokenObtainPairView.as_view()),
-    path(base_api_url + api_version + 'token/refresh/', TokenRefreshView.as_view()),
+    path(
+        base_api_url + api_version + 'token/',
+        TokenObtainPairView.as_view(),
+        name='JWT_login',
+    ),
+    path(
+        base_api_url + api_version + 'token/refresh/',
+        TokenRefreshView.as_view(),
+        name='JWT_refresch',
+    ),
     # swagger
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('swagger/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui'
+    ),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # silk
+    path('silk/', include('silk.urls', namespace='silk')),
 ]
