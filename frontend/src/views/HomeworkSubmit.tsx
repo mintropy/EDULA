@@ -26,7 +26,7 @@ interface submissionHomeworkData {
 }
 
 function HomeworkSubmit() {
-	const { userId, userStat } = useContext(UserContext);
+	const { userStat } = useContext(UserContext);
 	const { lectureId, homeworkId } = useParams();
 	const [submissionList, setSubmissionList] = useState(
 		[] as submissionHomeworkData[]
@@ -71,7 +71,7 @@ function HomeworkSubmit() {
 			<ul>
 				{submissionList &&
 					submissionList?.map(submission => (
-						<StyledListItem>
+						<StyledListItem key={submission.id}>
 							{submission.writer}: {submission.title}
 						</StyledListItem>
 					))}

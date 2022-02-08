@@ -32,7 +32,7 @@ interface BoardProps {
 }
 function HomeworkBoard({ homeworks }: BoardProps) {
 	const { lectureId } = useParams();
-	console.log(homeworks);
+
 	return (
 		<div>
 			<StyledTitle>과제</StyledTitle>

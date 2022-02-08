@@ -22,7 +22,7 @@ interface InnerProps {
 function ArticleForm(props: InnerProps) {
 	const { userId } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
-	const { type, originTitle, originContent, originNotice } = props;
+	const { type, originTitle, originContent } = props;
 	const {
 		register,
 		handleSubmit,
@@ -48,9 +48,7 @@ function ArticleForm(props: InnerProps) {
 					lectureId
 				)
 					.then(() => {})
-					.catch(() => {
-						// console.log(err);
-					});
+					.catch(() => {});
 				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);

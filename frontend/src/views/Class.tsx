@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
@@ -34,26 +33,7 @@ interface LectureDataType {
 	studentList: [number];
 }
 
-interface HomeworkDataType {
-	homeworks: {
-		content: string;
-		createdAt: string;
-		deadline: string;
-		id: number;
-		lecture: number;
-		title: string;
-		writerName: string;
-		writerPk: number;
-	}[];
-}
-
 const StyledIntro = styled(Intro)``;
-const StyledBoard = styled(ArticleBoard)`
-	grid-column: 2;
-`;
-const StyledHomeworkViewer = styled(HomeworkViewer)`
-	grid-column: 1;
-`;
 
 interface ArticleDataType {
 	content: string;
@@ -92,7 +72,7 @@ function Class() {
 	const getArticles = () => {
 		if (lectureId) {
 			apiGetArticles(lectureId).then(res => {
-				setArticleData(res.data.result);
+				setArticleData(res.data.articles);
 			});
 		}
 	};
