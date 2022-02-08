@@ -6,7 +6,7 @@ const StyledContainer = styled.div`
 	margin: 3em;
 `;
 
-function CreateArticle() {
+function CreateHomework() {
 	return (
 		<div>
 			<StyledTitle>게시물 쓰기</StyledTitle>
@@ -17,4 +17,4 @@ function CreateArticle() {
 	);
 }
 
-export default CreateArticle;
+export default CreateHomework;

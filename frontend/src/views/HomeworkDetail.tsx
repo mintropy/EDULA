@@ -17,22 +17,11 @@ interface HomeworkDataType {
 	writerPk: number;
 }
 
-interface ArticleDataType {
-	content: string;
-	createdAt: string;
-	notice: boolean;
-	id: number;
-	lecture: number;
-	title: string;
-	writer: number;
-}
-
 function ArticleDetail() {
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
 	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
-	const [articlekData, setArticleData] = useState({} as ArticleDataType);
 
 	if (articleId && lectureId) {
 		useEffect(() => {
@@ -42,12 +31,6 @@ function ArticleDetail() {
 				}
 			);
 		}, [articleId]);
-
-		useEffect(() => {
-			apiGetArticles(lectureId).then(res => {
-				setArticleData(res.data);
-			});
-		}, []);
 	}
 
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록

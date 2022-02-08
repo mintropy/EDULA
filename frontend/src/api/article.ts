@@ -51,7 +51,7 @@ export const apiPostArticle = (
 		},
 	});
 
-export const apiPutArticle = (
+export const apiUpdateArticle = (
 	lectureId: string,
 	articleId: string,
 	title: string,

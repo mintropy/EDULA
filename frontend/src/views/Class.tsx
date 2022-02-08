@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Board from '../components/class/Board';
 import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
 import UserContext from '../context/user';
+import { apiGetArticles } from '../api/article';
+import ArticleBoard from '../components/class/ArticleBoard';
 
 const StyledContainer = styled.section`
 	display: grid;
@@ -46,18 +47,30 @@ interface HomeworkDataType {
 }
 
 const StyledIntro = styled(Intro)``;
-const StyledBoard = styled(Board)`
+const StyledBoard = styled(ArticleBoard)`
 	grid-column: 2;
 `;
 const StyledHomeworkViewer = styled(HomeworkViewer)`
 	grid-column: 1;
 `;
 
+interface ArticleDataType {
+	content: string;
+	createdAt: string;
+	id: number;
+	lecture: number;
+	notice: boolean;
+	title: string;
+	writer: number;
+	updatedAt: string;
+}
+
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
 	const { schoolId } = useContext(UserContext);
 	const { lectureId } = useParams();
+	const [articleData, setArticleData] = useState([] as ArticleDataType[]);
 
 	useEffect(() => {
 		if (lectureId) {
@@ -77,13 +90,21 @@ function Class() {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (lectureId) {
+			apiGetArticles(lectureId).then(res => {
+				setArticleData(res.data.result);
+			});
+		}
+	}, []);
+
 	if (lectureData) {
 		return (
 			<>
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					<StyledHomeworkViewer />
-					{homeworkData && <StyledBoard articles={homeworkData} />}
+					{articleData && <ArticleBoard articles={articleData} />}
 				</StyledContainer>
 			</>
 		);

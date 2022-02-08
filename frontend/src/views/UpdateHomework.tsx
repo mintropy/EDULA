@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import Form from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
-import { apiGetArticleDetail } from '../api/article';
+import { apiGetHomeworkDetail } from '../api/homework';
 
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
-interface ArticleDataType {
+interface HomeworkDataType {
 	content: string;
 	createdAt: string;
-	notice: boolean;
+	deadline: string;
 	id: number;
 	lecture: number;
 	title: string;
@@ -19,32 +19,38 @@ interface ArticleDataType {
 	writerPk: number;
 }
 
-function UpdateArticle() {
+function UpdateHomework() {
 	const { lectureId, articleId } = useParams();
 
-	const [homeworkData, setHomeworkData] = useState({} as ArticleDataType);
+	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
 
 	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetArticleDetail(lectureId, articleId).then(res => {
-				setHomeworkData(res.data);
-			});
+			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
+				res => {
+					setHomeworkData(res.data);
+				}
+			);
 		}, [articleId]);
 	}
 
 	return (
 		<div>
-			<StyledTitle>게시물 수정</StyledTitle>
+			{/* <StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
 				<Form
 					type='update'
 					originTitle={homeworkData.title}
 					originContent={homeworkData.content}
-					originNotice={homeworkData.notice}
+					originDeadline={homeworkData.deadline?.slice(
+						0,
+						homeworkData.deadline.length - 1
+					)}
 				/>
-			</StyledContainer>
+			</StyledContainer> */}
+			수정
 		</div>
 	);
 }
 
-export default UpdateArticle;
+export default UpdateHomework;

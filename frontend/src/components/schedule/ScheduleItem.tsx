@@ -10,7 +10,7 @@ const StyledItem = styled.div`
 `;
 
 interface ScheduleItemProps {
-	id: number;
+	scheduleId: number;
 	name: string;
 	startAt: string;
 	endAt: string;
@@ -20,12 +20,13 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 `;
 
-function ScheduleItem({ id, name, startAt, endAt }: ScheduleItemProps) {
+function ScheduleItem({ scheduleId, name, startAt, endAt }: ScheduleItemProps) {
 	if (name) {
 		return (
-			<StyledLink key={id} to={`/lecture/${id}/`}>
+			<StyledLink to={`/lecture/${scheduleId}/`}>
 				<StyledItem>
-					{startAt} ~ {endAt} {name}
+					{startAt.slice(0, 2)}:{startAt.slice(2, 4)} ~ {endAt.slice(0, 2)}:
+					{endAt.slice(2, 4)}/ {name}
 				</StyledItem>
 			</StyledLink>
 		);

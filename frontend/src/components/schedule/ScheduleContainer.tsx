@@ -159,10 +159,10 @@ function ScheduleContainer() {
 			<StyledContainer>
 				<ScheduleDate />
 
-				{scheduleData.map((sub) => (
+				{scheduleData.map(sub => (
 					<ScheduleItem
 						key={sub.id}
-						id={sub.id}
+						scheduleId={sub.id}
 						name={sub.name}
 						startAt={sub.time?.st}
 						endAt={sub.time?.end}

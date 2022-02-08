@@ -12,7 +12,7 @@ import Login from './views/Login';
 import CreateArticle from './views/CreateArticle';
 import Findid from './views/Findid';
 import Findpw from './views/Findpw';
-import UpdateArticle from './views/UpdateArticle';
+import UpdateArticle from './views/UpdateHomework';
 import ArticleDetail from './views/ArticleDetail';
 import Home from './views/Home';
 import Admin from './views/admin/Admin';
