@@ -1,0 +1,18 @@
+import styled from 'styled-components';
+
+const STel = styled.div`
+	padding: 0.25em;
+	font-size: 1.1em;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+	width: 200px;
+	text-align: center;
+`;
+type PropType = {
+	value: string | number;
+};
+
+function Tel({ value }: PropType) {
+	return <STel>{value}</STel>;
+}
+
+export default Tel;

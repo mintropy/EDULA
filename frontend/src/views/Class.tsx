@@ -61,11 +61,9 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetLectureDetail(parseInt(schoolId, 10), parseInt(lectureId, 10)).then(
-				res => {
-					setLectureData(res.data);
-				}
-			);
+			apiGetLectureDetail(schoolId, lectureId).then(res => {
+				setLectureData(res.data);
+			});
 		}
 	}, []);
 
