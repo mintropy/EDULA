@@ -25,7 +25,7 @@ import Schedule from './views/Schedule';
 import CreateHomework from './views/CreateHomework';
 import UpdateHomework from './views/UpdateHomework';
 import HomeworkDetail from './views/HomeworkDetail';
-import HomeworkSubmitForm from './views/HomeworkSubmitForm';
+import HomeworkSubmitForm from './views/HomeworkSubmit';
 
 function App() {
 	return (

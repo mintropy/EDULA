@@ -59,6 +59,9 @@ function HomeworkDetail() {
 					}
 				}}
 			/>
+			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
+				<StyledButton>과제 제출</StyledButton>
+			</Link>
 		</div>
 	);
 }

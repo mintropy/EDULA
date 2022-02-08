@@ -120,7 +120,6 @@ export const apiPostHomeworkSubmission = (
 	title: string,
 	content: string,
 	file: string,
-	homework: string,
 	writer: string
 ) =>
 	axios({
@@ -133,7 +132,7 @@ export const apiPostHomeworkSubmission = (
 			title,
 			content,
 			file,
-			homework,
+			homeworkId,
 			writer,
 		},
 	});
