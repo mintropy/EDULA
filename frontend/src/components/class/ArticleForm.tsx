@@ -26,7 +26,7 @@ function ArticleForm(props: InnerProps) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { isValid },
 		getValues,
 	} = useForm<ArticleInput>({
 		mode: 'all',

@@ -47,10 +47,8 @@ function HomeworkDetail() {
 					if (lectureId && homeworkId) {
 						try {
 							apiDeleteHomework(lectureId, homeworkId)
-								.then(res => {})
-								.catch(err => {
-									// console.log(err);
-								});
+								.then(() => {})
+								.catch(() => {});
 
 							navigate(`/lecture/${lectureId}`);
 						} catch (error) {

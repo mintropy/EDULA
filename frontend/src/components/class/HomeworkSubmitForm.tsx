@@ -27,7 +27,7 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { isValid },
 		getValues,
 	} = useForm<HomeworkData>({
 		mode: 'all',
@@ -48,9 +48,7 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 					userId
 				)
 					.then(() => {})
-					.catch(() => {
-						// console.log(err);
-					});
+					.catch(() => {});
 				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);

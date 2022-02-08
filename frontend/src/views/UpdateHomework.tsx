@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetHomeworkDetail } from '../api/homework';
 import HomeworkForm from '../components/class/HomeworkForm';
