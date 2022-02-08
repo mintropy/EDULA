@@ -123,7 +123,7 @@ class HomeworkSubmissionViewSet(ViewSet):
             'writer': user.pk, 
         }
         homework_submission = HomeworkSubmission.objects.\
-            filter(Homework=homework_pk, writer=user.pk)
+            filter(homework_id=homework_pk, writer=user.pk)
         if homework_submission:
             serializer = HomeworkSubmissionSerialzier(instance=homework_submission[0], data=data)
         else:
