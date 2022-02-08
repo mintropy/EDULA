@@ -48,7 +48,7 @@ function Login() {
 		setError,
 		clearErrors,
 	} = useForm<LoginInput>({
-		mode: 'all',
+		mode: 'onChange',
 	});
 	const navigate = useNavigate();
 
@@ -66,13 +66,16 @@ function Login() {
 					login(res.data.access, res.data.refresh);
 				}
 			});
-			navigate(routes.main);
 		} catch (e) {
 			const error = e as AxiosError;
 			if (error?.response?.status === 401) {
 				setError('result', { message: '사용자 정보가 일치하지 않습니다.' });
 			}
 		}
+	};
+
+	const clearLoginErrors = () => {
+		clearErrors('result');
 	};
 
 	const resultError = errors.result?.message ? (
@@ -124,7 +127,7 @@ function Login() {
 							})}
 							type='text'
 							placeholder='ID'
-							onChange={() => clearErrors()}
+							onClick={clearLoginErrors}
 						/>
 					</FormInput>
 					{idError}
@@ -146,7 +149,7 @@ function Login() {
 							})}
 							type='password'
 							placeholder='Password'
-							onChange={() => clearErrors()}
+							onClick={clearLoginErrors}
 						/>
 					</FormInput>
 					{pwError}
