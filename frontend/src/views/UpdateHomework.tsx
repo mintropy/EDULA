@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
-import Form from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetHomeworkDetail } from '../api/homework';
 
@@ -26,7 +25,7 @@ function UpdateHomework() {
 
 	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
+			apiGetHomeworkDetail(lectureId, articleId).then(
 				res => {
 					setHomeworkData(res.data);
 				}

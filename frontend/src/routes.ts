@@ -10,8 +10,10 @@ const routes = {
 	createarticle: '/:lectureId/articleCreate',
 	updatearticle: '/:lectureId/articleUpdate/:articleId',
 	articleDetail: '/:lectureId/article/:articleId',
-	articleform: '/articleform',
-	schedule:'/schedule',
+	createHomework: '/:lectureId/homeworkCreate',
+	updateHomework: '/:lectureId/homeworkUpdate/:articleId',
+	homeworkDetail: '/:lectureId/homework/:homeworkId',
+	schedule: '/schedule',
 	// Admin Page
 	admin: '/manage',
 	studentManager: '/manage/student',

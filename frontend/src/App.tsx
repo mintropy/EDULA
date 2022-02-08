@@ -22,6 +22,9 @@ import LectureManager from './views/admin/Lecture';
 import ClassManager from './views/admin/Class';
 import AdminIndex from './views/admin/AdminIndex';
 import Schedule from './views/Schedule';
+import CreateHomework from './views/CreateHomework';
+import UpdateHomework from './views/UpdateHomework';
+import HomeworkDetail from './views/HomeworkDetail';
 
 function App() {
 	return (
@@ -41,6 +44,9 @@ function App() {
 						<Route path={routes.createarticle} element={<CreateArticle />} />
 						<Route path={routes.updatearticle} element={<UpdateArticle />} />
 						<Route path={routes.articleDetail} element={<ArticleDetail />} />
+						<Route path={routes.createHomework} element={<CreateHomework />} />
+						<Route path={routes.updateHomework} element={<UpdateHomework />} />
+						<Route path={routes.homeworkDetail} element={<HomeworkDetail />} />
 						<Route path={routes.schedule} element={<Schedule />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />

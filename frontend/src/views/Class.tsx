@@ -8,6 +8,7 @@ import { apiGetHomeworks } from '../api/homework';
 import UserContext from '../context/user';
 import { apiGetArticles } from '../api/article';
 import ArticleBoard from '../components/class/ArticleBoard';
+import HomeworkBoard from '../components/class/HomeworkBoard';
 
 const StyledContainer = styled.section`
 	display: grid;
@@ -84,7 +85,7 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetHomeworks(parseInt(lectureId, 10)).then(res => {
+			apiGetHomeworks(lectureId).then(res => {
 				setHomeworkData(res.data);
 			});
 		}
@@ -103,7 +104,7 @@ function Class() {
 			<>
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
-					<StyledHomeworkViewer />
+					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
 					{articleData && <ArticleBoard articles={articleData} />}
 				</StyledContainer>
 			</>

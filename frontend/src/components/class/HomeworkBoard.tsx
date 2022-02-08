@@ -20,7 +20,7 @@ const StyledLink = styled(Link)`
 `;
 
 interface BoardProps {
-	articles: {
+	homeworks: {
 		content: string;
 		createdAt: string;
 		id: number;
@@ -29,16 +29,15 @@ interface BoardProps {
 		writer: number;
 	}[];
 }
-function Board({ articles }: BoardProps) {
+function HomeworkBoard({ homeworks }: BoardProps) {
 	const { lectureId } = useParams();
-	console.log(articles);
 
 	return (
 		<div>
-			<StyledTitle>게시판</StyledTitle>
+			<StyledTitle>과제</StyledTitle>
 			<ul>
-				{/* {articles &&
-					articles.map(article => (
+				{/* {homeworks &&
+					homeworks.map(article => (
 						<StyledLink to={`/${lectureId}/article/${article.id}`} key={article.id}>
 							<StyledListItem>
 								<h1>{article.title}</h1>
@@ -47,11 +46,11 @@ function Board({ articles }: BoardProps) {
 						</StyledLink>
 					))} */}
 			</ul>
-			<Link to={`/${lectureId}/articleCreate`}>
+			<Link to={`/${lectureId}/homeworkCreate`}>
 				<StyledButton>글쓰기</StyledButton>
 			</Link>
 		</div>
 	);
 }
 
-export default Board;
+export default HomeworkBoard;

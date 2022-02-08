@@ -4,7 +4,6 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
-import { apiGetArticles } from '../api/article';
 
 interface HomeworkDataType {
 	content: string;
@@ -17,7 +16,7 @@ interface HomeworkDataType {
 	writerPk: number;
 }
 
-function ArticleDetail() {
+function HomeworkDetail() {
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
@@ -25,11 +24,9 @@ function ArticleDetail() {
 
 	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
-				res => {
-					setHomeworkData(res.data);
-				}
-			);
+			apiGetHomeworkDetail(lectureId, articleId).then(res => {
+				setHomeworkData(res.data);
+			});
 		}, [articleId]);
 	}
 
@@ -52,7 +49,7 @@ function ArticleDetail() {
 					e.preventDefault();
 					if (articleId && lectureId) {
 						try {
-							apiDeleteHomework(parseInt(lectureId, 10), parseInt(articleId, 10))
+							apiDeleteHomework(lectureId, articleId)
 								.then(res => {})
 								.catch(err => {
 									// console.log(err);
@@ -69,4 +66,4 @@ function ArticleDetail() {
 	);
 }
 
-export default ArticleDetail;
+export default HomeworkDetail;

@@ -36,7 +36,7 @@ function HomeworkForm(props: InnerProps) {
 
 		if (lectureId) {
 			try {
-				await apiPostHomework(parseInt(lectureId, 10), title, content, deadline)
+				await apiPostHomework(lectureId, title, content, deadline)
 					.then(() => {})
 					.catch(() => {
 						// console.log(err);
@@ -54,13 +54,7 @@ function HomeworkForm(props: InnerProps) {
 
 		if (articleId) {
 			try {
-				await apiUpdateHomework(
-					1,
-					parseInt(articleId, 10),
-					title,
-					content,
-					deadline
-				)
+				await apiUpdateHomework('1', articleId, title, content, deadline)
 					.then(() => {})
 					.catch(() => {
 						// console.log(err);
