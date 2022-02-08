@@ -30,7 +30,7 @@ class TeacherView(APIView):
         },
         description=swagger_schema.descriptions['TeacherView']['get']['description'],
         summary=swagger_schema.summaries['TeacherView']['get'],
-        tags=['school','teacher'],
+        tags=['교사', '목록',],
         examples=[
             basic_swagger_schema.examples[401]
         ],

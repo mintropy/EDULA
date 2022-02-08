@@ -18,8 +18,11 @@ class UserBasicSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
-class UserCreationSerialzier(serializers.ModelSerializer):
-    
+class UserCUDSerialzier(serializers.ModelSerializer):
+    # student_creation_count = serializers.IntegerField(write_only=True)
+    # teacher_creation_count = serializers.IntegerField(write_only=True)
+    # students = serializers.JSONField(read_only=True)
+    # teachers = serializers.JSONField(read_only=True)
     class Meta:
         model = User
         fields = ('id', 'username', 'password',)
@@ -48,5 +51,12 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
 class PasswordResetSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model=User
+        model = User
         fields = ('id', 'username', 'email',)
+
+
+class FriendSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'status',)
