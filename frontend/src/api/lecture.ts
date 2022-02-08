@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}/api`;
 
+
 const setToken = () => {
 	const token = localStorage.getItem('access') || ``;
 	const config = {
@@ -10,19 +11,19 @@ const setToken = () => {
 	return config;
 };
 
-export const apiGetLectures = (schoolId: number) =>
+export const apiGetLectures = (schoolId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${schoolId}/lecture/`,
+		url: `${BASE_URL}/schools/lecture/`,
 		headers: {
 			...setToken(),
 		},
 	});
 
-export const apiGetLectureDetail = (schoolId: number, lectureId: number) =>
+export const apiGetLectureDetail = (schoolId: string, lectureId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${schoolId}/lecture/${lectureId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/`,
 		headers: {
 			...setToken(),
 		},

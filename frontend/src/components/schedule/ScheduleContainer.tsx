@@ -11,7 +11,7 @@ import UserContext from '../../context/user';
 
 const StyledContainer = styled.div`
 	height: 100%;
-	width: 500px;
+	width: 25em;
 	margin: 1em;
 	padding: 1em;
 	color: ${props => props.theme.fontColor};
@@ -159,10 +159,10 @@ function ScheduleContainer() {
 			<StyledContainer>
 				<ScheduleDate />
 
-				{scheduleData.map((sub) => (
+				{scheduleData.map(sub => (
 					<ScheduleItem
 						key={sub.id}
-						id={sub.id}
+						scheduleId={sub.id}
 						name={sub.name}
 						startAt={sub.time?.st}
 						endAt={sub.time?.end}

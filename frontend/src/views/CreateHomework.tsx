@@ -1,25 +1,25 @@
 import styled from 'styled-components';
-import ArticleForm from '../components/class/ArticleForm';
+import HomeworkForm from '../components/class/HomeworkForm';
 import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
 
-function CreateArticle() {
+function CreateHomework() {
 	return (
 		<div>
-			<StyledTitle>게시물 쓰기</StyledTitle>
+			<StyledTitle>과제 만들기 📑</StyledTitle>
 			<StyledContainer>
-				<ArticleForm
+				<HomeworkForm
 					type='new'
 					originTitle=''
 					originContent=''
-					originNotice={false}
+					originDeadline=''
 				/>
 			</StyledContainer>
 		</div>
 	);
 }
 
-export default CreateArticle;
+export default CreateHomework;

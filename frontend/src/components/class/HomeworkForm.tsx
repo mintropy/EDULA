@@ -1,28 +1,25 @@
-import { useContext } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apiPostArticle, apiUpdateArticle } from '../../api/article';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
-import UserContext from '../../context/user';
+import { apiPostHomework, apiUpdateHomework } from '../../api/homework';
 
 type ArticleInput = {
 	title: string;
 	content: string;
-	notice: boolean;
+	deadline: string;
 };
 
 interface InnerProps {
 	type: string;
 	originTitle: string;
 	originContent: string;
-	originNotice: boolean;
+	originDeadline: string;
 }
 
-function ArticleForm(props: InnerProps) {
-	const { userId } = useContext(UserContext);
-	const { lectureId, articleId } = useParams();
-	const { type, originTitle, originContent } = props;
+function HomeworkForm(props: InnerProps) {
+	const { lectureId, homeworkId } = useParams();
+	const { type, originTitle, originContent, originDeadline } = props;
 	const {
 		register,
 		handleSubmit,
@@ -35,20 +32,16 @@ function ArticleForm(props: InnerProps) {
 	const navigate = useNavigate();
 
 	const onValidCreate: SubmitHandler<ArticleInput> = async () => {
-		const { title, content, notice } = getValues();
+		const { title, content, deadline } = getValues();
 
 		if (lectureId) {
 			try {
-				await apiPostArticle(
-					lectureId,
-					title,
-					content,
-					notice,
-					userId.toString(),
-					lectureId
-				)
+				await apiPostHomework(lectureId, title, content, deadline)
 					.then(() => {})
-					.catch(() => {});
+					.catch(() => {
+						// console.log(err);
+					});
+
 				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);
@@ -57,24 +50,14 @@ function ArticleForm(props: InnerProps) {
 	};
 
 	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
-		const { title, content, notice } = getValues();
+		const { title, content, deadline } = getValues();
 
-		if (articleId && lectureId) {
+		if (homeworkId && lectureId) {
 			try {
-				await apiUpdateArticle(
-					lectureId,
-					articleId,
-					title,
-					content,
-					notice,
-					userId.toString(),
-					lectureId
-				)
+				await apiUpdateHomework(lectureId, homeworkId, title, content, deadline)
 					.then(() => {})
-					.catch(() => {
-						// console.log(err);
-					});
-				navigate(`/${lectureId}/article/${articleId}`);
+					.catch(() => {});
+				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);
 			}
@@ -131,9 +114,16 @@ function ArticleForm(props: InnerProps) {
 					defaultValue={originContent}
 				/>
 			</FormInput>
-			<FormInput htmlFor='notice'>
-				<div>공지 여부</div>
-				<input {...register('notice', {})} type='checkbox' placeholder='notice' />
+			<FormInput htmlFor='deadline'>
+				<div>마감일</div>
+				<input
+					{...register('deadline', {
+						required: '마감일을 정하세요.',
+					})}
+					type='datetime-local'
+					placeholder='deadline'
+					defaultValue={originDeadline}
+				/>
 			</FormInput>
 			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
 			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
@@ -141,4 +131,4 @@ function ArticleForm(props: InnerProps) {
 	);
 }
 
-export default ArticleForm;
+export default HomeworkForm;
