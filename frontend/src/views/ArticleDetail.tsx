@@ -3,19 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
-import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
-import { apiGetArticles } from '../api/article';
-
-interface HomeworkDataType {
-	content: string;
-	createdAt: string;
-	deadline: string;
-	id: number;
-	lecture: number;
-	title: string;
-	writerName: string;
-	writerPk: number;
-}
+import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
 
 interface ArticleDataType {
 	content: string;
@@ -24,41 +12,41 @@ interface ArticleDataType {
 	id: number;
 	lecture: number;
 	title: string;
-	writer: number;
+	writer: {
+		id: number;
+		username: string;
+		firstName: string;
+		status: string;
+	};
+	updatedAt: string;
 }
 
 function ArticleDetail() {
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
-	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
-	const [articlekData, setArticleData] = useState({} as ArticleDataType);
+	const [articleData, setArticleData] = useState({} as ArticleDataType);
 
 	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
-				res => {
-					setHomeworkData(res.data);
-				}
-			);
-		}, [articleId]);
-
-		useEffect(() => {
-			apiGetArticles(lectureId).then(res => {
+			apiGetArticleDetail(lectureId, articleId).then(res => {
 				setArticleData(res.data);
 			});
-		}, []);
+		}, [articleId]);
 	}
 
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
 	return (
 		<div>
-			<StyledTitle>{homeworkData.title}</StyledTitle>
+			<StyledTitle>{articleData.title}</StyledTitle>
 			<StyledContent>
-				{homeworkData.writerName} / {homeworkData.deadline}
+				글쓴 날: {articleData.createdAt?.slice(0, 10)}/ 최종 수정일:{' '}
+				{articleData.updatedAt?.slice(0, 10)}
 			</StyledContent>
-			<StyledContent>{homeworkData.content}</StyledContent>
+			<StyledContent>글쓴이: {articleData.writer?.username}</StyledContent>
+
+			<StyledContent>{articleData.content}</StyledContent>
 			<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
 				<StyledButton>수정</StyledButton>
 			</Link>
@@ -69,7 +57,7 @@ function ArticleDetail() {
 					e.preventDefault();
 					if (articleId && lectureId) {
 						try {
-							apiDeleteHomework(parseInt(lectureId, 10), parseInt(articleId, 10))
+							apiDeleteArticle(lectureId, articleId)
 								.then(res => {})
 								.catch(err => {
 									// console.log(err);

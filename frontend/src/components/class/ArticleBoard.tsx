@@ -33,7 +33,6 @@ interface BoardProps {
 }
 function ArticleBoard({ articles }: BoardProps) {
 	const { lectureId } = useParams();
-	console.log(articles);
 
 	if (articles) {
 		return (

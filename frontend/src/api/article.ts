@@ -22,7 +22,7 @@ export const apiGetArticles = (lectureId: string) =>
 export const apiGetArticleDetail = (lectureId: string, articleId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/lecture/${lectureId}/article/${articleId}`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/article/${articleId}/`,
 		headers: {
 			...setToken(),
 		},
