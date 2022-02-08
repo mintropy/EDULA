@@ -133,6 +133,102 @@ homework_pk와 lecture_pk를 모두 확인한 후 요청이 정당한 경우 제
     ''',
         },
     },
+    'ArticleViewSet': {
+        'list': {
+            'description':
+    '''
+    게시글 목록을 출력합니다
+게시판은 해당 수업의 교사, 학생 또는 해당 수업이 속한 학교 관리자만 조회할 수 있습니다\n
+이 API는 pagination이 적용되어 있습니다
+- page : 없다면 1쪽이 조회되고, 입력이 있으면 해당 쪽을 조회합니다
+- page_size : 한 쪽마다 몇개의 게시글을 조회할지 지정하고, 기본적으로 10개를 조회합니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
+다음의 경우 404를 반환합니다
+- lecture_pk가 존재하지 않는 경우
+    ''',
+            200:
+    '''
+    게시글 목록을 조회했습니다
+totalCount는 해당 게시판의 전체 게시글의 수, pageCount는 조회한 페이지의 게시글 수 입니다
+    ''',
+        },
+        'create': {
+            'description':
+    '''
+    게시글을 생성합니다
+게시판은 해당 수업의 교사, 학생 또는 해당 수업이 속한 학교 관리자만 조회할 수 있습니다\n
+공지사항(notice)는 교사 또는 학교 관리자만 할 수 있습니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
+다음의 경우 404를 반환합니다
+- lecture_pk가 존재하지 않는 경우
+    ''',
+            201:
+    '''
+    게시글이 생성되었습니다
+학생이 공지사항으로 요청한 경우, 자동적으로 공지사항 항목은 취소됩니다
+    '''
+        },
+        'retrieve': {
+            'description':
+    '''
+    게시글 상세 조회를 합니다
+게시판은 해당 수업의 교사, 학생 또는 해당 수업이 속한 학교 관리자만 조회할 수 있습니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
+다음의 경우 404를 반환합니다
+- lecture_pk가 존재하지 않는 경우
+- article_pk가 없거나 lecture_pk의 게시글이 아닌 경우
+    ''',
+            200:
+    '''
+    게시글의 상세 항목을 조회합니다
+    '''
+        },
+        'update': {
+            'description':
+    '''
+    게시글을 수정합니다
+게시판은 해당 수업의 교사, 학생 또는 해당 수업이 속한 학교 관리자만 조회할 수 있습니다\n
+게시글 수정은 작성자만 할 수 있습니다\n
+공지사항(notice)는 교사 또는 학교 관리자만 할 수 있습니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우
+- 게시글의 작성자가 아닌 경우\n
+다음의 경우 404를 반환합니다
+- lecture_pk가 존재하지 않는 경우
+- article_pk가 없거나 lecture_pk의 게시글이 아닌 경우
+    ''',
+            201:
+    '''
+    게시글을 수정했습니다
+학생이 공지사항으로 등록하려는 경우 자동적으로 취소됩니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    게시글을 삭제합니다
+게시판은 해당 수업의 교사, 학생 또는 해당 수업이 속한 학교 관리자만 조회할 수 있습니다\n
+게시글 삭제는 작성 유저 또는 교사, 학교 관리자만 할 수 있습니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
+다음의 경우 404를 반환합니다
+- lecture_pk가 존재하지 않는 경우
+- article_pk가 없거나 lecture_pk의 게시글이 아닌 경우
+    ''',
+            200:
+    '''
+    게시글을 삭제했습니다
+    ''',
+        }
+    },
     'ClassroomView': {
         'get': {
             'description': 
@@ -280,6 +376,13 @@ summaries = {
         'create': '숙제 제출',
         'retrieve': '숙제 상세 확인',
         'destroy': '숙제 제출 삭제',
+    },
+    'ArticleViewSet': {
+        'list': '게시글 전체 조회',
+        'create': '게시글 생성',
+        'retrieve': '게시글 상세 조회',
+        'update': '게시글 수정',
+        'destroy': '게시글 삭제',
     },
     'ClassroomView': {
         'get' : 'Get classroom information',
@@ -514,6 +617,103 @@ examples = {
                 },
             ),
         ],
+    },
+    'ArticleViewSet': {
+        'article_list': [
+            OpenApiExample(
+                name='article list pagination',
+                value={
+                    'totalCount': 20,
+                    'pageCount': 2,
+                    'articles': [
+                        {
+                            'id': 20,
+                            'title': '수학 숙제 너무 어려워요',
+                            'content': 'ㅠㅠㅠ',
+                            'createdAt': '2022-02-01T00:00:00',
+                            'updatedAt': '2022-02-01T00:00:00',
+                            'notice': False,
+                            'writer': 10,
+                            'lecture': 1,
+                        },
+                        {
+                            'id': 20,
+                            'title': '같이 공부해봐요',
+                            'content': '다들 시험 화이팅',
+                            'createdAt': '2022-02-01T00:00:00',
+                            'updatedAt': '2022-02-01T00:00:00',
+                            'notice': True,
+                            'writer': 10,
+                            'lecture': 1,
+                        },
+                    ],
+                },
+                status_codes=['200'],
+                response_only=True
+            )
+        ],
+        'article_detail': [
+            OpenApiExample(
+                name='article list pagination',
+                value={
+                            'id': 20,
+                            'title': '수학 숙제 너무 어려워요',
+                            'content': 'ㅠㅠㅠ',
+                            'createdAt': '2022-02-01T00:00:00',
+                            'updatedAt': '2022-02-01T00:00:00',
+                            'notice': False,
+                            'writer': {
+                                'id': 10,
+                                'username': 'ssafy0001',
+                                'firstName': '김싸피',
+                                'status': 'ST',
+                            },
+                            'lecture': 1,
+                },
+                status_codes=['200', '201'],
+                response_only=True,
+            ),
+        ],
+        'article': [
+            OpenApiExample(
+                name='article list pagination',
+                value={
+                            'id': 20,
+                            'title': '수학 숙제 너무 어려워요',
+                            'content': 'ㅠㅠㅠ',
+                            'createdAt': '2022-02-01T00:00:00',
+                            'updatedAt': '2022-02-01T00:00:00',
+                            'notice': False,
+                            'writer': 10,
+                            'lecture': 1,
+                },
+                status_codes=['200', '201'],
+                response_only=True,
+            ),
+        ],
+        'create_article': [
+            OpenApiExample(
+                name='create or update',
+                value={
+                    'title': '수학 숙제 너무 어려워요',
+                    'content': 'ㅠㅠㅠ',
+                    'notice': True,
+                },
+                request_only=True,
+            )
+        ],
+        'destroy': {
+            200: [
+                OpenApiExample(
+                    name='delete',
+                    value={
+                        'OK': 'deleted',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
     },
     'ClassroomView': {
         'get': {
