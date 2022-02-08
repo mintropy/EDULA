@@ -12,7 +12,7 @@ services:
   #   Openvidu-Call Version: 2.20.0
   #
   # --------------------------------------------------------------
-  nginx:
+  nginx-react:
     restart: unless-stopped
     build:
       context: .
