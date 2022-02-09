@@ -8,6 +8,7 @@ const StyledListItem = styled.li`
 	text-align: center;
 	margin: 1em;
 	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.fontColor};
 	padding: 1em 1em 1em 2em;
 	border-left: 4px solid #ddd;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
