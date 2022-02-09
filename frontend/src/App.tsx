@@ -26,6 +26,7 @@ import CreateHomework from './views/CreateHomework';
 import UpdateHomework from './views/UpdateHomework';
 import HomeworkDetail from './views/HomeworkDetail';
 import HomeworkSubmitForm from './views/HomeworkSubmit';
+import Openvidu from './views/Openvidu';
 
 function App() {
 	return (
@@ -36,6 +37,7 @@ function App() {
 					<Route path={routes.login} element={<Login />} />
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
+					<Route path='/con' element={<Openvidu />} />
 					<Route path={routes.main} element={<Home />}>
 						<Route index element={<Main />} />
 						<Route path={routes.setting} element={<Setting />} />
