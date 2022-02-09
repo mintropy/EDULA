@@ -55,7 +55,7 @@ function HomeworkDetail() {
 					<Link to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
 						<StyledButton>수정</StyledButton>
 					</Link>
-					<input
+					<StyledButton
 						type='button'
 						value='삭제'
 						onClick={e => {
@@ -72,7 +72,9 @@ function HomeworkDetail() {
 								}
 							}
 						}}
-					/>
+					>
+						삭제
+					</StyledButton>
 				</div>
 			)}
 			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>

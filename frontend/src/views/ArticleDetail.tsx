@@ -65,7 +65,7 @@ function ArticleDetail() {
 					<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
 						<StyledButton>수정</StyledButton>
 					</Link>
-					<input
+					<StyledButton
 						type='button'
 						value='삭제'
 						onClick={e => {
@@ -73,10 +73,8 @@ function ArticleDetail() {
 							if (articleId && lectureId) {
 								try {
 									apiDeleteArticle(lectureId, articleId)
-										.then(res => {})
-										.catch(err => {
-											// console.log(err);
-										});
+										.then(() => {})
+										.catch(() => {});
 
 									navigate(`/lecture/${lectureId}`);
 								} catch (error) {
@@ -84,7 +82,9 @@ function ArticleDetail() {
 								}
 							}
 						}}
-					/>
+					>
+						삭제
+					</StyledButton>
 				</div>
 			)}
 			<Link to={`/lecture/${lectureId}/`}>
