@@ -168,10 +168,14 @@ function ScheduleContainer() {
 						endAt={sub.time?.end}
 					/>
 				))}
+
+				{scheduleData.length === 0 && (
+					<img src='../../../images/noclass.gif' width='200' alt='수업 없음' />
+				)}
 			</StyledContainer>
 		);
 	}
-	return <h1>수업이 없나?? 로딩 중입니다.!</h1>;
+	return <h1>로딩 중</h1>;
 }
 
 export default ScheduleContainer;
