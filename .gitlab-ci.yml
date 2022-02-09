@@ -16,7 +16,7 @@ deploy:
   only:
     - develop@s06-webmobile1-sub2/S06P12D209
   script:
+    - cp -r /opt/openvidu/owncert ./owncert
     - docker-compose up -d
-    - cp -r ~/cert ./docker/nginx
   tags:
     - first

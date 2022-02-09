@@ -1,70 +1,96 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
-import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
+import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
+import UserContext from '../context/user';
 
-interface HomeworkDataType {
+const StyledContainer = styled.div`
+	font-size: 1em;
+	text-align: center;
+	margin: 1em;
+	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.fontColor};
+	padding: 1em 1em 1em 2em;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
+	border-radius: 10px;
+`;
+
+interface ArticleDataType {
 	content: string;
 	createdAt: string;
-	deadline: string;
+	notice: boolean;
 	id: number;
 	lecture: number;
 	title: string;
-	writerName: string;
-	writerPk: number;
+	writer: {
+		id: number;
+		username: string;
+		firstName: string;
+		status: string;
+	};
+	updatedAt: string;
 }
 
 function ArticleDetail() {
+	const { userId, userStat } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
-	const [homeworkData, setHomeworkData] = useState({} as HomeworkDataType);
+	const [articleData, setArticleData] = useState({} as ArticleDataType);
 
 	if (articleId && lectureId) {
 		useEffect(() => {
-			apiGetHomeworkDetail(parseInt(lectureId, 10), parseInt(articleId, 10)).then(
-				res => {
-					setHomeworkData(res.data);
-				}
-			);
-		}, [articleId]);
+			apiGetArticleDetail(lectureId, articleId).then(res => {
+				setArticleData(res.data);
+			});
+		}, []);
 	}
 
 	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
 	return (
-		<div>
-			<StyledTitle>{homeworkData.title}</StyledTitle>
+		<StyledContainer>
+			<StyledTitle>{articleData.title}</StyledTitle>
 			<StyledContent>
-				{homeworkData.writerName} / {homeworkData.deadline}
+				글쓴 날: {articleData.createdAt?.slice(0, 10)}/ 최종 수정일:{' '}
+				{articleData.updatedAt?.slice(0, 10)}
 			</StyledContent>
-			<StyledContent>{homeworkData.content}</StyledContent>
-			<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
-				<StyledButton>수정</StyledButton>
-			</Link>
-			<input
-				type='button'
-				value='삭제'
-				onClick={e => {
-					e.preventDefault();
-					if (articleId && lectureId) {
-						try {
-							apiDeleteHomework(parseInt(lectureId, 10), parseInt(articleId, 10))
-								.then(res => {})
-								.catch(err => {
-									// console.log(err);
-								});
+			<StyledContent>글쓴이: {articleData.writer?.username}</StyledContent>
+			<StyledContent>{articleData.content}</StyledContent>
+			{articleData.writer?.id === parseInt(userId, 10) && (
+				<div>
+					<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
+						<StyledButton>수정</StyledButton>
+					</Link>
+					<StyledButton
+						type='button'
+						value='삭제'
+						onClick={e => {
+							e.preventDefault();
+							if (articleId && lectureId) {
+								try {
+									apiDeleteArticle(lectureId, articleId)
+										.then(() => {})
+										.catch(() => {});
 
-							navigate(`/lecture/${lectureId}`);
-						} catch (error) {
-							// console.log(error);
-						}
-					}
-				}}
-			/>
-		</div>
+									navigate(`/lecture/${lectureId}`);
+								} catch (error) {
+									// console.log(error);
+								}
+							}
+						}}
+					>
+						삭제
+					</StyledButton>
+				</div>
+			)}
+			<Link to={`/lecture/${lectureId}/`}>
+				<StyledButton>목록</StyledButton>
+			</Link>
+		</StyledContainer>
 	);
 }
 

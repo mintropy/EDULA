@@ -18,6 +18,12 @@ const _ = {
 	twilightPink: '#e0c2ba',
 	twilightWhite: '#f0e9e6',
 	twilightBrown: '#3a2d25',
+	childrenred: '#FF1700',
+	childrenorange: '#FF8E00',
+	childrenyellow: '#FFE400',
+	childrengreen: '#06FF00',
+	childrenblue: '#84DFFF',
+	childrendeepblue: '#516BEB',
 };
 
 export default _;

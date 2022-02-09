@@ -22,15 +22,6 @@ export const apiPostLecture = (lecture: object) =>
 		},
 	});
 
-export const apiGetLectureDetail = (lectureId: string) =>
-	axios({
-		method: 'get',
-		url: `${BASE_URL}/schools/lecture/${lectureId}/`,
-		headers: {
-			...setToken(),
-		},
-	});
-
 export const apiPutLectureDetail = (lectureId: string, lecture: object) =>
 	axios({
 		method: 'put',
@@ -46,6 +37,15 @@ export const apiPutLectureDetail = (lectureId: string, lecture: object) =>
 export const apiDeleteLectureDetail = (lectureId: string) =>
 	axios({
 		method: 'delete',
+		url: `${BASE_URL}/schools/lecture/${lectureId}/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiGetLectureDetail = (schoolId: string, lectureId: string) =>
+	axios({
+		method: 'get',
 		url: `${BASE_URL}/schools/lecture/${lectureId}/`,
 		headers: {
 			...setToken(),

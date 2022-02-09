@@ -1,22 +1,12 @@
 from rest_framework import serializers
 
 from ..models import SchoolAdmin
-from schools.models import Classroom, School
-from .user import UserDetailSerializer
-
+from .user import UserBasicSerializer, UserDetailSerializer
+from schools.serializers import (
+    SchoolSerializer, LectureSerializer, ClassroomSerializer
+)
 
 class SchoolAdminSerializer(serializers.ModelSerializer):
-    
-    class ClassroomSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Classroom
-            fields = ('id', 'class_grade', 'class_num')
-    
-    class SchoolSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = School
-            fields = '__all__'
-    
     user = UserDetailSerializer()
     classroom = ClassroomSerializer(read_only=True)
     school = SchoolSerializer(read_only=True)

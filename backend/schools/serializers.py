@@ -1,11 +1,47 @@
-from django.forms import models
 from rest_framework import serializers
 
-from . models import Homework, Lecture, Classroom
-from accounts.models import User, Student, Teacher
+from . models import (
+    School, Lecture, Classroom,
+    Homework, HomeworkSubmission,
+    Article
+)
+from accounts.models import Student, Teacher
+from accounts.serializers.user import UserBasicSerializer
+
+class StudentBasciSerializer(serializers.ModelSerializer):
+    user = UserBasicSerializer()
+    
+    class Meta:
+        model = Student
+        fields = ('user',)
+
+
+class TeacherBasicSerialzier(serializers.ModelSerializer):
+    user = UserBasicSerializer()
+    
+    class Meta:
+        model = Teacher
+        fields = ('user',)
+
+
+class SchoolSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = School
+        fields = '__all__'
 
 
 class LectureSerializer(serializers.ModelSerializer):
+    teacher = TeacherBasicSerialzier(read_only=True)
+    
+    class Meta:
+        model = Lecture
+        fields = '__all__'
+
+
+class LectrueDetailSerializer(serializers.ModelSerializer):
+    student_list = StudentBasciSerializer(many=True)
+    teacher = TeacherBasicSerialzier()
     
     class Meta:
         model = Lecture
@@ -17,10 +53,41 @@ class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
         fields = '__all__'
-     
-        
+
+
 class HomeworkSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Homework
+        fields = '__all__'
+
+
+class HomeworkSubmissionSerialzier(serializers.ModelSerializer):
+    
+    class Meta:
+        model = HomeworkSubmission
+        fields = '__all__'
+
+
+class HomeworkDetailSerializer(serializers.ModelSerializer):
+    submission = HomeworkSubmissionSerialzier(many=True)
+    
+    class Meta:
+        model = Homework
+        fields = '__all__'
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    
+    
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+    writer = UserBasicSerializer()
+    
+    class Meta:
+        model = Article
         fields = '__all__'

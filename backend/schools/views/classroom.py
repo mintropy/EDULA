@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
@@ -13,7 +14,7 @@ from ..serializers import ClassroomSerializer
 from server import basic_swagger_schema
 
 
-class ClassroomView(APIView):
+class ClassroomViewSet(ViewSet):
     """Classroom
     
     """
@@ -33,12 +34,12 @@ class ClassroomView(APIView):
         },
         description=swagger_schema.descriptions['ClassroomView']['get']['description'],
         summary=swagger_schema.summaries['ClassroomView']['get'],
-        tags=['classroom','schooladmin'],
+        tags=['교실',],
         examples=[
             basic_swagger_schema.examples[401]
         ],
     )
-    def get(self, request,school_pk):
+    def list(self, request, school_pk):
         """Get total classroom of school information
         
         Use school_pk, return total classroom of school infromation
@@ -65,14 +66,14 @@ class ClassroomView(APIView):
         },
         description=swagger_schema.descriptions['ClassroomView']['post']['description'],
         summary=swagger_schema.summaries['ClassroomView']['post'],
-        tags=['classroom','schooladmin'],
+        tags=['교실',],
         examples=[
             swagger_schema.examples['ClassroomView']['post']['input'],
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401]
         ],
     )
-    def post(self, request):
+    def create(self, request, school_pk):
         """Post classroom of school information
         
         Save classroom of school infromation
@@ -87,5 +88,9 @@ class ClassroomView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-
+    
+    @extend_schema(
+        tags=['교실',]
+    )
+    def retrieve(self, request, school_pk, classroom_pk):
+        pass

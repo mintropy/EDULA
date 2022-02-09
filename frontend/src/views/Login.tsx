@@ -48,7 +48,7 @@ function Login() {
 		setError,
 		clearErrors,
 	} = useForm<LoginInput>({
-		mode: 'all',
+		mode: 'onChange',
 	});
 	const navigate = useNavigate();
 
@@ -73,6 +73,10 @@ function Login() {
 				setError('result', { message: '사용자 정보가 일치하지 않습니다.' });
 			}
 		}
+	};
+
+	const clearLoginError = () => {
+		clearErrors('result');
 	};
 
 	const resultError = errors.result?.message ? (
@@ -124,7 +128,7 @@ function Login() {
 							})}
 							type='text'
 							placeholder='ID'
-							onChange={() => clearErrors()}
+							onInput={clearLoginError}
 						/>
 					</FormInput>
 					{idError}
@@ -146,7 +150,7 @@ function Login() {
 							})}
 							type='password'
 							placeholder='Password'
-							onChange={() => clearErrors()}
+							onInput={clearLoginError}
 						/>
 					</FormInput>
 					{pwError}

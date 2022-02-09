@@ -10,33 +10,33 @@ const setToken = () => {
 	return config;
 };
 
-export const apiGetHomeworks = (lectureId: number) =>
+export const apiGetHomeworks = (lectureId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${lectureId}/homework/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/`,
 		headers: {
 			...setToken(),
 		},
 	});
 
-export const apiGetHomeworkDetail = (lectureId: number, homeworkId: number) =>
+export const apiGetHomeworkDetail = (lectureId: string, homeworkId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
 		},
 	});
 
 export const apiPostHomework = (
-	lectureId: number,
+	lectureId: string,
 	title: string,
 	content: string,
 	deadline: string
 ) =>
 	axios({
 		method: 'post',
-		url: `${BASE_URL}/schools/${lectureId}/homework/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/`,
 		headers: {
 			...setToken(),
 		},
@@ -48,15 +48,15 @@ export const apiPostHomework = (
 	});
 
 export const apiUpdateHomework = (
-	lectureId: number,
-	homeworkId: number,
+	lectureId: string,
+	homeworkId: string,
 	title: string,
 	content: string,
 	deadline: string
 ) =>
 	axios({
 		method: 'put',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
 		},
@@ -67,11 +67,72 @@ export const apiUpdateHomework = (
 		},
 	});
 
-export const apiDeleteHomework = (lectureId: number, homeworkId: number) =>
+export const apiDeleteHomework = (lectureId: string, homeworkId: string) =>
 	axios({
 		method: 'delete',
-		url: `${BASE_URL}/schools/${lectureId}/homework/${homeworkId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/`,
 		headers: {
 			...setToken(),
+		},
+	});
+
+export const apiGetHomeworkSubmission = (
+	lectureId: string,
+	homeworkId: string
+) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/submission/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiGetHomeworkSubmissionDetail = (
+	lectureId: string,
+	homeworkId: string,
+	userId: string
+) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/submission/${userId}/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiDeleteHomeworkSubmission = (
+	lectureId: string,
+	homeworkId: string,
+	userId: string
+) =>
+	axios({
+		method: 'delete',
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/submission/${userId}/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiPostHomeworkSubmission = (
+	lectureId: string,
+	homeworkId: string,
+	title: string,
+	content: string,
+	file: string,
+	writer: string
+) =>
+	axios({
+		method: 'post',
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/submission/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			title,
+			content,
+			file,
+			homeworkId,
+			writer,
 		},
 	});
