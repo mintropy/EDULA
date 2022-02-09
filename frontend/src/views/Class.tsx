@@ -5,7 +5,6 @@ import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
 import UserContext from '../context/user';
-import { apiGetArticles } from '../api/article';
 import ArticleBoard from '../components/class/ArticleBoard';
 import HomeworkBoard from '../components/class/HomeworkBoard';
 
@@ -35,23 +34,11 @@ interface LectureDataType {
 
 const StyledIntro = styled(Intro)``;
 
-interface ArticleDataType {
-	content: string;
-	createdAt: string;
-	id: number;
-	lecture: number;
-	notice: boolean;
-	title: string;
-	writer: number;
-	updatedAt: string;
-}
-
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
 	const { schoolId } = useContext(UserContext);
 	const { lectureId } = useParams();
-	const [articleData, setArticleData] = useState([] as ArticleDataType[]);
 
 	useEffect(() => {
 		if (lectureId) {
@@ -69,25 +56,13 @@ function Class() {
 		}
 	}, []);
 
-	const getArticles = () => {
-		if (lectureId) {
-			apiGetArticles(lectureId).then(res => {
-				setArticleData(res.data.articles);
-			});
-		}
-	};
-
-	useEffect(() => {
-		getArticles();
-	}, []);
-
 	if (lectureData) {
 		return (
 			<>
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
-					{articleData && <ArticleBoard articles={articleData} />}
+					<ArticleBoard />
 				</StyledContainer>
 			</>
 		);

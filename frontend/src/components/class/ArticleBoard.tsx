@@ -1,7 +1,10 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import StyledTitle from './StyledTitle';
 import StyledButton from './StyledButton';
+import { apiGetArticles } from '../../api/article';
+import Pagination from './ArticlePagination';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -32,13 +35,55 @@ interface BoardProps {
 		writer: number;
 	}[];
 }
-function ArticleBoard({ articles }: BoardProps) {
+interface ArticleDataType {
+	content: string;
+	createdAt: string;
+	id: number;
+	lecture: number;
+	notice: boolean;
+	title: string;
+	writer: number;
+	updatedAt: string;
+}
+
+function ArticleBoard() {
 	const { lectureId } = useParams();
+	const [articles, setArticleData] = useState([] as ArticleDataType[]);
+	const [limit, setLimit] = useState(10);
+	const [page, setPage] = useState(1);
+	const [total, setTotal] = useState(0);
+
+	const getArticles = () => {
+		if (lectureId) {
+			apiGetArticles(lectureId, page.toString(), limit.toString()).then(res => {
+				setTotal(res.data.totlaCount);
+				setArticleData(res.data.articles);
+				console.log(res.data);
+			});
+		}
+	};
+
+	useEffect(() => {
+		getArticles();
+	}, [page, limit]);
 
 	if (articles) {
 		return (
 			<div>
 				<StyledTitle>게시판</StyledTitle>
+				<label htmlFor='limit'>
+					페이지 당 표시할 게시물 수:&nbsp;
+					<select
+						value={limit}
+						onChange={({ target: { value } }) => setLimit(Number(value))}
+					>
+						<option value='5'>5</option>
+						<option value='10'>10</option>
+						<option value='12'>12</option>
+						<option value='20'>20</option>
+					</select>
+				</label>
+
 				<ul>
 					{articles &&
 						articles.map(article => (
@@ -58,6 +103,10 @@ function ArticleBoard({ articles }: BoardProps) {
 				<Link to={`/${lectureId}/articleCreate`}>
 					<StyledButton>글쓰기</StyledButton>
 				</Link>
+
+				<footer>
+					<Pagination total={total} limit={limit} page={page} setPage={setPage} />
+				</footer>
 			</div>
 		);
 	}

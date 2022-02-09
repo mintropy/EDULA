@@ -10,10 +10,14 @@ const setToken = () => {
 	return config;
 };
 
-export const apiGetArticles = (lectureId: string) =>
+export const apiGetArticles = (
+	lectureId: string,
+	page: string,
+	pageSize: string
+) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/lecture/${lectureId}/article/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/article?page=${page}&page_size=${pageSize}`,
 		headers: {
 			...setToken(),
 		},
