@@ -22,10 +22,10 @@ export const apiPostLecture = (lecture: object) =>
 		},
 	});
 
-export const apiGetLectureDetail = (schoolId: string, lectureId: string) =>
+export const apiGetLectureDetail = (lectureId: string) =>
 	axios({
 		method: 'get',
-		url: `${BASE_URL}/schools/${schoolId}/lecture/${lectureId}/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/`,
 		headers: {
 			...setToken(),
 		},

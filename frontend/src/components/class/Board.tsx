@@ -40,7 +40,7 @@ function Board({ articles }: BoardProps) {
 		<div>
 			<StyledTitle>게시판</StyledTitle>
 			<ul>
-				{articles &&
+				{/* {articles &&
 					articles.map(article => (
 						<StyledLink to={`/${lectureId}/article/${article.id}`} key={article.id}>
 							<StyledListItem>
@@ -48,7 +48,7 @@ function Board({ articles }: BoardProps) {
 								<p>{article.content}</p>
 							</StyledListItem>
 						</StyledLink>
-					))}
+					))} */}
 			</ul>
 			<Link to={`/${lectureId}/articleCreate`}>
 				<StyledButton>글쓰기</StyledButton>

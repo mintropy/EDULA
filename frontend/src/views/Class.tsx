@@ -61,7 +61,7 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetLectureDetail(schoolId, lectureId).then(res => {
+			apiGetLectureDetail(lectureId).then(res => {
 				setLectureData(res.data);
 			});
 		}

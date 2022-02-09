@@ -18,12 +18,19 @@ type TimeList = {
 	additionalProp3: string;
 };
 
+interface User {
+	firstName: string;
+	id: number;
+	status: string;
+	username: string;
+}
+
 interface Lecture {
 	id: number;
 	name: string;
 	school: number;
 	studentList: Array<number>;
-	teacher: number;
+	teacher: { user: User };
 	timeList: Array<TimeList>;
 }
 
@@ -48,8 +55,8 @@ function LectureManager() {
 					<SLink to={`/lecture/${e.id}`}>
 						<Tel value={e.name} />
 					</SLink>
-					<SLink to={`${routes.profile}/${e.teacher}`}>
-						<Tel value={e.teacher} />
+					<SLink to={`${routes.profile}/${e.teacher?.user?.id}`}>
+						<Tel value={e.teacher?.user?.firstName} />
 					</SLink>
 					<Tel value={e.timeList.map(el => el?.additionalProp1).join(' ')} />
 				</Tbody>
