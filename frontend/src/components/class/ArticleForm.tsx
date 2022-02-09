@@ -1,25 +1,32 @@
+import { useContext } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { apiPostArticle, apiUpdateArticle } from '../../api/article';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
-import routes from '../../routes';
+import UserContext from '../../context/user';
 
 type ArticleInput = {
 	title: string;
 	content: string;
+	notice: boolean;
 };
 
 interface InnerProps {
+	type: string;
 	originTitle: string;
 	originContent: string;
+	originNotice: boolean;
 }
 
-function Form(props: InnerProps) {
-	const { originTitle, originContent } = props;
+function ArticleForm(props: InnerProps) {
+	const { userId } = useContext(UserContext);
+	const { lectureId, articleId } = useParams();
+	const { type, originTitle, originContent } = props;
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { isValid },
 		getValues,
 	} = useForm<ArticleInput>({
 		mode: 'all',
@@ -27,13 +34,50 @@ function Form(props: InnerProps) {
 
 	const navigate = useNavigate();
 
-	const onValidSubmit: SubmitHandler<ArticleInput> = async () => {
-		// 글쓰기 로직
-		// const { title, content } = getValues();
-		try {
-			navigate(routes.main);
-		} catch (error) {
-			// console.log(error);
+	const onValidCreate: SubmitHandler<ArticleInput> = async () => {
+		const { title, content, notice } = getValues();
+
+		if (lectureId) {
+			try {
+				await apiPostArticle(
+					lectureId,
+					title,
+					content,
+					notice,
+					userId.toString(),
+					lectureId
+				)
+					.then(() => {})
+					.catch(() => {});
+				navigate(`/lecture/${lectureId}`);
+			} catch (error) {
+				// console.log(error);
+			}
+		}
+	};
+
+	const onValidUpdate: SubmitHandler<ArticleInput> = async () => {
+		const { title, content, notice } = getValues();
+
+		if (articleId && lectureId) {
+			try {
+				await apiUpdateArticle(
+					lectureId,
+					articleId,
+					title,
+					content,
+					notice,
+					userId.toString(),
+					lectureId
+				)
+					.then(() => {})
+					.catch(() => {
+						// console.log(err);
+					});
+				navigate(`/${lectureId}/article/${articleId}`);
+			} catch (error) {
+				// console.log(error);
+			}
 		}
 	};
 
@@ -42,7 +86,12 @@ function Form(props: InnerProps) {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+		<form
+			onSubmit={handleSubmit(
+				type === 'update' ? onValidUpdate : onValidCreate,
+				onInValidSubmit
+			)}
+		>
 			<FormInput htmlFor='title'>
 				<div>제목</div>
 				<input
@@ -82,9 +131,14 @@ function Form(props: InnerProps) {
 					defaultValue={originContent}
 				/>
 			</FormInput>
-			<FormBtn value='글쓰기' disabled={!isValid} />
+			<FormInput htmlFor='notice'>
+				<div>공지 여부</div>
+				<input {...register('notice', {})} type='checkbox' placeholder='notice' />
+			</FormInput>
+			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
+			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
 		</form>
 	);
 }
 
-export default Form;
+export default ArticleForm;

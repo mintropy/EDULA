@@ -21,6 +21,12 @@ import TeacherManager from './views/admin/Teacher';
 import LectureManager from './views/admin/Lecture';
 import ClassManager from './views/admin/Class';
 import AdminIndex from './views/admin/AdminIndex';
+import Schedule from './views/Schedule';
+import CreateHomework from './views/CreateHomework';
+import UpdateHomework from './views/UpdateHomework';
+import HomeworkDetail from './views/HomeworkDetail';
+import HomeworkSubmitForm from './views/HomeworkSubmit';
+import Openvidu from './views/Openvidu';
 
 function App() {
 	return (
@@ -31,6 +37,7 @@ function App() {
 					<Route path={routes.login} element={<Login />} />
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
+					<Route path='/con' element={<Openvidu />} />
 					<Route path={routes.main} element={<Home />}>
 						<Route index element={<Main />} />
 						<Route path={routes.setting} element={<Setting />} />
@@ -40,6 +47,11 @@ function App() {
 						<Route path={routes.createarticle} element={<CreateArticle />} />
 						<Route path={routes.updatearticle} element={<UpdateArticle />} />
 						<Route path={routes.articleDetail} element={<ArticleDetail />} />
+						<Route path={routes.createHomework} element={<CreateHomework />} />
+						<Route path={routes.updateHomework} element={<UpdateHomework />} />
+						<Route path={routes.homeworkDetail} element={<HomeworkDetail />} />
+						<Route path={routes.homeworkSubmit} element={<HomeworkSubmitForm />} />
+						<Route path={routes.schedule} element={<Schedule />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />
 							<Route path={routes.studentManager} element={<StudentManager />} />

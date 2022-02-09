@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = `http://${window.location.hostname}:8000/api`;
+const BASE_URL = `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}/api`;
 
 const setToken = () => {
 	const token = localStorage.getItem('access') || ``;
@@ -112,5 +112,23 @@ export const apiPutTeacherInfo = (teacherId: string, user: object) =>
 		},
 		data: {
 			user,
+		},
+	});
+
+export const apiGetStudentLectureList = (studentId: string) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/accounts/student/${studentId}/lecture/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiGetTeacherLectureList = (teacherId: string) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/accounts/teacher/${teacherId}/lecture/`,
+		headers: {
+			...setToken(),
 		},
 	});

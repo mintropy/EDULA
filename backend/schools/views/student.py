@@ -1,18 +1,16 @@
-from django.shortcuts import get_list_or_404, get_object_or_404
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from djangorestframework_camel_case.parser import CamelCaseJSONParser
-from djangorestframework_camel_case.render import CamelCaseJSONRenderer
-
-from accounts.views.user import decode_JWT
 from . import swagger_schema
+from server import basic_swagger_schema
+from accounts.views.user import decode_JWT
 from accounts.models import Student
 from accounts.serializers.student import StudentSerializer
-from server import basic_swagger_schema
 
 
 class StudentView(APIView):
@@ -32,7 +30,7 @@ class StudentView(APIView):
         },
         description=swagger_schema.descriptions['StudentView']['get']['description'],
         summary=swagger_schema.summaries['StudentView']['get'],
-        tags=['school','student'],
+        tags=['학교', '목록',],
         examples=[
             basic_swagger_schema.examples[401]
         ],
@@ -68,7 +66,7 @@ class ClassroomStudentView(APIView):
         },
         description=swagger_schema.descriptions['ClassroomStudentView']['get']['description'],
         summary=swagger_schema.summaries['ClassroomStudentView']['get'],
-        tags=['classroom','student'],
+        tags=['교실', '목록',],
         examples=[
             basic_swagger_schema.examples[401]
         ],

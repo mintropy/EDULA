@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { BsFillHouseDoorFill, BsTable } from 'react-icons/bs';
 import routes from '../../routes';
 
 const StyledLink = styled(Link)`
@@ -26,13 +27,16 @@ const StyledTitle = styled.h1`
 function SideBar() {
 	return (
 		<StyledContainer>
-			<StyledTitle>Side Navigation</StyledTitle>
 			<ul>
 				<StyledList>
-					<StyledLink to={routes.class}>시간표</StyledLink>
+					<StyledLink to={routes.main}>
+						<BsFillHouseDoorFill />
+					</StyledLink>
 				</StyledList>
 				<StyledList>
-					<StyledLink to={routes.class}>과제 모음</StyledLink>
+					<StyledLink to={routes.schedule}>
+						<BsTable />
+					</StyledLink>
 				</StyledList>
 			</ul>
 		</StyledContainer>

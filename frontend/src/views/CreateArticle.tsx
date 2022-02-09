@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Form from '../components/class/ArticleForm';
+import ArticleForm from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
@@ -11,7 +11,12 @@ function CreateArticle() {
 		<div>
 			<StyledTitle>게시물 쓰기</StyledTitle>
 			<StyledContainer>
-				<Form originTitle='' originContent='' />
+				<ArticleForm
+					type='new'
+					originTitle=''
+					originContent=''
+					originNotice={false}
+				/>
 			</StyledContainer>
 		</div>
 	);

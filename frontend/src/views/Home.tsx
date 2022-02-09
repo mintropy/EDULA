@@ -26,6 +26,7 @@ function Main() {
 			<TopNavBar />
 			<Container>
 				<SideBar />
+
 				<OutletContainer>
 					<Outlet />
 				</OutletContainer>
