@@ -20,13 +20,19 @@ class TestStudent(TestSetUp):
         self.student_token = res.data.get('access')
         self.student_refresh_token = res.data.get('refresh')
         return super().setUp()
-    
+
     def test_token_without_data(self):
+        """
+        JWT 발급 검사
+        """
         url = reverse('JWT_login')
         res = self.client.post(url)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_toekn_with_data(self):
+        """
+        JWT 발급 검사
+        """
         url = reverse('JWT_login')
         res = self.client.post(
             url,
@@ -34,8 +40,11 @@ class TestStudent(TestSetUp):
             content_type=self.content_type,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-    
+
     def test_refresh_token(self):
+        """
+        JWT 재발급
+        """
         url = reverse('JWT_refresch')
         res = self.client.post(
             url,
@@ -43,8 +52,11 @@ class TestStudent(TestSetUp):
             content_type=self.content_type,
         )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-    
+
     def test_user_information(self):
+        """
+        유저 정보 조회
+        """
         # student
         self.client.credentials(
             HTTP_AUTHORIZATION=f'JWT {self.student_token}'

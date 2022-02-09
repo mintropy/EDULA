@@ -287,7 +287,22 @@ request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 �
     '''
     친구 신청을 삭제하고 친구 목록을 반환합니다
     ''',
-        }
+        },
+    },
+    'FriendSearchViewSet': {
+        'list': {
+            'description':
+    '''
+    친구 검색을 합니다
+search parameter를 통하여 친구 검색을 합니다\n
+한글 완성형이 아니면 검색이 되지 않을 수 있습니다\n
+같은 학교의 학생과 교사의 이름을 검색합니다\n
+    ''',
+            200:
+    '''
+    학교의 학생, 교사를 조회했습니다
+    ''',
+        },
     },
 }
 
@@ -335,7 +350,10 @@ summaries = {
         'create': '친구 신청 생성',
         'update': '친구 신청 승인/거절',
         'destroy': '보낸 친구 신청 취소',
-    }
+    },
+    'FriendSearchViewSet': {
+        'list': '친구 찾기',
+    },
 }
 
 examples = {
@@ -827,6 +845,38 @@ examples = {
                     },
                     status_codes=['200'],
                     response_only=True,
+                ),
+            ],
+        },
+    },
+    'FriendSearchViewSet': {
+        'list': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value={
+                        'studentCount': 2,
+                        'teacherCount': 1,
+                        'students': [
+                            {
+                                'id': 10,
+                                'username': 'ssafy0001',
+                                'firstName': '김싸피',
+                            },
+                            {
+                                'id': 16,
+                                'username': 'ssafy0006',
+                                'firstName': '박싸피',
+                            },
+                        ],
+                        'teachers': [
+                            {
+                                'id': 5,
+                                'username': 'ssafy1000',
+                                'firstName': '이싸피'
+                            },
+                        ],
+                    },
                 ),
             ],
         },
