@@ -96,10 +96,14 @@ function NavbarDropdown() {
 				<StyledMenu ref={dropdownRef} isactive={isActive ? 'active' : 'inactive'}>
 					<ul>
 						<li>
-							<Link to={`${routes.profile}/${userId}`}>My Profile</Link>
+							<Link to={`${routes.profile}/${userId}`} onClick={onClick}>
+								My Profile
+							</Link>
 						</li>
 						<li>
-							<Link to={routes.setting}>Settings</Link>
+							<Link to={routes.setting} onClick={onClick}>
+								Settings
+							</Link>
 						</li>
 						<li>
 							<button type='button' onClick={logout}>
