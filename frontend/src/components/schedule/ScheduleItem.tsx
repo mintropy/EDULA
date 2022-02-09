@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledItem = styled.div`
-	background-color: pink;
+	background-color: ${props => props.theme.pointColor};
 	margin: 0.5rem;
 	padding: 0.3rem;
 	text-align: center;
