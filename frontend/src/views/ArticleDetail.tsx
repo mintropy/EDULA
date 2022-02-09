@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
+import UserContext from '../context/user';
 
 const StyledContainer = styled.div`
 	font-size: 1em;
@@ -34,6 +35,7 @@ interface ArticleDataType {
 }
 
 function ArticleDetail() {
+	const { userId, userStat } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
@@ -57,31 +59,37 @@ function ArticleDetail() {
 				{articleData.updatedAt?.slice(0, 10)}
 			</StyledContent>
 			<StyledContent>글쓴이: {articleData.writer?.username}</StyledContent>
-
 			<StyledContent>{articleData.content}</StyledContent>
-			<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
-				<StyledButton>수정</StyledButton>
-			</Link>
-			<input
-				type='button'
-				value='삭제'
-				onClick={e => {
-					e.preventDefault();
-					if (articleId && lectureId) {
-						try {
-							apiDeleteArticle(lectureId, articleId)
-								.then(res => {})
-								.catch(err => {
-									// console.log(err);
-								});
+			{articleData.writer?.id === parseInt(userId, 10) && (
+				<div>
+					<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
+						<StyledButton>수정</StyledButton>
+					</Link>
+					<input
+						type='button'
+						value='삭제'
+						onClick={e => {
+							e.preventDefault();
+							if (articleId && lectureId) {
+								try {
+									apiDeleteArticle(lectureId, articleId)
+										.then(res => {})
+										.catch(err => {
+											// console.log(err);
+										});
 
-							navigate(`/lecture/${lectureId}`);
-						} catch (error) {
-							// console.log(error);
-						}
-					}
-				}}
-			/>
+									navigate(`/lecture/${lectureId}`);
+								} catch (error) {
+									// console.log(error);
+								}
+							}
+						}}
+					/>
+				</div>
+			)}
+			<Link to={`/lecture/${lectureId}/`}>
+				<StyledButton>목록</StyledButton>
+			</Link>
 		</StyledContainer>
 	);
 }

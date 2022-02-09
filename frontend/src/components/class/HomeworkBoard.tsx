@@ -1,7 +1,9 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import StyledTitle from './StyledTitle';
 import StyledButton from './StyledButton';
+import UserContext from '../../context/user';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -32,6 +34,7 @@ interface BoardProps {
 	}[];
 }
 function HomeworkBoard({ homeworks }: BoardProps) {
+	const { userStat } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	return (
@@ -51,9 +54,11 @@ function HomeworkBoard({ homeworks }: BoardProps) {
 						</StyledLink>
 					))}
 			</ul>
-			<Link to={`/${lectureId}/homeworkCreate`}>
-				<StyledButton>글쓰기</StyledButton>
-			</Link>
+			{userStat === 'TE' && (
+				<Link to={`/${lectureId}/homeworkCreate`}>
+					<StyledButton>과제 등록</StyledButton>
+				</Link>
+			)}
 		</div>
 	);
 }

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
+import UserContext from '../context/user';
 
 const StyledContainer = styled.div`
 	font-size: 1em;
@@ -28,6 +29,7 @@ interface HomeworkDataType {
 }
 
 function HomeworkDetail() {
+	const { userStat } = useContext(UserContext);
 	const { lectureId, homeworkId } = useParams();
 	const navigate = useNavigate();
 
@@ -48,27 +50,31 @@ function HomeworkDetail() {
 			<StyledTitle>{homeworkData.title}</StyledTitle>
 			<StyledContent>마감 기한: {homeworkData.deadline}</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
-			<Link to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
-				<StyledButton>수정</StyledButton>
-			</Link>
-			<input
-				type='button'
-				value='삭제'
-				onClick={e => {
-					e.preventDefault();
-					if (lectureId && homeworkId) {
-						try {
-							apiDeleteHomework(lectureId, homeworkId)
-								.then(() => {})
-								.catch(() => {});
+			{userStat === 'TE' && (
+				<div>
+					<Link to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
+						<StyledButton>수정</StyledButton>
+					</Link>
+					<input
+						type='button'
+						value='삭제'
+						onClick={e => {
+							e.preventDefault();
+							if (lectureId && homeworkId) {
+								try {
+									apiDeleteHomework(lectureId, homeworkId)
+										.then(() => {})
+										.catch(() => {});
 
-							navigate(`/lecture/${lectureId}`);
-						} catch (error) {
-							// console.log(error);
-						}
-					}
-				}}
-			/>
+									navigate(`/lecture/${lectureId}`);
+								} catch (error) {
+									// console.log(error);
+								}
+							}
+						}}
+					/>
+				</div>
+			)}
 			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
 				<StyledButton>과제 제출</StyledButton>
 			</Link>
