@@ -50,6 +50,11 @@ function ArticleBoard({ articles }: BoardProps) {
 							</StyledLink>
 						))}
 				</ul>
+				{articles.length === 0 && (
+					<div>
+						<img src='../../../images/sad.gif' width='200' alt='게시글 없음' />
+					</div>
+				)}
 				<Link to={`/${lectureId}/articleCreate`}>
 					<StyledButton>글쓰기</StyledButton>
 				</Link>
