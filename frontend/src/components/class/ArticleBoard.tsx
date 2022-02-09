@@ -58,7 +58,6 @@ function ArticleBoard() {
 			apiGetArticles(lectureId, page.toString(), limit.toString()).then(res => {
 				setTotal(res.data.totlaCount);
 				setArticleData(res.data.articles);
-				console.log(res.data);
 			});
 		}
 	};
@@ -71,18 +70,21 @@ function ArticleBoard() {
 		return (
 			<div>
 				<StyledTitle>게시판</StyledTitle>
-				<label htmlFor='limit'>
-					페이지 당 표시할 게시물 수:&nbsp;
-					<select
-						value={limit}
-						onChange={({ target: { value } }) => setLimit(Number(value))}
-					>
-						<option value='5'>5</option>
-						<option value='10'>10</option>
-						<option value='12'>12</option>
-						<option value='20'>20</option>
-					</select>
-				</label>
+
+				{articles.length !== 0 && (
+					<label htmlFor='limit'>
+						페이지 당 표시할 게시물 수:&nbsp;
+						<select
+							value={limit}
+							onChange={({ target: { value } }) => setLimit(Number(value))}
+						>
+							<option value='5'>5</option>
+							<option value='10'>10</option>
+							<option value='12'>12</option>
+							<option value='20'>20</option>
+						</select>
+					</label>
+				)}
 
 				<ul>
 					{articles &&
@@ -104,9 +106,11 @@ function ArticleBoard() {
 					<StyledButton>글쓰기</StyledButton>
 				</Link>
 
-				<footer>
-					<Pagination total={total} limit={limit} page={page} setPage={setPage} />
-				</footer>
+				{articles.length !== 0 && (
+					<footer>
+						<Pagination total={total} limit={limit} page={page} setPage={setPage} />
+					</footer>
+				)}
 			</div>
 		);
 	}
