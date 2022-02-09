@@ -1,6 +1,17 @@
 import styled from 'styled-components';
 
-function Pagination({ total, limit, page, setPage }) {
+interface Props {
+	total: number;
+	limit: number;
+	page: number;
+	setPage: Function;
+}
+type ButtonProp = {
+	onClick: Function;
+};
+
+const StyledButton = styled.button<ButtonProp>``;
+function Pagination({ total, limit, page, setPage }: Props) {
 	const numPages = Math.ceil(total / limit);
 
 	return (
@@ -9,13 +20,14 @@ function Pagination({ total, limit, page, setPage }) {
 				&lt;
 			</Button>
 			{Array(numPages)
-				.fill()
+				.fill(page)
 				.map((_, i) => (
 					<Button
+						type='button'
 						// eslint-disable-next-line react/no-array-index-key
 						key={i + 1}
 						onClick={() => setPage(i + 1)}
-						aria-current={page === i + 1 ? 'page' : null}
+						aria-current={page === i + 1 ? 'page' : undefined}
 					>
 						{i + 1}
 					</Button>
@@ -40,12 +52,12 @@ const Button = styled.button`
 	border-radius: 8px;
 	padding: 8px;
 	margin: 0;
-	background: black;
-	color: white;
+	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.fontColor};
 	font-size: 1rem;
 
 	&:hover {
-		background: tomato;
+		background: ${props => props.theme.warningColor};
 		cursor: pointer;
 		transform: translateY(-2px);
 	}
@@ -57,7 +69,7 @@ const Button = styled.button`
 	}
 
 	&[aria-current] {
-		background: deeppink;
+		background: ${props => props.theme.pointColor};
 		font-weight: bold;
 		cursor: revert;
 		transform: revert;
