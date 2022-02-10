@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
-import { apigetSearchFriend } from '../../api/friend';
+import { apigetSearchFriend, apiPostFriendRequest } from '../../api/friend';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
+import StyledDeleteBtn from './StyledDeleteBtn';
 
 interface SearchDataType {
 	studentCount: number;
@@ -21,9 +22,15 @@ interface SearchDataType {
 	}[];
 }
 
+const StyledBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.pointColor};
+	color: ${props => props.theme.fontColor};
+`;
+
 function FriendSearch() {
 	const [searchResult, setSearchResult] = useState({} as SearchDataType);
 	const [keyword, setKeyword] = useState('');
+	const [toUser, setToUser] = useState('');
 
 	const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
@@ -51,15 +58,37 @@ function FriendSearch() {
 		<div>
 			<StyledContainer>
 				<StyledTitle>친구 검색</StyledTitle>
-				<input type='text' ref={inputRef} placeholder='친구 이름을 써보세요' />
+				<input
+					type='text'
+					ref={inputRef}
+					placeholder='친구 이름을 써보세요'
+					onKeyPress={event => {
+						if (event.key === 'Enter') {
+							getData(event);
+						}
+					}}
+				/>
 				<button type='button' onClick={getData}>
 					검색
 				</button>
 
 				{searchResult.students &&
-					searchResult.students.map(request => (
-						<StyledDiv key={request.id}>
-							{request.username} : {request.firstName}
+					searchResult.students.map(friend => (
+						<StyledDiv key={friend.id}>
+							{friend.username} : {friend.firstName}
+							<StyledBtn
+								type='button'
+								value='삭제'
+								onClick={e => {
+									e.preventDefault();
+
+									apiPostFriendRequest(friend.id.toString())
+										.then(() => {})
+										.catch(() => {});
+								}}
+							>
+								친구 신청
+							</StyledBtn>
 						</StyledDiv>
 					))}
 			</StyledContainer>

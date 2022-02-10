@@ -7,36 +7,16 @@ import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 
 interface FriendRequestDataType {
-	requestSend: {
+	requsetSend: {
 		id: number;
-		fromUser: {
-			id: number;
-			username: string;
-			firstName: string;
-			status: string;
-		};
-		toUser: {
-			id: number;
-			username: string;
-			firstName: string;
-			status: string;
-		};
+		fromUser: number;
+		toUser: number;
 		requestStatus: string;
 	}[];
-	requestReveive: {
+	requsetReceive: {
 		id: number;
-		fromUser: {
-			id: number;
-			username: string;
-			firstName: string;
-			status: string;
-		};
-		toUser: {
-			id: number;
-			username: string;
-			firstName: string;
-			status: string;
-		};
+		fromUser: number;
+		toUser: number;
 		requestStatus: string;
 	}[];
 }
@@ -48,6 +28,7 @@ function FriendRequest() {
 	const getFriendRequestList = () => {
 		apiGetFriendRequestList().then(res => {
 			setFriendRequestList(res.data);
+			console.log(res.data);
 		});
 	};
 
@@ -59,20 +40,16 @@ function FriendRequest() {
 		<div>
 			<StyledContainer>
 				<StyledTitle>받은 친구 신청</StyledTitle>
-				{friendRequestList.requestReveive &&
-					friendRequestList.requestReveive.map(request => (
-						<StyledDiv key={request.id}>
-							{request.fromUser.username} : {request.fromUser.firstName}
-						</StyledDiv>
+				{friendRequestList.requsetReceive &&
+					friendRequestList.requsetReceive.map(request => (
+						<StyledDiv key={request.id}>{request.fromUser}번</StyledDiv>
 					))}
 			</StyledContainer>
 			<StyledContainer>
 				<StyledTitle>보낸 친구 신청</StyledTitle>
-				{friendRequestList.requestSend &&
-					friendRequestList.requestSend.map(request => (
-						<StyledDiv key={request.id}>
-							{request.toUser.username} : {request.toUser.firstName}
-						</StyledDiv>
+				{friendRequestList.requsetSend &&
+					friendRequestList.requsetSend.map(request => (
+						<StyledDiv key={request.id}>{request.toUser}번</StyledDiv>
 					))}
 			</StyledContainer>
 		</div>

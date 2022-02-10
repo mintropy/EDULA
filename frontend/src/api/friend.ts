@@ -36,7 +36,7 @@ export const apiPostFriendRequest = (friendId: string) =>
 			...setToken(),
 		},
 		data: {
-			friendId,
+			toUser: friendId,
 		},
 	});
 
