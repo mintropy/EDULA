@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
 import { apiGetFriendList } from '../../api/friend';
 import StyledDiv from './StyledDiv';
@@ -12,13 +12,16 @@ interface FriendDataType {
 	firstname: string;
 	status: string;
 }
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+`;
 
 function FriendList() {
 	const [friendList, setFriendList] = useState([] as FriendDataType[]);
 	const getFriendList = () => {
 		apiGetFriendList().then(res => {
 			setFriendList(res.data);
-			console.log(res.data);
 		});
 	};
 
@@ -32,7 +35,9 @@ function FriendList() {
 				<StyledTitle>친구 목록</StyledTitle>
 				{friendList &&
 					friendList.map(friend => (
-						<StyledDiv key={friend.id}>{friend.username}</StyledDiv>
+						<StyledLink to={`/profile/${friend.id}`}>
+							<StyledDiv key={friend.id}>{friend.username}</StyledDiv>
+						</StyledLink>
 					))}
 			</StyledContainer>
 		</div>

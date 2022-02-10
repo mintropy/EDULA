@@ -23,18 +23,6 @@ const StyledLink = styled(Link)`
 	font-size: 1em;
 `;
 
-interface BoardProps {
-	articles: {
-		content: string;
-		createdAt: string;
-		id: number;
-		lecture: number;
-		notice: boolean;
-		title: string;
-		updatedAt: string;
-		writer: number;
-	}[];
-}
 interface ArticleDataType {
 	content: string;
 	createdAt: string;
