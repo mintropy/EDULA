@@ -25,5 +25,12 @@ services:
     volumes:
       - static_volume:/app/backend/static
 
+  openvidu-server-kms:
+    image: openvidu/openvidu-server-kms:2.20.0
+    ports:
+      - 4443:4443
+    environment:
+      - OPENVIDU_SECRET=MY_SECRET
+
 volumes:
   static_volume: {}

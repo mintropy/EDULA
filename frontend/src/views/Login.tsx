@@ -74,7 +74,7 @@ function Login() {
 		}
 	};
 
-	const clearLoginErrors = () => {
+	const clearLoginError = () => {
 		clearErrors('result');
 	};
 
@@ -127,7 +127,7 @@ function Login() {
 							})}
 							type='text'
 							placeholder='ID'
-							onClick={clearLoginErrors}
+							onInput={clearLoginError}
 						/>
 					</FormInput>
 					{idError}
@@ -149,7 +149,7 @@ function Login() {
 							})}
 							type='password'
 							placeholder='Password'
-							onClick={clearLoginErrors}
+							onInput={clearLoginError}
 						/>
 					</FormInput>
 					{pwError}

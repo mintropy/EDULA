@@ -15,7 +15,7 @@ const StyledIntro = styled.div`
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	width: 100%;
+	width: 800px;
 	height: 10em;
 `;
 interface IntroProps {
@@ -25,12 +25,9 @@ interface IntroProps {
 
 function Intro({ id, name }: IntroProps) {
 	return (
-		<>
-			<StyledIntro>
-				<StyledTitle>{name}</StyledTitle>
-			</StyledIntro>
-			;
-		</>
+		<StyledIntro>
+			<StyledTitle>{name}</StyledTitle>
+		</StyledIntro>
 	);
 }
 

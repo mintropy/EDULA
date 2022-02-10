@@ -1,6 +1,6 @@
 import _ from './_variables';
 
-export type ThemeType = 'base' | 'dark' | 'nature' | 'twilight';
+export type ThemeType = 'base' | 'dark' | 'nature' | 'twilight' | 'colorful';
 
 const theme = {
 	base: {
@@ -47,6 +47,17 @@ const theme = {
 		iconColor: _.darkerWhite,
 		iconColorActive: _.natureGreen,
 		pointColor: _.twilightPink,
+	},
+	colorful: {
+		fontColor: _.realBlack,
+		bgColor: _.childrenyellow,
+		subBgColor: _.childrenorange,
+		warningColor: _.childrenred,
+		mainBlue: _.childrengreen,
+		borderColor: _.childrengreen,
+		iconColor: _.darkerWhite,
+		iconColorActive: _.childrengreen,
+		pointColor: _.childrenyellow,
 	},
 };
 

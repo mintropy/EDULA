@@ -5,6 +5,31 @@ from rest_framework import serializers
 
 
 schema_serializers = {
+    'FriendRequestViewSet': {
+        'request_list': inline_serializer(
+                name='RequestList',
+                fields={
+                    'request_send': serializers.ListField(),
+                    'request_reveive': serializers.ListField(),
+                },
+        ),
+        'create': {
+            'request': inline_serializer(
+                name='CreateRequest',
+                fields={
+                    'to_user': serializers.IntegerField(),
+                },
+            ),
+        },
+        'update': {
+            'request': inline_serializer(
+                name='UpdateRequest',
+                fields={
+                    'request_status': serializers.CharField(),
+                },
+            ),
+        },
+    },
 }
 
 descriptions = {
@@ -77,6 +102,37 @@ reset password send through email
     ''',
         },
     },
+    'FriendViewSet': {
+        'list' : {
+            'description':
+    '''
+    친구 목록을 받습니다
+    ''',
+            200:
+    '''
+    유저의 친구 목록을 받았습니다
+유저의 친구목록을 받았고, 각 친구의 id, username, firstName, status를 받습니다\n
+친구가 없으면 404를 받습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    친구를 삭제합니다
+성공적으로 삭제 후 친구 리스트를 200번으로 반환합니다\n
+만약 친구 삭제 후 친구가 남아있지 않으면 204를 반환합니다\n
+해당 유저가 friend_pk에 해당하는 유저를 친구로 두지 않은 경우 404를 반환합니다
+    ''',
+            200:
+    '''
+    성공적으로 친구 삭제 후 친구 목록을 반환합니다
+    ''',
+            204:
+    '''
+    성공적으로 친구 삭제 후 남은 친구가 없습니다
+    ''',
+        }
+    },
     'StudentView': {
         'get': {
             'description':
@@ -99,6 +155,18 @@ email, phone, guardian phone could be updated
     '''
     Successfully update student information
 and get updated information
+    ''',
+        },
+    },
+    'StudentLectureView': {
+        'get': {
+            'description':
+    '''
+    Get student's lecture lists
+    ''',
+            200:
+    '''
+    Successfully get student's lecture list
     ''',
         },
     },
@@ -127,6 +195,18 @@ and get updated information
     ''',
         },
     },
+    'TeacherLectureView': {
+        'get': {
+            'description':
+    '''
+    Get teacher lecture list
+    ''',
+            200:
+    '''
+    Successfully get teacher lecture list
+    ''',
+        }
+    },
     'SchoolAdminView': {
         'get': {
             'description':
@@ -152,6 +232,63 @@ and get updated information
     ''',
         },
     },
+    'FriendRequestViewSet': {
+        'list': {
+            'description':
+    '''
+    보낸 친구 신청 목록과 받은 친구 신청 목록을 표시합니다
+보낸 친구 신청 목록과 받은 친구 신청 목록에 대하여 유저의 간략한 정보와 함께 requestStatus를 제공합니다\n
+requestStatus는 RQ일때 친구 신청, RF일때 신청에 대한 거절, AC일때 신청에 대한 승인입니다\n
+(RQ=Request, RF=Refusal, AC=Accept)
+    ''',
+            200:
+    '''
+    받은/보낸 친구 신청 목록을 성공적으로 받았습니다
+    ''',
+        },
+        'create': {
+            'description':
+    '''
+    친구 신청을 생성합니다
+친구 신청을 원하는 유저의 id(friend_pk)를 입력으로 받습니다\n
+이미 신청을 한 경우(RQ) 추가적으로 신청되지 않고 400을 반환합니다\n
+또한 올바르지 않은 데이터인 경우 400을 반환할 수 있습니다\n
+해당 유저를 찾을 수 없으면 404를 반환합니다\n
+신청이 완료되었으면, 전체 신청 결과를 반환합니다
+    ''',
+            201:
+    '''
+    친구신청이 완료되었고, 전체 신청 리스트를 반환합니다
+    ''',
+        },
+        'update': {
+            'description':
+    '''
+    받은 친구 신청을 승인 또는 거절
+받은 친구 신청을 승인 또는 거절합니다\n
+승인하면 친구 신청의 fromUser와 toUser가 친구가됩니다\n
+성공적으로 승인 또는 거절이 처리되면 200을 반환합니다\n
+requset_pk에 해당하는 요청을 받은 유저가 아니라면 404를 반환합니다\n
+잘못된 데이터가 있으면 400을 반환할 수 있습니다
+    ''',
+            200:
+    '''
+    성공적으로 친구 신청 승인/거절 되었습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    보낸 친구 신청을 삭제(취소)합니다
+기존 보낸 친구 신청을 삭제하고, 전체 보낸/받은 친구 신청 리스트를 반환합니다\n
+request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 보낸 요청이 아닌경우 404를 반환합니다
+    ''',
+            200:
+    '''
+    친구 신청을 삭제하고 친구 목록을 반환합니다
+    ''',
+        }
+    },
 }
 
 summaries = {
@@ -170,17 +307,34 @@ summaries = {
     'PasswordResetView': {
         'put': 'get reset password through email',
     },
+    'FriendViewSet': {
+        'list': '친구 목록',
+        'destroy': '친구 삭제',
+    },
     'StudentView': {
         'get': 'get studnet information',
         'put': 'update student information',
+    },
+    'StudentLectureView': {
+        'get': 'get student lecture list'
     },
     'TeacherView': {
         'get': 'get teacher information',
         'put': 'update teacher information',
     },
+    'TeacherLectureView':
+    {
+        'get': 'get teacher lecture list'
+    },
     'SchoolAdminView': {
         'get': 'get school admin information',
         'put': 'update school admin information',
+    },
+    'FriendRequestViewSet':{
+        'list': '친구 신청 목록',
+        'create': '친구 신청 생성',
+        'update': '친구 신청 승인/거절',
+        'destroy': '보낸 친구 신청 취소',
     }
 }
 
@@ -273,6 +427,54 @@ examples = {
             ),
         },
     },
+    'FriendViewSet': {
+        'list': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value=[
+                        {
+                            'id': 0,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        {
+                            'id': 2,
+                            'username': 'ssafy0005',
+                            'firstName': '이싸피',
+                            'status': 'ST',
+                        },
+                    ],
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
+        'destroy': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value=[
+                        {
+                            'id': 0,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        {
+                            'id': 2,
+                            'username': 'ssafy0005',
+                            'firstName': '이싸피',
+                            'status': 'ST',
+                        },
+                    ],
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
+    },
     'StudentView': {
         'get': {
             200: OpenApiExample(
@@ -340,6 +542,39 @@ examples = {
             ),
         },
     },
+    'StudentLectureView': {
+        'get': {
+            200: OpenApiExample(
+                name='student',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'ST',
+                    },
+                    'lectureList': [
+                        {
+                            'id': 1,
+                            'name': 'math',
+                            'timeList': {
+                                
+                            },
+                            'school': 1,
+                            'teacher': 1,
+                            'studentList': [
+                                1,
+                                2,
+                                3
+                            ]
+                        }
+                    ],
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        }
+    },
     'TeacherView': {
         'get': {
             200: OpenApiExample(
@@ -404,6 +639,39 @@ examples = {
             ),
         },
     },
+    'TeacherLectureView': {
+        'get': {
+            200: OpenApiExample(
+                name='teacher',
+                value={
+                    'user': {
+                        'id': 0,
+                        'username': 'ssafy1234',
+                        'firstName': '김싸피',
+                        'status': 'TE',
+                    },
+                    'lectureList': [
+                        {
+                            'id': 1,
+                            'name': 'math',
+                            'timeList': {
+                                
+                            },
+                            'school': 1,
+                            'teacher': 1,
+                            'studentList': [
+                                1,
+                                2,
+                                3
+                            ]
+                        }
+                    ],
+                },
+                status_codes=['200'],
+                response_only=True,
+            ),
+        }
+    },
     'SchoolAdminView': {
         'get': {
             200: OpenApiExample(
@@ -466,6 +734,101 @@ examples = {
                 status_codes=['201'],
                 response_only=True,
             ),
+        },
+    },
+    'FriendRequestViewSet': {
+        'request_list': OpenApiExample(
+            name='request list',
+            value={
+                'requestSend': [
+                    {
+                        'id': 5,
+                        'fromUser': {
+                            'id': 2,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        'toUser': {
+                            'id': 1,
+                            'username': 'ssafy0006',
+                            'firstName': '이싸피',
+                            'status': 'St',
+                        },
+                        'requestStatus': 'RQ',
+                    },
+                ],
+                'requestReveive': [
+                    {
+                        'id': 6,
+                        'fromUser': {
+                            'id': 5,
+                            'username': 'ssafy0009',
+                            'firstName': '박싸피',
+                            'status': 'St',
+                        },
+                        'toUser': {
+                            'id': 2,
+                            'username': 'ssafy0001',
+                            'firstName': '김싸피',
+                            'status': 'ST',
+                        },
+                        'requestStatus': 'RF',
+                    },
+                ],
+            },
+            status_codes=['200', '201'],
+            response_only=True
+        ),
+        'create': {
+            'request': OpenApiExample(
+                name='create friend request',
+                value={
+                    'toUser': 1,
+                },
+                request_only=True,
+            ),
+        },
+        'update': {
+            'request': [
+                OpenApiExample(
+                    name='accept',
+                    value={
+                        'requestStatus': 'AC'
+                    },
+                    request_only=True,
+                ),
+                OpenApiExample(
+                    name='refusal',
+                    value={
+                        'requestStatus': 'RF'
+                    }
+                )
+            ],
+            200: [
+                OpenApiExample(
+                    name='accept',
+                    value={
+                        'id': 1,
+                        'fromUser': 1,
+                        'toUser': 2,
+                        'requestStatus': 'AC',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+                OpenApiExample(
+                    name='refusal',
+                    value={
+                        'id': 1,
+                        'fromUser': 1,
+                        'toUser': 2,
+                        'requestStatus': 'RF',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
         },
     },
 }

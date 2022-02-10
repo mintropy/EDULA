@@ -1,12 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Board from '../components/class/Board';
-import HomeworkViewer from '../components/class/HomeworkViewer';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
-import UserContext from '../context/user';
+import ArticleBoard from '../components/class/ArticleBoard';
+import HomeworkBoard from '../components/class/HomeworkBoard';
 
 const StyledContainer = styled.section`
 	display: grid;
@@ -32,31 +31,11 @@ interface LectureDataType {
 	studentList: [number];
 }
 
-interface HomeworkDataType {
-	homeworks: {
-		content: string;
-		createdAt: string;
-		deadline: string;
-		id: number;
-		lecture: number;
-		title: string;
-		writerName: string;
-		writerPk: number;
-	}[];
-}
-
 const StyledIntro = styled(Intro)``;
-const StyledBoard = styled(Board)`
-	grid-column: 2;
-`;
-const StyledHomeworkViewer = styled(HomeworkViewer)`
-	grid-column: 1;
-`;
 
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
-	const { schoolId } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	useEffect(() => {
@@ -69,8 +48,8 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetHomeworks(parseInt(lectureId, 10)).then(res => {
-				setHomeworkData(res.data);
+			apiGetHomeworks(lectureId).then(res => {
+				setHomeworkData(res.data.homework);
 			});
 		}
 	}, []);
@@ -80,8 +59,8 @@ function Class() {
 			<>
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
-					<StyledHomeworkViewer />
-					{homeworkData && <StyledBoard articles={homeworkData} />}
+					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
+					<ArticleBoard />
 				</StyledContainer>
 			</>
 		);
