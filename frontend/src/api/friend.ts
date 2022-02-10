@@ -60,3 +60,12 @@ export const apiDeleteFriendRequest = (requestId: string) =>
 			...setToken(),
 		},
 	});
+
+export const apigetSearchFriend = (keyword: string) =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/accounts/friend/search/${keyword}/`,
+		headers: {
+			...setToken(),
+		},
+	});

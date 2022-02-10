@@ -9,7 +9,7 @@ const StyledButton = styled.button`
 	-webkit-appearance: none;
 	appearance: none;
 	background: ${props => props.theme.warningColor};
-	color: ${props => props.theme.fontColor};
+	color: white;
 	border-radius: 4px;
 	border: none;
 	cursor: pointer;
