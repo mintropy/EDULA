@@ -297,6 +297,11 @@ request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 �
 search parameter를 통하여 친구 검색을 합니다\n
 한글 완성형이 아니면 검색이 되지 않을 수 있습니다\n
 같은 학교의 학생과 교사의 이름을 검색합니다\n
+friendRequest는 해당 유저와 친구 상태에 따라 값이 결정됩니다
+- friend: 이미 친구인 경우
+- requestSend: 내가 친구 요청을 보낸 유저인 경우
+- requestReveive : 내가 친구 요청을 받은 유저인 경우
+- null : 아무런 관계가 없는 경우
     ''',
             200:
     '''
@@ -862,18 +867,21 @@ examples = {
                                 'id': 10,
                                 'username': 'ssafy0001',
                                 'firstName': '김싸피',
+                                'friendRequest': 'friend',
                             },
                             {
                                 'id': 16,
                                 'username': 'ssafy0006',
                                 'firstName': '박싸피',
+                                'friendRequest': 'requestSend',
                             },
                         ],
                         'teachers': [
                             {
                                 'id': 5,
                                 'username': 'ssafy1000',
-                                'firstName': '이싸피'
+                                'firstName': '이싸피',
+                                'friendRequest': 'requestReveive',
                             },
                         ],
                     },
