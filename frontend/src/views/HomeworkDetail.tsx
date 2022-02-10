@@ -6,6 +6,29 @@ import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
 import UserContext from '../context/user';
+import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
+
+const StyleUpdateBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.borderColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const StyleDeleteBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.warningColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const StyleSubmitBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.bgColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+	color: ${props => props.theme.fontColor};
+`;
 
 const StyledContainer = styled.div`
 	font-size: 1em;
@@ -48,14 +71,17 @@ function HomeworkDetail() {
 	return (
 		<StyledContainer>
 			<StyledTitle>{homeworkData.title}</StyledTitle>
-			<StyledContent>마감 기한: {homeworkData.deadline}</StyledContent>
+			<StyledContent>
+				마감 기한: {homeworkData.deadline.slice(0, 10)}{' '}
+				{homeworkData.deadline.slice(11)}
+			</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
 			{userStat === 'TE' && (
-				<div>
-					<Link to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
-						<StyledButton>수정</StyledButton>
-					</Link>
-					<StyledButton
+				<span>
+					<StyledLink to={`/${lectureId}/homeworkUpdate/${homeworkId}`}>
+						<StyleUpdateBtn>수정</StyleUpdateBtn>
+					</StyledLink>
+					<StyleDeleteBtn
 						type='button'
 						value='삭제'
 						onClick={e => {
@@ -74,12 +100,12 @@ function HomeworkDetail() {
 						}}
 					>
 						삭제
-					</StyledButton>
-				</div>
+					</StyleDeleteBtn>
+				</span>
 			)}
-			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
-				<StyledButton>과제 제출</StyledButton>
-			</Link>
+			<StyledLink to={`/${lectureId}/homework/${homeworkId}/submit`}>
+				<StyleSubmitBtn>과제 제출</StyleSubmitBtn>
+			</StyledLink>
 		</StyledContainer>
 	);
 }
