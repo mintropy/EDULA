@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { BsFillHouseDoorFill, BsTable } from 'react-icons/bs';
+import { BsFillHouseDoorFill, BsTable, BsPeopleFill } from 'react-icons/bs';
 import routes from '../../routes';
 
 const StyledLink = styled(Link)`
@@ -36,6 +36,11 @@ function SideBar() {
 				<StyledList>
 					<StyledLink to={routes.schedule}>
 						<BsTable />
+					</StyledLink>
+				</StyledList>
+				<StyledList>
+					<StyledLink to={routes.friend}>
+						<BsPeopleFill />
 					</StyledLink>
 				</StyledList>
 			</ul>

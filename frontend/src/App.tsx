@@ -27,6 +27,7 @@ import UpdateHomework from './views/UpdateHomework';
 import HomeworkDetail from './views/HomeworkDetail';
 import HomeworkSubmitForm from './views/HomeworkSubmit';
 import Openvidu from './views/Openvidu';
+import Friend from './views/Friend';
 
 function App() {
 	return (
@@ -52,6 +53,7 @@ function App() {
 						<Route path={routes.homeworkDetail} element={<HomeworkDetail />} />
 						<Route path={routes.homeworkSubmit} element={<HomeworkSubmitForm />} />
 						<Route path={routes.schedule} element={<Schedule />} />
+						<Route path={routes.friend} element={<Friend />} />
 						<Route path={routes.admin} element={<Admin />}>
 							<Route index element={<AdminIndex />} />
 							<Route path={routes.studentManager} element={<StudentManager />} />
