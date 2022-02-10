@@ -99,7 +99,7 @@ class HomeworkSubmission(models.Model):
         Make homework submission media file path
         """
         return f'submission/{instance.homework.title}/{instance.writer.username}/{filename}'
-    
+
     homework = models.ForeignKey(
         Homework,
         related_name='submission',
@@ -124,6 +124,9 @@ class HomeworkSubmission(models.Model):
 
 
 class Article(models.Model):
+    """
+    Atricle model
+    """
     title = models.CharField(max_length=20)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -141,6 +144,6 @@ class Article(models.Model):
         related_name="article_list",
         on_delete=models.CASCADE,
     )
-    
+
     def __str__(self):
         return self.title
