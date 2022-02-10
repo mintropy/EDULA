@@ -73,7 +73,7 @@ export const apiUpdateArticle = (
 export const apiDeleteArticle = (lectureId: string, articleId: string) =>
 	axios({
 		method: 'delete',
-		url: `${BASE_URL}/schools/lecture/${lectureId}/article/${articleId}`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/article/${articleId}/`,
 		headers: {
 			...setToken(),
 		},
