@@ -64,6 +64,7 @@ function FriendList() {
 							</StyledDiv>
 						</StyledLink>
 					))}
+				{friendList.length === 0 && <StyledDiv> 없어요</StyledDiv>}
 			</StyledContainer>
 		</div>
 	);

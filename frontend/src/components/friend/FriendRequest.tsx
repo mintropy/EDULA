@@ -31,14 +31,17 @@ const StyledSpan = styled.span`
 const StyledWaitingBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.pointColor};
 	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
 `;
 const StyleAcceptBtn = styled(StyledDeleteBtn)`
-	background: ${props => props.theme.iconColor};
+	background: ${props => props.theme.borderColor};
 	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
 `;
 const StyleRefuseBtn = styled(StyledDeleteBtn)`
-	background: ${props => props.theme.mainBlue};
+	background: ${props => props.theme.bgColor};
 	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
 `;
 
 const StyledLink = styled(Link)`
@@ -55,7 +58,6 @@ function FriendRequest() {
 	const getFriendRequestList = () => {
 		apiGetFriendRequestList().then(res => {
 			setFriendRequestList(res.data);
-			console.log(res.data);
 		});
 	};
 
@@ -79,6 +81,7 @@ function FriendRequest() {
 									if (request.id) {
 										try {
 											apiPutFriendRequest(request.id.toString(), 'AC');
+											window.location.reload();
 										} catch (error) {
 											// console.log(error);
 										}
@@ -94,6 +97,7 @@ function FriendRequest() {
 									if (request.id) {
 										try {
 											apiPutFriendRequest(request.id.toString(), 'RF');
+											window.location.reload();
 										} catch (error) {
 											// console.log(error);
 										}
@@ -104,6 +108,9 @@ function FriendRequest() {
 							</StyleRefuseBtn>
 						</StyledDiv>
 					))}
+				{friendRequestList.requsetReceive?.length === 0 && (
+					<StyledDiv> 없어요.</StyledDiv>
+				)}
 			</StyledContainer>
 			<StyledContainer>
 				<StyledTitle>보낸 친구 신청</StyledTitle>
@@ -120,6 +127,7 @@ function FriendRequest() {
 									if (request.id) {
 										try {
 											apiDeleteFriendRequest(request.id.toString());
+											window.location.reload();
 										} catch (error) {
 											// console.log(error);
 										}
@@ -130,6 +138,9 @@ function FriendRequest() {
 							</StyledWaitingBtn>
 						</StyledDiv>
 					))}
+				{friendRequestList.requsetSend?.length === 0 && (
+					<StyledDiv> 없어요.</StyledDiv>
+				)}
 			</StyledContainer>
 		</div>
 	);

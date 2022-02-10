@@ -14,16 +14,12 @@ const StyledList = styled.li`
 `;
 
 const StyledContainer = styled.div`
-	padding: 2em;
-	width: 10em;
+	padding: 1em;
+	width: 3em;
 	height: 100%;
 	background-color: ${props => props.theme.subBgColor};
 `;
 
-const StyledTitle = styled.h1`
-	font-size: 2em;
-	text-align: center;
-`;
 function SideBar() {
 	return (
 		<StyledContainer>

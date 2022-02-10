@@ -25,6 +25,12 @@ interface SearchDataType {
 const StyledBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.pointColor};
 	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const SearchBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.pointColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
 `;
 
 const StyledLink = styled(Link)`
@@ -73,9 +79,9 @@ function FriendSearch() {
 						}
 					}}
 				/>
-				<button type='button' onClick={getData}>
+				<SearchBtn type='button' onClick={getData}>
 					검색
-				</button>
+				</SearchBtn>
 
 				{searchResult.students &&
 					searchResult.students.map(friend => (
@@ -90,7 +96,9 @@ function FriendSearch() {
 									e.preventDefault();
 
 									apiPostFriendRequest(friend.id.toString())
-										.then(() => {})
+										.then(() => {
+											window.location.reload();
+										})
 										.catch(() => {});
 								}}
 							>
@@ -98,6 +106,9 @@ function FriendSearch() {
 							</StyledBtn>
 						</StyledDiv>
 					))}
+				{searchResult.studentCount === 0 && (
+					<StyledDiv>검색 결과가 없어요.</StyledDiv>
+				)}
 			</StyledContainer>
 		</div>
 	);
