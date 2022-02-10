@@ -8,15 +8,8 @@ import {
 	apiGetTeacherLectureList,
 } from '../../api/user';
 import UserContext from '../../context/user';
-
-const StyledContainer = styled.div`
-	height: 100%;
-	width: 25em;
-	margin: 1em;
-	padding: 1em;
-	color: ${props => props.theme.fontColor};
-	background-color: ${props => props.theme.subBgColor};
-`;
+import StyledTitle from '../class/StyledTitle';
+import StyledContainer from './StyledContainer';
 
 interface ScheduleDataType {
 	id: number;
@@ -95,9 +88,7 @@ function ScheduleContainer() {
 				.then(res => {
 					setUserStat(res.data.status);
 				})
-				.catch(err => {
-					console.log(err);
-				});
+				.catch(() => {});
 		}
 	}, [userId]);
 
@@ -169,9 +160,7 @@ function ScheduleContainer() {
 					/>
 				))}
 
-				{scheduleData.length === 0 && (
-					<img src='../../../images/noclass.gif' width='200' alt='수업 없음' />
-				)}
+				{scheduleData.length === 0 && <StyledTitle>수업이 없어요!</StyledTitle>}
 			</StyledContainer>
 		);
 	}

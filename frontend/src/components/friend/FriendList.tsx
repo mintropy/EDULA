@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
-import {
-	apiGetFriendList,
-	apiDeleteFriend,
-	apiDeleteFriendRequest,
-} from '../../api/friend';
+import { apiGetFriendList, apiDeleteFriend } from '../../api/friend';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
