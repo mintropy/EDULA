@@ -27,10 +27,15 @@ const StyledBtn = styled(StyledDeleteBtn)`
 	color: ${props => props.theme.fontColor};
 `;
 
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+	color: ${props => props.theme.fontColor};
+`;
+
 function FriendSearch() {
 	const [searchResult, setSearchResult] = useState({} as SearchDataType);
 	const [keyword, setKeyword] = useState('');
-	const [toUser, setToUser] = useState('');
 
 	const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
@@ -75,10 +80,12 @@ function FriendSearch() {
 				{searchResult.students &&
 					searchResult.students.map(friend => (
 						<StyledDiv key={friend.id}>
-							{friend.username} : {friend.firstName}
+							<StyledLink to={`/profile/${friend.id}`}>
+								{friend.username} : {friend.firstName}
+							</StyledLink>
 							<StyledBtn
 								type='button'
-								value='삭제'
+								value='친구 신청'
 								onClick={e => {
 									e.preventDefault();
 
