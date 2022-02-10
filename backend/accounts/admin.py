@@ -18,7 +18,7 @@ class SchoolAdminInline(admin.TabularInline):
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('id', 'username', 'first_name', 'status')
+    list_display = ('id', 'username', 'first_name', 'school_name', 'status')
     fieldsets = UserAdmin.fieldsets + (
         ('Custom fields', {'fields': ('status', 'friend_list',)}),
     )
@@ -27,6 +27,15 @@ class CustomUserAdmin(UserAdmin):
     inlines = [
         StudentInline, TeacherInline, SchoolAdminInline,
     ]
+
+    def school_name(self, user):
+        if user.status == 'ST':
+            return user.student.school
+        elif user.status == 'TE':
+            return user.teacher.school
+        elif user.status == 'SA':
+            return user.school_admin.school
+        return None
 
 
 @admin.register(FriendRequest)
@@ -48,4 +57,3 @@ admin.site.register(User, CustomUserAdmin)
 admin.site.register(Student)
 admin.site.register(Teacher)
 admin.site.register(SchoolAdmin)
-# admin.site.register(FriendRequest, FriendRequestAdmin)

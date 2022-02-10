@@ -4,7 +4,7 @@ import random
 import smtplib
 
 from django.shortcuts import get_list_or_404, get_object_or_404
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -22,7 +22,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from server import basic_swagger_schema
 from . import swagger_schema
-from ..models import User, Student, Teacher
+from ..models import FriendRequest, User, Student, Teacher
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
@@ -132,6 +132,17 @@ def create_password():
         + random.choices(base_special_char, k=2)
     random.shuffle(new_password)
     return ''.join(new_password)
+
+
+def check_friend_request(friend_requests: FriendRequest, from_user: int, to_user: User):
+    if to_user.friend_list.all():
+        return 'friend'
+    else:
+        if friend_requests.filter(from_user=from_user, to_user=to_user):
+            return 'requestReveive'
+        elif friend_requests.filter(from_user=to_user, to_user=from_user):
+            return 'requsetSend'
+    return None
 
 
 class UserView(APIView):
@@ -584,7 +595,7 @@ class FriendSearchViewSet(ViewSet):
             ),
             401: basic_swagger_schema.open_api_response[401],
         },
-        description=swagger_schema.descriptions['FriendSearchViewSet']['list'][200],
+        description=swagger_schema.descriptions['FriendSearchViewSet']['list']['description'],
         summary=swagger_schema.summaries['FriendSearchViewSet']['list'],
         tags=['친구',],
         examples=[
@@ -616,28 +627,33 @@ class FriendSearchViewSet(ViewSet):
             )
         students = User.objects.filter(first_name__contains=search, status='ST')\
                 .prefetch_related(
-                    Prefetch('student', queryset=Student.objects.filter(school_id=school_pk)))
+                    Prefetch('student', queryset=Student.objects.filter(school_id=school_pk)),
+                    Prefetch('friend_list', queryset=User.objects.filter(id=user.pk)))
         teachers = User.objects.filter(first_name__contains=search, status='TE')\
                 .prefetch_related(
-                    Prefetch('teacher', queryset=Teacher.objects.filter(school_id=school_pk)))
+                    Prefetch('teacher', queryset=Teacher.objects.filter(school_id=school_pk)),
+                    Prefetch('friend_list', queryset=User.objects.filter(id=user.pk)))
+        friend_requests = FriendRequest.objects.filter(Q(from_user=user.pk)|Q(to_user=user.pk))
         data = {
-            'student_count': students.count(),
-            'teacher_count': teachers.count(),
             'students': [
                 {
                     'id': student.pk,
                     'username': student.username,
-                    'firstName': student.first_name,
-                } for student in students
+                    'first_name': student.first_name,
+                    'friend_request': check_friend_request(friend_requests, user.pk, student),
+                } for student in students if student.pk != user.pk
             ],
             'teachers': [
                 {
                     'id': teacher.pk,
                     'username': teacher.username,
-                    'firstName': teacher.first_name,
-                } for teacher in teachers
+                    'first_name': teacher.first_name,
+                    'friend_request': check_friend_request(friend_requests, user.pk, teacher),
+                } for teacher in teachers if teacher.pk != user.pk
             ]
         }
+        data['student_count'] = len(data['students'])
+        data['teacher_count'] = len(data['teachers'])
         return Response(
             data,
             status=status.HTTP_200_OK,

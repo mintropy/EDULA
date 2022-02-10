@@ -177,13 +177,9 @@ class FriendRequestViewSet(ViewSet):
             }
         )
         if serializer.is_valid():
-            FriendRequest.objects.filter(
-                from_user=from_user, to_user=to_user, request_status__in=['RF', 'AC'],
-            ).delete()
             serializer.save()
-            FriendRequest.objects.filter(
-                from_user=from_user, to_user=to_user, request_status='RQ',
-            ).delete()
+            FriendRequest.objects.filter(from_user=from_user, to_user=to_user,).delete()
+            FriendRequest.objects.filter(from_user=to_user, to_user=from_user,).delete()
             if status_after == 'AC':
                 user.friend_list.add(from_user)
                 user.save()
