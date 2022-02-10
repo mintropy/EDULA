@@ -1,9 +1,15 @@
-import React from 'react'
+import FriendList from '../components/friend/FriendList';
+import FriendGivenRequest from '../components/friend/FriendGivenRequest';
+import FriendReceivedRequest from '../components/friend/FriendReceivedRequest';
 
 function Friend() {
-  return (
-    <div>Friend</div>
-  )
+	return (
+		<>
+			<FriendList />
+			<FriendGivenRequest />
+			<FriendReceivedRequest />
+		</>
+	);
 }
 
-export default Friend
+export default Friend;
