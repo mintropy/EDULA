@@ -1,0 +1,19 @@
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+	font-family: 'Helvetica', 'Arial', sans-serif;
+	display: inline;
+	font-size: 1em;
+	padding: 0.5em;
+	margin: 1em 0.5em;
+	-webkit-appearance: none;
+	appearance: none;
+	background: ${props => props.theme.warningColor};
+	color: ${props => props.theme.fontColor};
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+	position: relative;
+`;
+
+export default StyledButton;

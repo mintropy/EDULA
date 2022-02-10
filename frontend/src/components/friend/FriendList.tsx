@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
-import { apiGetFriendList } from '../../api/friend';
+import { apiGetFriendList, apiDeleteFriend } from '../../api/friend';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
+import StyledDeleteBtn from './StyledDeleteBtn';
 
 interface FriendDataType {
 	id: number;
@@ -16,7 +17,9 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
 `;
-
+const StyledSpan = styled.span`
+	color: ${props => props.theme.fontColor};
+`;
 function FriendList() {
 	const [friendList, setFriendList] = useState([] as FriendDataType[]);
 	const getFriendList = () => {
@@ -36,7 +39,25 @@ function FriendList() {
 				{friendList &&
 					friendList.map(friend => (
 						<StyledLink to={`/profile/${friend.id}`}>
-							<StyledDiv key={friend.id}>{friend.username}</StyledDiv>
+							<StyledDiv key={friend.id}>
+								<StyledSpan>{friend.username}</StyledSpan>
+								<StyledDeleteBtn
+									type='button'
+									value='삭제'
+									onClick={e => {
+										e.preventDefault();
+										if (friend.id) {
+											try {
+												apiDeleteFriend(friend.id.toString());
+											} catch (error) {
+												// console.log(error);
+											}
+										}
+									}}
+								>
+									삭제
+								</StyledDeleteBtn>
+							</StyledDiv>
 						</StyledLink>
 					))}
 			</StyledContainer>
