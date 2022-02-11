@@ -4,6 +4,7 @@ import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
 	margin: 3em;
+	color: ${props => props.theme.fontColor};
 `;
 
 function CreateHomework() {

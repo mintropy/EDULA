@@ -14,14 +14,34 @@ import StyledDeleteBtn from './StyledDeleteBtn';
 interface FriendRequestDataType {
 	requsetSend: {
 		id: number;
-		fromUser: number;
-		toUser: number;
+		fromUser: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
+		toUser: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
 		requestStatus: string;
 	}[];
 	requsetReceive: {
 		id: number;
-		fromUser: number;
-		toUser: number;
+		fromUser: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
+		toUser: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
 		requestStatus: string;
 	}[];
 }
@@ -72,8 +92,10 @@ function FriendRequest() {
 				{friendRequestList.requsetReceive &&
 					friendRequestList.requsetReceive.map(request => (
 						<StyledDiv>
-							<StyledLink to={`/profile/${request.fromUser}`}>
-								<StyledSpan key={request.id}>{request.fromUser}번</StyledSpan>
+							<StyledLink to={`/profile/${request.fromUser?.id}`}>
+								<StyledSpan key={request.id}>
+									{request.fromUser?.username}: {request.fromUser?.firstName}
+								</StyledSpan>
 							</StyledLink>
 							<StyleAcceptBtn
 								onClick={e => {
@@ -118,7 +140,9 @@ function FriendRequest() {
 					friendRequestList.requsetSend.map(request => (
 						<StyledDiv>
 							<StyledLink to={`/profile/${request.toUser}`}>
-								<StyledSpan key={request.id}>{request.toUser}번</StyledSpan>
+								<StyledSpan key={request.id}>
+									{request.toUser?.username}: {request.toUser?.firstName}
+								</StyledSpan>
 							</StyledLink>
 
 							<StyledWaitingBtn
