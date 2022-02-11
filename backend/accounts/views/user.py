@@ -334,7 +334,7 @@ class UserCUDView(ViewSet):
                 Teacher(user_id=serializer.data['id'],school_id=school_pk).save()
 
         return Response(
-            f'학생 : {len(students)} 명 생성, 선생 : {len(teachers)} 명 생성',
+            f'student : {len(students)}, teacher : {len(teachers)}',
             status=status.HTTP_201_CREATED
         )
     
