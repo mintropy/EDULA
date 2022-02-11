@@ -11,7 +11,9 @@ classroom_list = classroom.ClassroomViewSet.as_view({
     'post': 'create',
 })
 classroom_detail = classroom.ClassroomViewSet.as_view({
-    'get': 'retrieve'
+    'get': 'retrieve',
+    'put': 'update',
+    'delete': 'destroy',
 })
 
 homework_list = homework.HomeworkViewSet.as_view({

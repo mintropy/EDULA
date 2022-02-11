@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
@@ -8,41 +7,69 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from accounts.views.user import decode_JWT
+from accounts.models import User
 from . import swagger_schema
-from ..models import Classroom
-from ..serializers import ClassroomSerializer
+from ..models import School, Classroom
+from ..serializers import ClassroomSerializer, ClassroomDetailSerializer
 from server import basic_swagger_schema
 
 
+def verify_user_school(user: User, school_pk: int) -> bool:
+    if user.status == 'ST':
+        if user.student.school.pk == school_pk:
+            return True
+    elif user.status == 'TE':
+        if user.teacher.school.pk == school_pk:
+            return True
+    elif user.status == 'SA':
+        if user.school_admin.school.pk == school_pk:
+            return True
+    return False
+
+
 class ClassroomViewSet(ViewSet):
-    """Classroom
-    
+    """Classroom View Set
     """
     model = Classroom
-    serializer_class = ClassroomSerializer
+    serializer_classes = {
+        'list': ClassroomSerializer,
+        'create': ClassroomSerializer,
+        'retrieve': ClassroomDetailSerializer,
+        'update': ClassroomSerializer,
+        'destroy': ClassroomSerializer,
+    }
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
-    
+
+    def get_serializer_class(self):
+        try:
+            return self.serializer_classes[self.action]
+        except:
+            return ClassroomSerializer
+
     @extend_schema(
         responses={
             200: OpenApiResponse(
                 response=ClassroomSerializer,
-                description=swagger_schema.descriptions['ClassroomView']['get'][200],
-                examples=swagger_schema.examples['ClassroomView']['get'][200]
+                description=swagger_schema.descriptions['ClassroomViewSet']['list'][200],
+                # examples=swagger_schema.examples['ClassroomViewSet']['list'][200]
             ),
             401: basic_swagger_schema.open_api_response[401]
         },
-        description=swagger_schema.descriptions['ClassroomView']['get']['description'],
-        summary=swagger_schema.summaries['ClassroomView']['get'],
+        description=swagger_schema.descriptions['ClassroomViewSet']['list']['description'],
+        summary=swagger_schema.summaries['ClassroomViewSet']['list'],
         tags=['교실',],
         examples=[
-            basic_swagger_schema.examples[401]
+            basic_swagger_schema.examples[401],
+            *swagger_schema.examples['ClassroomViewSet']['classroom_list'],
         ],
     )
     def list(self, request, school_pk):
-        """Get total classroom of school information
-        
-        Use school_pk, return total classroom of school infromation
+        """school_pk의 모든 교실 조회
+
+        Parameters
+        ----------
+        school_pk : int
         """
         user = decode_JWT(request)
         if user == None:
@@ -50,25 +77,38 @@ class ClassroomViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        if not School.objects.filter(pk=school_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if not verify_user_school(user, school_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         classrooms = Classroom.objects.filter(school_id=school_pk)
         serializer = ClassroomSerializer(classrooms, many=True)  
-        return Response(serializer.data)
-    
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
     @extend_schema(
         responses={
             201: OpenApiResponse(
                 response=ClassroomSerializer,
-                description=swagger_schema.descriptions['ClassroomView']['post'][201],
-                examples=swagger_schema.examples['ClassroomView']['post'][201]
+                description=swagger_schema.descriptions['ClassroomViewSet']['create'][201],
+                examples=swagger_schema.examples['ClassroomViewSet']['classroom_output'],
             ),
             400: basic_swagger_schema.open_api_response[400],
             401: basic_swagger_schema.open_api_response[401]
         },
-        description=swagger_schema.descriptions['ClassroomView']['post']['description'],
-        summary=swagger_schema.summaries['ClassroomView']['post'],
-        tags=['교실',],
+        description=swagger_schema.descriptions['ClassroomViewSet']['create']['description'],
+        summary=swagger_schema.summaries['ClassroomViewSet']['create'],
+        tags=['교실', '학교 관리자',],
         examples=[
-            swagger_schema.examples['ClassroomView']['post']['input'],
+            *swagger_schema.examples['ClassroomViewSet']['request'],
             basic_swagger_schema.examples[400],
             basic_swagger_schema.examples[401]
         ],
@@ -84,13 +124,198 @@ class ClassroomViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        serializer = ClassroomSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if not School.objects.filter(pk=school_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if not verify_user_school(user, school_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        data = {
+            'class_grade': request.data.get('class_grade', None),
+            'class_num': request.data.get('class_num', None),
+            'school': school_pk,
+            'teacher': request.data.get('teacher', None),
+            'student_list': request.data.get('student_list', None),
+        }
+        serializer = ClassroomSerializer(data=data)
+        if serializer.is_valid():
+            class_grade, class_num = data['class_grade'], data['class_num']
+            if Classroom.objects.filter(
+                school=school_pk, class_grade=class_grade, class_num=class_num).exists():
+                    return Response(
+                        {'error': 'Bad Request'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {'error': 'Bad Request'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     @extend_schema(
-        tags=['교실',]
+        responses={
+            200: OpenApiResponse(
+                response=ClassroomDetailSerializer,
+                description=swagger_schema.descriptions['ClassroomViewSet']['retrieve'][200],
+                examples=swagger_schema.examples['ClassroomViewSet']['classroom_detail'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ClassroomViewSet']['retrieve']['description'],
+        summary=swagger_schema.summaries['ClassroomViewSet']['retrieve'],
+        tags=['교실',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ],
     )
     def retrieve(self, request, school_pk, classroom_pk):
-        pass
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if not verify_user_school(user, school_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        classroom = Classroom.objects.get(pk=classroom_pk)
+        serializer = ClassroomDetailSerializer(classroom)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(
+                response=ClassroomSerializer,
+                description=swagger_schema.descriptions['ClassroomViewSet']['update'][201],
+                examples=swagger_schema.examples['ClassroomViewSet']['classroom_detail'],
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ClassroomViewSet']['update']['description'],
+        summary=swagger_schema.summaries['ClassroomViewSet']['update'],
+        tags=['교실',],
+        examples=[
+            basic_swagger_schema.examples[400],
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            *swagger_schema.examples['ClassroomViewSet']['request'],
+        ],
+    )
+    def update(self, request, school_pk, classroom_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if not verify_user_school(user, school_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        classroom = Classroom.objects.get(pk=classroom_pk)
+        data = {
+            'class_grade': request.data.get('class_grade', classroom.class_grade),
+            'class_num': request.data.get('class_num', classroom.class_num),
+            'school': school_pk,
+            'teacher': request.data.get(
+                'teacher',
+                classroom.get_teacher()
+            ),
+            'student_list': request.data.get(
+                'student_list',
+                classroom.student_list.all()
+            ),
+        }
+        serializer = ClassroomSerializer(instance=classroom, data=data)
+        if serializer.is_valid():
+            class_grade, class_num = data['class_grade'], data['class_num']
+            if Classroom.objects.filter(
+                school=school_pk, class_grade=class_grade, class_num=class_num).exists():
+                    return Response(
+                        {'error': 'Bad Request'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            serializer.save()
+            serializer = ClassroomDetailSerializer(
+                Classroom.objects.get(pk=classroom_pk)
+            )
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {'error': 'Bad Request'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=ClassroomSerializer,
+                description=swagger_schema.descriptions['ClassroomViewSet']['destroy'][200],
+                examples=swagger_schema.examples['ClassroomViewSet']['classroom_list'],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['ClassroomViewSet']['destroy']['description'],
+        summary=swagger_schema.summaries['ClassroomViewSet']['destroy'],
+        tags=['교실',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+        ]
+    )
+    def destroy(self, request, school_pk, classroom_pk):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
+            return Response(
+                {'error': 'Not Found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        if not verify_user_school(user, school_pk):
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        classroom = Classroom.objects.get(pk=classroom_pk)
+        classroom.delete()
+        classrooms = Classroom.objects.filter(school=school_pk)
+        serializer = ClassroomSerializer(classrooms, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
