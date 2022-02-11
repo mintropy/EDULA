@@ -5,6 +5,7 @@ import smtplib
 
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.contrib.auth.hashers import make_password
+from django.db.models import Prefetch, Q
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -22,7 +23,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from server import basic_swagger_schema
 from . import swagger_schema
-from ..models import User, Student, Teacher
+from ..models import FriendRequest, User, Student, Teacher
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
@@ -33,13 +34,13 @@ import serect
 
 def decode_JWT(request) -> User:
     """return User from JWT token 
-    
+
     decode JWT token userin simpleJWT
-    
+
     Parameters
     ----------
     requset
-    
+
     Returns
     -------
     User
@@ -54,35 +55,35 @@ def decode_JWT(request) -> User:
         return None
 
 
-def send_email(recipient_email, type, context):
+def send_email(recipient_email, mail_type, context):
     """Send username or password through email
-    
+
     get user email and type, which is username or password
     send email with username or password
-    
+
     Parameters
     ----------
     recipient: str
         email who will receive
-    
+
     type : str[username | password]
         request type
-    
+
     context : str
         if type is username, it should be username
         if type is password, it should be password
-    
+
     returns
     -------
     None
     """
     try:
-        if type == 'username':
+        if mail_type == 'username':
             title = '회원님의 아이디입니다'
             context = f'''안녕하세요 Edula 입니다.
             아이디 : {context}
             '''
-        elif type == 'password':
+        elif mail_type == 'password':
             title = '회원님의 비밀번호입니다'
             context = f'''안녕하세요, Edula 입니다.
             새로운 비밀번호 : {context}
@@ -103,9 +104,9 @@ def send_email(recipient_email, type, context):
         return False
 
 
-def create_username(preset: str, length: int=7):
+def create_username(preset: str, length: int=7) -> str:
     """
-    
+    Create username function
     """
     username = preset
     random_num = random.choices(
@@ -117,9 +118,9 @@ def create_username(preset: str, length: int=7):
 
 def create_password():
     """Make new random password
-    
+
     make new random password of length 14
-    
+
     returns
     -------
     str
@@ -132,6 +133,17 @@ def create_password():
         + random.choices(base_special_char, k=2)
     random.shuffle(new_password)
     return ''.join(new_password)
+
+
+def check_friend_request(friend_requests: FriendRequest, from_user: int, to_user: User):
+    if to_user.friend_list.all():
+        return 'friend'
+    else:
+        if friend_requests.filter(from_user=from_user, to_user=to_user):
+            return 'requestReveive'
+        elif friend_requests.filter(from_user=to_user, to_user=from_user):
+            return 'requsetSend'
+    return None
 
 
 class UserView(APIView):
@@ -662,3 +674,87 @@ class FriendViewSet(ViewSet):
             )
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FriendSearchViewSet(ViewSet):
+    """
+    Friend search viewset
+    """
+    model = User
+    queryset = User.objects.all()
+    serializer_class = FriendSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=FriendSerializer,
+                description=swagger_schema.descriptions['FriendSearchViewSet']['list']['description'],
+                examples=swagger_schema.examples['FriendSearchViewSet']['list'][200]
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+        },
+        description=swagger_schema.descriptions['FriendSearchViewSet']['list']['description'],
+        summary=swagger_schema.summaries['FriendSearchViewSet']['list'],
+        tags=['친구',],
+        examples=[
+            basic_swagger_schema.examples[401],
+        ]
+    )
+    def list(self, request, search):
+        """
+        Search user
+        - 같은 학교 학생 + 교사 검색
+        - 한글 완성형일때만 검색됨
+        """
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if user.status == 'ST':
+            school_pk = user.student.school.pk
+        elif user.status == 'TE':
+            school_pk = user.teacher.school.pk
+        elif user.status == 'SA':
+            school_pk = user.school_admin.school.pk
+        else:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        students = User.objects.filter(first_name__contains=search, status='ST')\
+                .prefetch_related(
+                    Prefetch('student', queryset=Student.objects.filter(school_id=school_pk)),
+                    Prefetch('friend_list', queryset=User.objects.filter(id=user.pk)))
+        teachers = User.objects.filter(first_name__contains=search, status='TE')\
+                .prefetch_related(
+                    Prefetch('teacher', queryset=Teacher.objects.filter(school_id=school_pk)),
+                    Prefetch('friend_list', queryset=User.objects.filter(id=user.pk)))
+        friend_requests = FriendRequest.objects.filter(Q(from_user=user.pk)|Q(to_user=user.pk))
+        data = {
+            'students': [
+                {
+                    'id': student.pk,
+                    'username': student.username,
+                    'first_name': student.first_name,
+                    'friend_request': check_friend_request(friend_requests, user.pk, student),
+                } for student in students if student.pk != user.pk
+            ],
+            'teachers': [
+                {
+                    'id': teacher.pk,
+                    'username': teacher.username,
+                    'first_name': teacher.first_name,
+                    'friend_request': check_friend_request(friend_requests, user.pk, teacher),
+                } for teacher in teachers if teacher.pk != user.pk
+            ]
+        }
+        data['student_count'] = len(data['students'])
+        data['teacher_count'] = len(data['teachers'])
+        return Response(
+            data,
+            status=status.HTTP_200_OK,
+        )
