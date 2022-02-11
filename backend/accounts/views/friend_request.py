@@ -17,7 +17,7 @@ from server import basic_swagger_schema
 from .user import decode_JWT
 from ..models import User, FriendRequest
 from ..serializers.friend_request import(
-    FriendRequestSerializer
+    FriendRequestSerializer, FriendRequestDetailSerializer
 )
 
 
@@ -27,10 +27,21 @@ class FriendRequestViewSet(ViewSet):
     """
     model = FriendRequest
     queryset = FriendRequest.objects.all()
-    serializer_class = FriendRequestSerializer
+    serializer_classes = {
+        'list': FriendRequestDetailSerializer,
+        'create': FriendRequestSerializer,
+        'update': FriendRequestSerializer,
+        'destroy': FriendRequestDetailSerializer,
+    }
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
-    
+
+    def get_serializer_class(self):
+        try:
+            return self.serializer_classes[self.action]
+        except:
+            return FriendRequestSerializer
+
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -55,10 +66,10 @@ class FriendRequestViewSet(ViewSet):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         friend_request_data = {
-            'requset_send': FriendRequestSerializer(
+            'requset_send': FriendRequestDetailSerializer(
                 FriendRequest.objects.filter(from_user=user.pk), many=True,
             ).data,
-            'requset_receive': FriendRequestSerializer(
+            'requset_receive': FriendRequestDetailSerializer(
                 FriendRequest.objects.filter(to_user=user.pk), many=True
             ).data,
         }
@@ -114,10 +125,10 @@ class FriendRequestViewSet(ViewSet):
             serializer.save()
             return Response(
                 {
-                    'requset_send': FriendRequestSerializer(
+                    'requset_send': FriendRequestDetailSerializer(
                         FriendRequest.objects.filter(from_user=user.pk), many=True,
                     ).data,
-                    'requset_receive': FriendRequestSerializer(
+                    'requset_receive': FriendRequestDetailSerializer(
                         FriendRequest.objects.filter(to_user=user.pk), many=True
                     ).data,
                 },
@@ -177,13 +188,9 @@ class FriendRequestViewSet(ViewSet):
             }
         )
         if serializer.is_valid():
-            FriendRequest.objects.filter(
-                from_user=from_user, to_user=to_user, request_status__in=['RF', 'AC'],
-            ).delete()
             serializer.save()
-            FriendRequest.objects.filter(
-                from_user=from_user, to_user=to_user, request_status='RQ',
-            ).delete()
+            FriendRequest.objects.filter(from_user=from_user, to_user=to_user,).delete()
+            FriendRequest.objects.filter(from_user=to_user, to_user=from_user,).delete()
             if status_after == 'AC':
                 user.friend_list.add(from_user)
                 user.save()
@@ -226,10 +233,10 @@ class FriendRequestViewSet(ViewSet):
         friend_request.delete()
         return Response(
             {
-                'requset_send': FriendRequestSerializer(
+                'requset_send': FriendRequestDetailSerializer(
                     FriendRequest.objects.filter(from_user=user.pk), many=True,
                 ).data,
-                'requset_receive': FriendRequestSerializer(
+                'requset_receive': FriendRequestDetailSerializer(
                     FriendRequest.objects.filter(to_user=user.pk), many=True
                 ).data,
             },

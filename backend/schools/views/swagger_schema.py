@@ -229,29 +229,73 @@ totalCount는 해당 게시판의 전체 게시글의 수, pageCount는 조회�
     ''',
         }
     },
-    'ClassroomView': {
-        'get': {
+    'ClassroomViewSet': {
+        'list': {
             'description': 
     '''
-    Get total classroom information
-Use school_pk, return total homework information
+    학교의 모든 교실을 조회합니다
+다음의 경우 404를 반환합니다
+- school_pk에 해당하는 학교가 없을 경우
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- school_pk에 속하지 않는 유저인 경우
     ''',
             200: 
     '''
-    Successfully get total classroom list
-successfully get total classroom information from school_pk
+    교실 목록 조회를 완료했습니다
     ''',
         },
-        'post': {
+        'create': {
             'description': 
     '''
-    Post classroom information
-Input classroom information
+    교실을 생성합니다
+classGrade, classNum은 필수입니다\n
+teacher와 studentList는 선택적 입력 가능합니다\n
+다음의 경우 400을 반환합니다\n
+- 입력값이 잘못된 경우
+- 해당 학교에 이미 해당하는 교실이 있는 경우
     ''',
             201: 
     '''
-    Successfully post classroom
-successfully input classroom
+    교실 생성이 완료되었습니다
+    ''',
+        },
+        'retrieve': {
+            'description': 
+    '''
+    교실 상세 조회 합니다
+    ''',
+            200:
+    '''
+    교실 상세 조회를 했습니다
+    ''',
+        },
+        'update': {
+            'description': 
+    '''
+    교실 정보를 수정합니다
+classGrade, classNum정보도 수정할 수 있지만, 이미 다들 교실이 존재하면 400을 반환합니다
+classGrade, classNum은 선택적 입력 가능합니다\n
+teacher와 studentList는 선택적 입력 가능합니다\n
+teacher와 studentList는 선택적 입력 가능합니다\n
+다음의 경우 400을 반환합니다\n
+- 입력값이 잘못된 경우
+- 해당 학교에 이미 해당하는 교실이 있는 경우
+    ''',
+            201:
+    '''
+    교실 정보 수정이 완료되었습니다
+    ''',
+        },
+        'destroy': {
+            'description':
+    '''
+    교실을 삭제합니다
+해당 교실을 삭제하고, 전체 교실 정보를 반환합니다
+    ''',
+            200:
+    '''
+    교실 삭제를 완료했고, 교실 목록을 반환합니다
     ''',
         },
     },
@@ -384,9 +428,12 @@ summaries = {
         'update': '게시글 수정',
         'destroy': '게시글 삭제',
     },
-    'ClassroomView': {
-        'get' : 'Get classroom information',
-        'post' : 'Post classroom',
+    'ClassroomViewSet': {
+        'list' : '학교의 전체 교실 정보',
+        'create' : '학교에 교실 생성',
+        'retrieve': '특정 교실 조회',
+        'update': '특정 교실 정보 수정',
+        'destroy': '특정 교실 삭제',
     },
     'LectureView': {
         'get' : 'Get lecture information',
@@ -715,8 +762,101 @@ examples = {
             ],
         },
     },
-    'ClassroomView': {
-        'get': {
+    'ClassroomViewSet': {
+        'classroom_list': [
+            OpenApiExample(
+                name='classroom list',
+                value=[
+                    {
+                        'id': 3,
+                        'classGrade': 3,
+                        'classNum': 1,
+                        'school': 3
+                    },
+                    {
+                        'id': 4,
+                        'classGrade': 3,
+                        'classNum': 2,
+                        'school': 3
+                    },
+                ],
+                status_codes=['200', '201',],
+                response_only=True,
+            ),
+        ],
+        'classroom_output': [
+            OpenApiExample(
+                name='classroom output',
+                value={
+                    'id': 10,
+                    'classGrade': 3,
+                    'classNum': 1,
+                    'school': 3,
+                },
+                status_codes=['200', '201'],
+                response_only=True,
+            )
+        ],
+        'classroom_detail': [
+            OpenApiExample(
+                name='classroom detail',
+                value={
+                    'id': 10,
+                    'school': {
+                        'id': 3,
+                        'name': '싸피 초등학교',
+                        'abbreviation': 'sfe'
+                    },
+                    'studentList': [
+                        {
+                            'user': {
+                                'id': 20,
+                                'username': 'ssafy00020',
+                                'firstName': '김싸피',
+                                'status': 'ST'
+                            },
+                        },
+                    ],
+                    'teacher': {
+                        'user': {
+                            'id': 5,
+                            'username': 'ssafy10001',
+                            'firstName': '박싸피',
+                            'status': 'TE'
+                        },
+                    },
+                    'classGrade': 3,
+                    'classNum': 1,
+                },
+                status_codes=['200', '201',],
+                response_only=True,
+            ),
+        ],
+        'request': [
+            OpenApiExample(
+                name='request',
+                value={
+                    'classGrade': 1,
+                    'classNum': 1,
+                },
+                request_only=True,
+            ),
+            OpenApiExample(
+                name='request with teacher, student',
+                value={
+                    'classGrade': 1,
+                    'classNum': 1,
+                    'teacher': 10,
+                    'studentList': [
+                        20,
+                        21,
+                        22,
+                    ],
+                },
+                request_only=True,
+            ),
+        ],
+        'list': {
             200: [
             OpenApiExample(
                 name='user',
@@ -727,7 +867,7 @@ examples = {
             ),
             ],
         },
-        'post': {
+        'create': {
             'input': OpenApiExample(
                 name='input example',
                 value={
