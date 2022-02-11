@@ -45,7 +45,6 @@ const StyledLink = styled(Link)`
 function FriendSearch() {
 	const [searchResult, setSearchResult] = useState({} as SearchDataType);
 	const [keyword, setKeyword] = useState('');
-	const { userId } = useContext(UserContext);
 
 	const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 

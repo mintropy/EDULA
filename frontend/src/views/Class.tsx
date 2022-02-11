@@ -7,11 +7,12 @@ import { apiGetHomeworks } from '../api/homework';
 import UserContext from '../context/user';
 import ArticleBoard from '../components/class/ArticleBoard';
 import HomeworkBoard from '../components/class/HomeworkBoard';
+import StudentList from '../components/class/StudentList';
 
 const StyledContainer = styled.section`
 	display: grid;
-	grid-template-columns: 1fr 3fr;
-	grid-gap: 20px;
+	grid-template-columns: 2fr 3fr;
+	grid-gap: 10rem;
 `;
 
 interface LectureDataType {
@@ -29,7 +30,14 @@ interface LectureDataType {
 	};
 	school: number;
 	teacher: number;
-	studentList: [number];
+	studentList: {
+		user: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
+	}[];
 }
 
 const StyledIntro = styled(Intro)``;
@@ -37,7 +45,7 @@ const StyledIntro = styled(Intro)``;
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
-	const { schoolId } = useContext(UserContext);
+	const { schoolId, userStat } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	useEffect(() => {
@@ -63,6 +71,7 @@ function Class() {
 				<StyledContainer>
 					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
 					<ArticleBoard />
+					{userStat && <StudentList students={lectureData.studentList} />}
 				</StyledContainer>
 			</>
 		);
