@@ -400,6 +400,7 @@ summaries = {
     'UserCUDView': {
         'post': '학생 및 선생 생성',
         'delete': '학생 삭제',
+    },
     'FriendSearchViewSet': {
         'list': '친구 찾기',
     },
@@ -931,7 +932,8 @@ examples = {
                     response_only=True,
                 ),
             ],
-        }
+        },
+    },
     'FriendSearchViewSet': {
         'list': {
             200: [
