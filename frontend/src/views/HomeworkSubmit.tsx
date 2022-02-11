@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import HomeworkSubmitForm from '../components/class/HomeworkSubmitForm';
 import UserContext from '../context/user';
-import { apiGetHomeworkSubmission } from '../api/homework';
+import {
+	apiGetHomeworkSubmission,
+	apiDeleteHomeworkSubmission,
+} from '../api/homework';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContainer from '../components/friend/StyledContainer';
+import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
+import StyledContent from '../components/class/StyledContent';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -33,7 +38,7 @@ const StyledLink = styled(Link)`
 `;
 
 function HomeworkSubmit() {
-	const { userStat } = useContext(UserContext);
+	const { userStat, userId } = useContext(UserContext);
 	const { lectureId, homeworkId } = useParams();
 	const [submissionList, setSubmissionList] = useState(
 		[] as submissionHomeworkData[]
@@ -59,7 +64,7 @@ function HomeworkSubmit() {
 					})
 					.catch(() => {});
 			}
-		}, []);
+		}, [isSubmit]);
 	}
 
 	if (userStat === 'ST') {
@@ -67,7 +72,34 @@ function HomeworkSubmit() {
 			<>
 				<StyledTitle>과제 제출</StyledTitle>
 
-				{isSubmit === true ? <h1>과제 제출함!</h1> : <h1>과제 제출 안함!</h1>}
+				{isSubmit === true ? (
+					<StyledContent>
+						과제 제출함!{' '}
+						<StyledDeleteBtn
+							type='button'
+							value='삭제'
+							onClick={e => {
+								e.preventDefault();
+								if (lectureId && homeworkId) {
+									try {
+										apiDeleteHomeworkSubmission(lectureId, homeworkId, userId)
+											.then(() => {
+												setIsSubmit(false);
+											})
+											.catch(() => {});
+									} catch (error) {
+										// console.log(error);
+									}
+								}
+							}}
+						>
+							삭제
+						</StyledDeleteBtn>
+					</StyledContent>
+				) : (
+					<StyledContent>과제 제출 안함!</StyledContent>
+				)}
+
 				<HomeworkSubmitForm isSubmit={isSubmit} />
 			</>
 		);

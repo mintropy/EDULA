@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { BASE_URL, setToken } from './utils';
 
-
 export const apiGetHomeworks = (lectureId: string) =>
 	axios({
 		method: 'get',
