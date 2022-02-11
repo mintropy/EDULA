@@ -36,6 +36,12 @@ class Classroom(models.Model):
     def __str__(self):
         return f'{self.school} {self.class_grade}학년 {self.class_num}반'
 
+    def get_teacher(self):
+        try:
+            return self.teacher
+        except:
+            return None
+
 
 class Lecture(models.Model):
     """
