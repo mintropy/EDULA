@@ -58,7 +58,9 @@ function ScheduleContainer() {
 
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
-	const [scheduleData, setScheduleData] = useState([{} as ScheduleItemDataType]);
+	const [scheduleData, setScheduleData] = useState(
+		[] as Array<ScheduleItemDataType>
+	);
 
 	useEffect(() => {
 		switch (dayIdx) {

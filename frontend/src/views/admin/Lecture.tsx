@@ -6,6 +6,7 @@ import {
 	apiDeleteLectureDetail,
 	apiGetLectures,
 	apiPostLecture,
+	apiPutLectureDetail,
 } from '../../api/lecture';
 import { apiGetTeacherInfo } from '../../api/user';
 import FormBox from '../../components/auth/FormBox';
@@ -85,6 +86,11 @@ function LectureManager() {
 
 	const deleteLecture = async (lectureId: string) => {
 		await apiDeleteLectureDetail(lectureId);
+		getLectures();
+	};
+
+	const updateLecture = async (lectureId: string, lecture: object) => {
+		await apiPutLectureDetail(lectureId, lecture);
 		getLectures();
 	};
 
