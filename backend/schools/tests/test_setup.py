@@ -40,6 +40,17 @@ class LectureFactory(factory.django.DjangoModelFactory):
     time_list = {'test': 'test'}
 
 
+class ClassroomFactory(factory.django.DjangoModelFactory):
+    """Classrooom Factory
+    """
+    class Meta:
+        model = 'schools.Classroom'
+
+    class_grade = factory.LazyFunction(lambda: 1)
+    class_num = factory.Sequence(lambda n: int(n))
+    school = factory.SubFactory(SchoolFactory)
+
+
 class UserStudentFactory(UserFactory):
     """User Student Factory
     """
@@ -120,10 +131,14 @@ class TestSetUp(APITestCase):
         cls.lecture1_1 = LectureFactory(school=cls.school1)
         cls.lecture1_2 = LectureFactory(school=cls.school1)
         cls.lecture2_1 = LectureFactory(school=cls.school2)
+        cls.classroom1_1 = ClassroomFactory(school=cls.school1)
+        cls.classroom1_2 = ClassroomFactory(school=cls.school1)
+        cls.classroom2_1 = ClassroomFactory(school=cls.school2)
 
         cls.student1 = StudentFactory()
         cls.student1.school = cls.school1
         cls.student1.lecture_list.add(cls.lecture1_1)
+        cls.student1.classroom = cls.classroom1_1
         cls.student1.save()
 
         cls.school_admin1 = SchoolAdminFactory()

@@ -53,8 +53,14 @@ urlpatterns = [
             path('student/', student.StudentView.as_view()),
             path('teacher/', teacher.TeacherView.as_view()),
             # 교실
-            path('classroom/', classroom_list),
-            path('classroom/<int:classroom_pk>/', classroom_detail)
+            path('classroom/',
+                classroom_list,
+                name='classroom_list'
+            ),
+            path('classroom/<int:classroom_pk>/',
+                classroom_detail,
+                name='classroom_detail'
+            )
         ]),
     ),
     path(

@@ -15,6 +15,17 @@ from server import basic_swagger_schema
 
 
 def verify_user_school(user: User, school_pk: int) -> bool:
+    """유저가 학교에 권한이 있는지 확인합니다
+
+    Parameters
+    ----------
+    user : User
+    school_pk : int
+
+    Returns
+    -------
+    bool
+    """
     if user.status == 'ST':
         if user.student.school.pk == school_pk:
             return True
@@ -72,7 +83,7 @@ class ClassroomViewSet(ViewSet):
         school_pk : int
         """
         user = decode_JWT(request)
-        if user == None:
+        if user is None:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -88,7 +99,7 @@ class ClassroomViewSet(ViewSet):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         classrooms = Classroom.objects.filter(school_id=school_pk)
-        serializer = ClassroomSerializer(classrooms, many=True)  
+        serializer = ClassroomSerializer(classrooms, many=True)
         return Response(
             serializer.data,
             status=status.HTTP_200_OK,
@@ -114,12 +125,14 @@ class ClassroomViewSet(ViewSet):
         ],
     )
     def create(self, request, school_pk):
-        """Post classroom of school information
-        
-        Save classroom of school infromation
+        """교실 생성
+
+        Parameters
+        ----------
+        request : int
         """
         user = decode_JWT(request)
-        if user == None:
+        if user is None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -179,8 +192,15 @@ class ClassroomViewSet(ViewSet):
         ],
     )
     def retrieve(self, request, school_pk, classroom_pk):
+        """수업 상세 조회
+
+        Parameters
+        ----------
+        school_pk : int
+        classroom_pk : int
+        """
         user = decode_JWT(request)
-        if user == None:
+        if user is None:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -221,11 +241,18 @@ class ClassroomViewSet(ViewSet):
             basic_swagger_schema.examples[401],
             basic_swagger_schema.examples[404],
             *swagger_schema.examples['ClassroomViewSet']['request'],
-        ],
+        ]
     )
     def update(self, request, school_pk, classroom_pk):
+        """[summary]
+
+        Parameters
+        ----------
+        school_pk : int
+        classroom_pk : int
+        """
         user = decode_JWT(request)
-        if user == None:
+        if user is None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
@@ -295,8 +322,15 @@ class ClassroomViewSet(ViewSet):
         ]
     )
     def destroy(self, request, school_pk, classroom_pk):
+        """교실을 삭제합니다
+
+        Parameters
+        ----------
+        school_pk : int
+        classroom_pk : int
+        """
         user = decode_JWT(request)
-        if user == None:
+        if user is None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
