@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import StyledTitle from './StyledTitle';
 import StyledButton from './StyledButton';
 import UserContext from '../../context/user';
+import StyledContent from './StyledContent';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -48,8 +49,8 @@ function HomeworkBoard({ homeworks }: BoardProps) {
 							key={homework.id}
 						>
 							<StyledListItem>
-								<h1>{homework.title}</h1>
-								<p>{homework.deadline}</p>
+								<StyledContent>{homework.title}</StyledContent>
+								<p>{homework.deadline?.slice(0, 10)}</p>
 							</StyledListItem>
 						</StyledLink>
 					))}

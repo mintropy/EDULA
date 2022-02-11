@@ -72,8 +72,8 @@ function HomeworkDetail() {
 		<StyledContainer>
 			<StyledTitle>{homeworkData.title}</StyledTitle>
 			<StyledContent>
-				마감 기한: {homeworkData.deadline.slice(0, 10)}{' '}
-				{homeworkData.deadline.slice(11)}
+				마감 기한: {homeworkData.deadline?.slice(0, 10)}{' '}
+				{homeworkData.deadline?.slice(11)}
 			</StyledContent>
 			<StyledContent>{homeworkData.content}</StyledContent>
 			{userStat === 'TE' && (
