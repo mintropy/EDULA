@@ -19,14 +19,14 @@ class UserBasicSerializer(serializers.ModelSerializer):
 
 
 class UserCUDSerialzier(serializers.ModelSerializer):
-    # student_creation_count = serializers.IntegerField(write_only=True)
+    # student_creation_count_list = serializers.JSONField(write_only=True)
     # teacher_creation_count = serializers.IntegerField(write_only=True)
     # students = serializers.JSONField(read_only=True)
     # teachers = serializers.JSONField(read_only=True)
     class Meta:
         model = User
-        fields = ('id', 'username', 'password',)
-        write_only_field = ('password',)
+        fields = ('id', 'username', 'password','status')
+        # write_only_field = ('password',)
 
 
 class FindUsernameSerializer(serializers.ModelSerializer):
