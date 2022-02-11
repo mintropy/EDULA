@@ -14,6 +14,7 @@ const routes = {
 	updateHomework: '/:lectureId/homeworkUpdate/:homeworkId',
 	homeworkDetail: '/:lectureId/homework/:homeworkId',
 	homeworkSubmit: '/:lectureId/homework/:homeworkId/submit',
+	homeworkSubmitDetail: '/:lectureId/homework/:homeworkId/submit/:homeworkSubmitId',
 	schedule: '/schedule',
 	friend: '/friend',
 	// Admin Page

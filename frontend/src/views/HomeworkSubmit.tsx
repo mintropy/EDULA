@@ -1,17 +1,18 @@
 import { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import HomeworkSubmitForm from '../components/class/HomeworkSubmitForm';
 import UserContext from '../context/user';
 import { apiGetHomeworkSubmission } from '../api/homework';
+import StyledTitle from '../components/class/StyledTitle';
+import StyledContainer from '../components/friend/StyledContainer';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
 	text-align: center;
 	margin: 1em;
-	background: ${props => props.theme.subBgColor};
-	padding: 1em 1em 1em 2em;
-	border-left: 4px solid #ddd;
+	background: ${props => props.theme.bgColor};
+	padding: 1em 2em 1em 2em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
 `;
@@ -24,6 +25,12 @@ interface submissionHomeworkData {
 	homework: number;
 	writer: number;
 }
+
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+	color: ${props => props.theme.fontColor};
+`;
 
 function HomeworkSubmit() {
 	const { userStat } = useContext(UserContext);
@@ -58,7 +65,7 @@ function HomeworkSubmit() {
 	if (userStat === 'ST') {
 		return (
 			<>
-				<div>과제 제출</div>
+				<StyledTitle>과제 제출</StyledTitle>
 
 				{isSubmit === true ? <h1>과제 제출함!</h1> : <h1>과제 제출 안함!</h1>}
 				<HomeworkSubmitForm isSubmit={isSubmit} />
@@ -66,17 +73,21 @@ function HomeworkSubmit() {
 		);
 	}
 	return (
-		<>
-			<div>과제 제출 현황</div>
+		<StyledContainer>
+			<StyledTitle>과제 제출 현황</StyledTitle>
 			<ul>
 				{submissionList &&
 					submissionList?.map(submission => (
-						<StyledListItem key={submission.id}>
-							{submission.writer}: {submission.title}
-						</StyledListItem>
+						<StyledLink
+							to={`/${lectureId}/homework/${homeworkId}/submit/${submission.id}`}
+						>
+							<StyledListItem key={submission.id}>
+								{submission.writer}번 학생
+							</StyledListItem>
+						</StyledLink>
 					))}
 			</ul>
-		</>
+		</StyledContainer>
 	);
 }
 
