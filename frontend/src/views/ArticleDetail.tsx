@@ -8,10 +8,12 @@ import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
 import UserContext from '../context/user';
 
 const StyledContainer = styled.div`
+	position: absolute;
+	top: 20%;
+	left: 40%;
 	font-size: 1em;
 	text-align: center;
-	margin: 1em;
-	background: ${props => props.theme.subBgColor};
+	border: solid 2px ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
 	padding: 1em 1em 1em 2em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
@@ -35,7 +37,7 @@ interface ArticleDataType {
 }
 
 function ArticleDetail() {
-	const { userId, userStat } = useContext(UserContext);
+	const { userId } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
@@ -48,8 +50,6 @@ function ArticleDetail() {
 			});
 		}, []);
 	}
-
-	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
 	return (
 		<StyledContainer>

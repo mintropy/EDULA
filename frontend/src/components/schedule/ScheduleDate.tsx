@@ -7,13 +7,9 @@ const StyledItem = styled.div`
 `;
 
 function ScheduleDate() {
-	const today = new Date().toString().split(' ');
-
 	return (
 		<div>
-			<StyledItem>
-				{today[1]}월 {today[2]}일 ({today[0]}) 시간표
-			</StyledItem>
+			<StyledItem>오늘의 시간표</StyledItem>
 		</div>
 	);
 }

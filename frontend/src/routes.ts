@@ -5,6 +5,7 @@ const routes = {
 	profile: '/profile',
 	alarm: '/alarm',
 	class: '/lecture/:lectureId',
+	classroom: '/classroom',
 	findid: '/findid',
 	findpw: '/findpw',
 	createarticle: '/:lectureId/articleCreate',
@@ -14,7 +15,9 @@ const routes = {
 	updateHomework: '/:lectureId/homeworkUpdate/:homeworkId',
 	homeworkDetail: '/:lectureId/homework/:homeworkId',
 	homeworkSubmit: '/:lectureId/homework/:homeworkId/submit',
+	homeworkSubmitDetail: '/:lectureId/homework/:homeworkId/submit/:userId',
 	schedule: '/schedule',
+	friend: '/friend',
 	// Admin Page
 	admin: '/manage',
 	studentManager: '/manage/student',

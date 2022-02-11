@@ -22,19 +22,9 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
 `;
-
-interface BoardProps {
-	articles: {
-		content: string;
-		createdAt: string;
-		id: number;
-		lecture: number;
-		notice: boolean;
-		title: string;
-		updatedAt: string;
-		writer: number;
-	}[];
-}
+const StyledContainer = styled.div`
+	margin: 0px 0px 0px 5rem;
+`;
 interface ArticleDataType {
 	content: string;
 	createdAt: string;
@@ -68,7 +58,7 @@ function ArticleBoard() {
 
 	if (articles) {
 		return (
-			<div>
+			<StyledContainer>
 				<StyledTitle>게시판</StyledTitle>
 
 				{articles.length !== 0 && (
@@ -97,11 +87,7 @@ function ArticleBoard() {
 							</StyledLink>
 						))}
 				</ul>
-				{articles.length === 0 && (
-					<div>
-						<img src='../../../images/sad.gif' width='200' alt='게시글 없음' />
-					</div>
-				)}
+				{articles.length === 0 && <StyledTitle>게시글이 없어요..</StyledTitle>}
 				<Link to={`/${lectureId}/articleCreate`}>
 					<StyledButton>글쓰기</StyledButton>
 				</Link>
@@ -111,7 +97,7 @@ function ArticleBoard() {
 						<Pagination total={total} limit={limit} page={page} setPage={setPage} />
 					</footer>
 				)}
-			</div>
+			</StyledContainer>
 		);
 	}
 	return <h1>로딩 중</h1>;

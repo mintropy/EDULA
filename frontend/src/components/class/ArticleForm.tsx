@@ -3,7 +3,8 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiPostArticle, apiUpdateArticle } from '../../api/article';
 import FormBtn from '../auth/FormBtn';
-import FormInput from '../auth/FormInput';
+import ClassFormInput from './ClassFormInput';
+
 import UserContext from '../../context/user';
 
 type ArticleInput = {
@@ -92,7 +93,7 @@ function ArticleForm(props: InnerProps) {
 				onInValidSubmit
 			)}
 		>
-			<FormInput htmlFor='title'>
+			<ClassFormInput htmlFor='title'>
 				<div>제목</div>
 				<input
 					{...register('title', {
@@ -110,9 +111,9 @@ function ArticleForm(props: InnerProps) {
 					placeholder='Title'
 					defaultValue={originTitle}
 				/>
-			</FormInput>
+			</ClassFormInput>
 
-			<FormInput htmlFor='content'>
+			<ClassFormInput htmlFor='content'>
 				<div>내용</div>
 				<input
 					{...register('content', {
@@ -130,11 +131,11 @@ function ArticleForm(props: InnerProps) {
 					placeholder='Content'
 					defaultValue={originContent}
 				/>
-			</FormInput>
-			<FormInput htmlFor='notice'>
+			</ClassFormInput>
+			<ClassFormInput htmlFor='notice'>
 				<div>공지 여부</div>
 				<input {...register('notice', {})} type='checkbox' placeholder='notice' />
-			</FormInput>
+			</ClassFormInput>
 			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
 			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
 		</form>
