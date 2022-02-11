@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
-import UserContext from '../context/user';
 import ArticleBoard from '../components/class/ArticleBoard';
 import HomeworkBoard from '../components/class/HomeworkBoard';
 import StudentList from '../components/class/StudentList';
+import UserContext from '../context/user';
 
 const StyledContainer = styled.section`
 	display: flex;
@@ -51,7 +51,7 @@ function Class() {
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetLectureDetail(schoolId, lectureId).then(res => {
+			apiGetLectureDetail(lectureId).then(res => {
 				setLectureData(res.data);
 			});
 		}

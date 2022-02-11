@@ -1,10 +1,17 @@
 import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
+
+const OutletContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
 
 function Admin() {
 	return (
-		<div>
+		<OutletContainer>
 			<Outlet />
-		</div>
+		</OutletContainer>
 	);
 }
 
