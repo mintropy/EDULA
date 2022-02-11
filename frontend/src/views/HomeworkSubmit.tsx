@@ -79,7 +79,7 @@ function HomeworkSubmit() {
 				{submissionList &&
 					submissionList?.map(submission => (
 						<StyledLink
-							to={`/${lectureId}/homework/${homeworkId}/submit/${submission.id}`}
+							to={`/${lectureId}/homework/${homeworkId}/submit/${submission.writer}`}
 						>
 							<StyledListItem key={submission.id}>
 								{submission.writer}번 학생

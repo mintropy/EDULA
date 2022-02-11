@@ -35,7 +35,7 @@ interface ArticleDataType {
 }
 
 function ArticleDetail() {
-	const { userId, userStat } = useContext(UserContext);
+	const { userId } = useContext(UserContext);
 	const { lectureId, articleId } = useParams();
 	const navigate = useNavigate();
 
@@ -48,8 +48,6 @@ function ArticleDetail() {
 			});
 		}, []);
 	}
-
-	// 글쓴이 본인인지 확인해서 삭제, 수정 버튼 보이도록
 
 	return (
 		<StyledContainer>
