@@ -55,11 +55,7 @@ function HomeworkBoard({ homeworks }: BoardProps) {
 						</StyledLink>
 					))}
 			</ul>
-			{homeworks.length === 0 && (
-				<div>
-					<img src='../../../images/happy.gif' width='200' alt='과제 없음' />
-				</div>
-			)}
+			{homeworks.length === 0 && <StyledTitle>과제가 없어요!</StyledTitle>}
 			{userStat === 'TE' && (
 				<Link to={`/${lectureId}/homeworkCreate`}>
 					<StyledButton>과제 등록</StyledButton>

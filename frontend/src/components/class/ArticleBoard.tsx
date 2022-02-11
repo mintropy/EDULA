@@ -85,11 +85,7 @@ function ArticleBoard() {
 							</StyledLink>
 						))}
 				</ul>
-				{articles.length === 0 && (
-					<div>
-						<img src='../../../images/sad.gif' width='200' alt='게시글 없음' />
-					</div>
-				)}
+				{articles.length === 0 && <StyledTitle>게시글이 없어요..</StyledTitle>}
 				<Link to={`/${lectureId}/articleCreate`}>
 					<StyledButton>글쓰기</StyledButton>
 				</Link>
