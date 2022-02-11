@@ -4,6 +4,7 @@ import random
 import smtplib
 
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.contrib.auth.hashers import make_password
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -21,7 +22,7 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from server import basic_swagger_schema
 from . import swagger_schema
-from ..models import User
+from ..models import User, Student, Teacher
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
@@ -215,75 +216,174 @@ class UserSpecifyingView(APIView):
         )
 
 
-class UserCUDView(APIView):
+class UserCUDView(ViewSet):
     """User create / update / delete view
     use user UserView or UserSpecifyingView if you want read user
     """
     model = User
+    queryset = User.objects.all()
     serializer_class = UserCUDSerialzier
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
     @extend_schema(
-        
+        responses={
+            201: OpenApiResponse(
+                response=UserCUDSerialzier,
+                description=swagger_schema.descriptions['UserCUDView']['post'][201],
+                examples=[
+                    swagger_schema.examples['UserCUDView']['post'][201]
+                ]
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
+        },
+        description=swagger_schema.descriptions['UserCUDView']['post']['description'],
+        summary=swagger_schema.summaries['UserCUDView']['post'],
+        tags=['학교 관리자',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
+            swagger_schema.examples['UserCUDView']['post']['input'],
+        ],
     )
-    def post(self, request):
+    def create(self, request):
         user = decode_JWT(request)
         if user == None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        student_creation_count = request.data.get('student_creation_count')
+        student_creation_count_list = request.data.get('student_creation_count_list')
         teacher_creation_count = request.data.get('teacher_creation_count')
-        shcool_pk = user.school_admin.pk
-        abbreviation = user.school_admin.abbreviation
+        
+        school_pk = user.school_admin.school.pk
+        abbreviation = user.school_admin.school.abbreviation
         data = {
             'abbreviation': abbreviation,
-            'student_creation_count': student_creation_count,
+            'student_creation_count_list': student_creation_count_list,
             'teacher_creation_count': teacher_creation_count,
             'student': [],
             'teacher': [],
         }
-        # username preset의 마지막
-        last_user = User.objects.filter(username__startswith=abbreviation).order_by('-pk')[0]
-        start_num = int(last_user.username[len(abbreviation):]) + 1
+
+        students = []
+        for year in student_creation_count_list.keys():
+            abb_num = (int(year) % 6) + 1
+            
+            student_list = Student.objects.select_related('user')\
+                .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
+                .order_by('-pk').values('user__username')
+            
+            if student_list.exists():
+                last_student = student_list[0]['user__username']
+                start_num = int(last_student[len(abbreviation) + 1:]) + 1
+            else:
+                start_num = 0
+
+            students += [
+                {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
+                for i in range(
+                    start_num, start_num + student_creation_count_list[year]
+                )
+            ]
+        
+        teacher_list = Teacher.objects.select_related('user')\
+            .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
+            .order_by('-pk').values('user__username')
+            
+        if teacher_list.exists():
+            last_student = teacher_list[0]['user__username']
+            start_num = int(last_student[len(abbreviation) + 1:]) + 1
+        else:
+            start_num = 0
+        
         teachers = [
-            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
-            for i in range(start_num, start_num + teacher_creation_count)
-        ]
-        students = [
-            {'username': abbreviation + str(i).zfill(3), 'password': create_password()}
+            {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
             for i in range(
-                start_num + teacher_creation_count, 
-                start_num + teacher_creation_count + student_creation_count
+                start_num, start_num + teacher_creation_count
             )
         ]
         
-        # for _ in range(creation_count):
-        #     failure_count = 0
-        #     username = ''
-        #     while failure_count < 5:
-        #         new_username = create_username(preset)
-        #         if User.objects.filter(username=new_username).exists():
-        #             failure_count += 1
-        #         else:
-        #             username = new_username
-        #             break
-        #     if username == '':
-        #         continue
-        #     password = create_password()
-        #     if UserCUDSerialzier(data={'username': new_username, 'password': password}).is_valid():
-        #         # new_user = User.objects.create(username= new_username, password= password)
-        #         # new_user.save()
-        #         data['users'].append(
-        #             {'username': new_username, 'password': password}
-        #         )\
-        # return Response(
-        #     data, status=status.HTTP_201_CREATED
-        # )
+        for student in students:
+            
+            info = {
+                'username': student['username'],
+                'password': make_password(student['password']),
+                'status': 'ST'
+            }
+            serializer = UserCUDSerialzier(data=info)
+            
+            if serializer.is_valid():
+                serializer.save()
+                
+                Student(user_id=serializer.data['id'],school_id=school_pk).save()
+        
+        for teacher in teachers:
+            
+            info = {
+                'username': teacher['username'],
+                'password': make_password(teacher['password']),
+                'status': 'TE'
+            }
+            serializer = UserCUDSerialzier(data=info)
+            
+            if serializer.is_valid():
+                serializer.save()
+                
+                Teacher(user_id=serializer.data['id'],school_id=school_pk).save()
+
         return Response(
-            data={'teacher': teachers, 'student': students}
+            f'학생 : {len(students)} 명 생성, 선생 : {len(teachers)} 명 생성',
+            status=status.HTTP_201_CREATED
+        )
+    
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                response=UserCUDSerialzier,
+                description=swagger_schema.descriptions['UserCUDView']['delete'][200],
+                examples=swagger_schema.examples['UserCUDView']['delete'][200],
+            ),
+            204: OpenApiResponse(
+                description=swagger_schema.descriptions['UserCUDView']['delete'][204],
+            ),
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404]
+        },
+        description=swagger_schema.descriptions['UserCUDView']['delete']['description'],
+        summary=swagger_schema.summaries['UserCUDView']['delete'],
+        tags=['학교 관리자',],
+        examples=[
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404]
+        ],
+    )
+    def destroy(self, request,YS,num):
+        """Delete lecture information
+        
+        Delete lecture information
+        """
+        user = decode_JWT(request)
+        if user == None or user.status != 'SA':
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if YS == "S":
+            student = get_object_or_404(User,pk=num)
+            student.delete()
+        elif YS == "Y":
+            abb_num = (int(num) % 6) + 1
+            abbreviation = user.school_admin.school.abbreviation
+            User.objects.filter(username__startswith=abbreviation+str(abb_num)).delete()
+        else:
+            return Response(
+                    {'error': 'wrong information'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
         )
 
 
@@ -346,7 +446,7 @@ class FindUsernameView(APIView):
             return Response(
                 {'error': 'email send failure'},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )    
 
 
 class PasswordChangeView(APIView):

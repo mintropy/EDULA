@@ -289,6 +289,47 @@ request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 �
     ''',
         }
     },
+    'UserCUDView': {
+        'post': {
+            'description': 
+    '''
+    학생 및 선생 생성
+학생 및 선생의 수를 입력 받고 생성합니다.\n
+학교 관리자만 생성이 가능합니다.\n
+입력의 경우
+- 학생 : 입학 연도와 학생 수를 dict로 입력
+- 선생 : 선생 수만 입력
+
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우
+
+    ''',
+            201: 
+    '''
+    학생 및 선생이 생성되었습니다.
+해당 수 만큼 학생과 선생을 생성
+    ''',
+        },
+        'delete': {
+            'description':
+    '''
+    학생을 삭제합니다
+특정 학생 한명을 삭제하거나 한 연도의 학생 모두를 삭제합니다.
+학생이 없으면 204를 반환합니다\n
+YS : 연도(Y)와 학생(S) 구분(대문자 하나 입력)\n
+num : 연도일 경우 입학 4자리 연도, 학생일 경우 학생 pk
+    ''',
+            200:
+    '''
+    학년의 학생들을 삭제 완료하였습니다
+    ''',
+            204:
+    '''
+    학년의 학생이 없습니다
+    ''',
+        },
+    },
 }
 
 summaries = {
@@ -335,7 +376,11 @@ summaries = {
         'create': '친구 신청 생성',
         'update': '친구 신청 승인/거절',
         'destroy': '보낸 친구 신청 취소',
-    }
+    },
+    'UserCUDView': {
+        'post': '학생 및 선생 생성',
+        'delete': '학생 삭제',
+    },
 }
 
 examples = {
@@ -830,5 +875,40 @@ examples = {
                 ),
             ],
         },
+    },
+    'UserCUDView': {
+        'post': {
+            'input': OpenApiExample(
+                name='request',
+                value={
+                    "student_creation_count_list": {
+                        "2014": 1
+                    },
+                    "teacher_creation_count": 0
+                },
+                request_only=True,
+            ),
+            201: OpenApiExample(
+                name='user information',
+                value={
+                    'students' : [],
+                    'teachers' : [],
+                },
+                status_codes=['201'],
+                response_only=True,
+            ),
+        },
+        'delete': {
+            200: [
+                OpenApiExample(
+                    name='delete',
+                    value={
+                        'OK': 'deleted',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        }
     },
 }

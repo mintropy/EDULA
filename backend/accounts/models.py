@@ -56,8 +56,8 @@ class Student(models.Model):
         blank=True,
     )
     
-    def __str__(self):
-        return self.user.username
+    # def __str__(self):
+    #     return self.user.username
 
 
 class Teacher(models.Model):

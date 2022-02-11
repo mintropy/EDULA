@@ -18,11 +18,19 @@ request_detail = friend_request.FriendRequestViewSet.as_view({
     'delete': 'destroy',
 })
 
+user_C = user.UserCUDView.as_view({
+    'post': 'create',
+})
+
+user_D = user.UserCUDView.as_view({
+    'delete': 'destroy',
+})
 
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view(), name='user_self_information'),
-    path('user/', user.UserCUDView.as_view()),
+    path('user/', user_C),
+    path('user/<str:YS>/<int:num>/', user_D),
     path('<int:user_pk>/',
         user.UserSpecifyingView.as_view(),
         name='user_other_information',
