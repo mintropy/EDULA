@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from 'react';
-import styled from 'styled-components';
 import ScheduleItem from './ScheduleItem';
 import ScheduleDate from './ScheduleDate';
 import {
@@ -8,15 +7,8 @@ import {
 	apiGetTeacherLectureList,
 } from '../../api/user';
 import UserContext from '../../context/user';
-
-const StyledContainer = styled.div`
-	height: 100%;
-	width: 25em;
-	margin: 1em;
-	padding: 1em;
-	color: ${props => props.theme.fontColor};
-	background-color: ${props => props.theme.subBgColor};
-`;
+import StyledTitle from '../class/StyledTitle';
+import StyledContainer from './StyledContainer';
 
 interface ScheduleDataType {
 	id: number;
@@ -58,7 +50,9 @@ function ScheduleContainer() {
 
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
-	const [scheduleData, setScheduleData] = useState([{} as ScheduleItemDataType]);
+	const [scheduleData, setScheduleData] = useState(
+		[] as Array<ScheduleItemDataType>
+	);
 
 	useEffect(() => {
 		switch (dayIdx) {
@@ -95,9 +89,7 @@ function ScheduleContainer() {
 				.then(res => {
 					setUserStat(res.data.status);
 				})
-				.catch(err => {
-					console.log(err);
-				});
+				.catch(() => {});
 		}
 	}, [userId]);
 
@@ -106,7 +98,7 @@ function ScheduleContainer() {
 			switch (userStat) {
 				case 'ST':
 					apiGetStudentLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleItemDataType[];
+						const dayLectureData = [] as Array<ScheduleItemDataType>;
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {
@@ -128,7 +120,7 @@ function ScheduleContainer() {
 
 				case 'TE':
 					apiGetTeacherLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleItemDataType[];
+						const dayLectureData = [] as Array<ScheduleItemDataType>;
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {
@@ -168,10 +160,12 @@ function ScheduleContainer() {
 						endAt={sub.time?.end}
 					/>
 				))}
+
+				{scheduleData.length === 0 && <StyledTitle>수업이 없어요!</StyledTitle>}
 			</StyledContainer>
 		);
 	}
-	return <h1>수업이 없나?? 로딩 중입니다.!</h1>;
+	return <h1>로딩 중</h1>;
 }
 
 export default ScheduleContainer;

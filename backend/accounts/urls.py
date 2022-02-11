@@ -18,20 +18,44 @@ request_detail = friend_request.FriendRequestViewSet.as_view({
     'delete': 'destroy',
 })
 
+user_C = user.UserCUDView.as_view({
+    'post': 'create',
+})
+
+user_D = user.UserCUDView.as_view({
+    'delete': 'destroy',
+})
 
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view(), name='user_self_information'),
-    path('user/', user.UserCUDView.as_view()),
+    path('user/', user_C),
+    path('user/<str:YS>/<int:num>/', user_D),
     path('<int:user_pk>/',
         user.UserSpecifyingView.as_view(),
         name='user_other_information',
     ),
     # Friend
-    path('friend/', friend_list),
-    path('friend/<int:friend_pk>/', friend_detail),
-    path('friend/request/', request_list),
-    path('friend/request/<int:request_pk>/', request_detail),
+    path('friend/',
+        friend_list,
+        name='friend_list',
+    ),
+    path('friend/<int:friend_pk>/',
+        friend_detail,
+        name='friend_detail',
+    ),
+    path('friend/request/',
+        request_list,
+        name='friend_list',
+    ),
+    path('friend/request/<int:request_pk>/',
+        request_detail,
+        name='request_detail',
+    ),
+    path('friend/search/<str:search>/',
+        user.FriendSearchViewSet.as_view({'get': 'list'}),
+        name='friend_search',
+    ),
     # student / teacher / school admin
     path('student/<int:student_pk>/', student.StudentView.as_view()),
     path('student/<int:student_pk>/lecture/',

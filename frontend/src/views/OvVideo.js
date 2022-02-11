@@ -1,27 +1,16 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { Component } from 'react';
+import { createRef, useEffect } from 'react';
 
-export default class OpenViduVideoComponent extends Component {
-	constructor(props) {
-		super(props);
-		this.videoRef = React.createRef();
-	}
+function OpenVideoCompnent({ streamManager }) {
+	const videoRef = createRef();
 
-	componentDidMount() {
-		const { streamManager } = this.props;
-		if (this.props && !!this.videoRef) {
-			streamManager.addVideoElement(this.videoRef.current);
+	useEffect(() => {
+		if (streamManager && !!videoRef) {
+			streamManager.addVideoElement(videoRef.current);
 		}
-	}
+	}, [streamManager]);
 
-	componentDidUpdate(props) {
-		const { streamManager } = this.props;
-		if (props && !!this.videoRef) {
-			streamManager.addVideoElement(this.videoRef.current);
-		}
-	}
-
-	render() {
-		return <video autoPlay ref={this.videoRef} />;
-	}
+	return <video autoPlay ref={videoRef} />;
 }
+
+export default OpenVideoCompnent;

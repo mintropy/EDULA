@@ -15,7 +15,7 @@ const StyledIntro = styled.div`
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	width: 100%;
+	width: 800px;
 	height: 10em;
 `;
 interface IntroProps {

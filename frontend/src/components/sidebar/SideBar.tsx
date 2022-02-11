@@ -1,7 +1,9 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { BsFillHouseDoorFill, BsTable } from 'react-icons/bs';
+import { BsFillHouseDoorFill, BsTable, BsPeopleFill } from 'react-icons/bs';
 import routes from '../../routes';
+import UserContext from '../../context/user';
 
 const StyledLink = styled(Link)`
 	text-decoration: none;
@@ -14,17 +16,14 @@ const StyledList = styled.li`
 `;
 
 const StyledContainer = styled.div`
-	padding: 2em;
-	width: 10em;
+	padding: 1em;
+	width: 3em;
 	height: 100%;
 	background-color: ${props => props.theme.subBgColor};
 `;
 
-const StyledTitle = styled.h1`
-	font-size: 2em;
-	text-align: center;
-`;
 function SideBar() {
+	const { userStat } = useContext(UserContext);
 	return (
 		<StyledContainer>
 			<ul>
@@ -38,6 +37,13 @@ function SideBar() {
 						<BsTable />
 					</StyledLink>
 				</StyledList>
+				{userStat === 'ST' && (
+					<StyledList>
+						<StyledLink to={routes.friend}>
+							<BsPeopleFill />
+						</StyledLink>
+					</StyledList>
+				)}
 			</ul>
 		</StyledContainer>
 	);

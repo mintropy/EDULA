@@ -1,8 +1,8 @@
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormBtn from '../auth/FormBtn';
-import FormInput from '../auth/FormInput';
 import { apiPostHomework, apiUpdateHomework } from '../../api/homework';
+import ClassFormInput from './ClassFormInput';
 
 type ArticleInput = {
 	title: string;
@@ -75,7 +75,7 @@ function HomeworkForm(props: InnerProps) {
 				onInValidSubmit
 			)}
 		>
-			<FormInput htmlFor='title'>
+			<ClassFormInput htmlFor='title'>
 				<div>제목</div>
 				<input
 					{...register('title', {
@@ -93,9 +93,9 @@ function HomeworkForm(props: InnerProps) {
 					placeholder='Title'
 					defaultValue={originTitle}
 				/>
-			</FormInput>
+			</ClassFormInput>
 
-			<FormInput htmlFor='content'>
+			<ClassFormInput htmlFor='content'>
 				<div>내용</div>
 				<input
 					{...register('content', {
@@ -113,8 +113,8 @@ function HomeworkForm(props: InnerProps) {
 					placeholder='Content'
 					defaultValue={originContent}
 				/>
-			</FormInput>
-			<FormInput htmlFor='deadline'>
+			</ClassFormInput>
+			<ClassFormInput htmlFor='deadline'>
 				<div>마감일</div>
 				<input
 					{...register('deadline', {
@@ -124,7 +124,7 @@ function HomeworkForm(props: InnerProps) {
 					placeholder='deadline'
 					defaultValue={originDeadline}
 				/>
-			</FormInput>
+			</ClassFormInput>
 			{type === 'new' && <FormBtn value='글쓰기' disabled={!isValid} />}
 			{type === 'update' && <FormBtn value='수정하기' disabled={!isValid} />}
 		</form>

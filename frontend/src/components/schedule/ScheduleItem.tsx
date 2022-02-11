@@ -1,13 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const StyledItem = styled.div`
-	background-color: pink;
-	margin: 0.5rem;
-	padding: 0.3rem;
-	text-align: center;
-	color: ${props => props.theme.fontColor};
-`;
+import StyledItem from './StyledItem';
 
 interface ScheduleItemProps {
 	scheduleId: number;

@@ -1,11 +1,20 @@
+import styled from 'styled-components';
 import PageTitle from '../components/PageTitle';
+
+const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	padding-top: 20vh;
+	font-size: 2em;
+`;
 
 function Error404() {
 	return (
-		<div>
+		<Container>
 			<PageTitle title='Page Not Found' />
-			<h1>Error 404: Page Not Found</h1>
-		</div>
+			<span>Error 404: Page Not Found</span>
+		</Container>
 	);
 }
 

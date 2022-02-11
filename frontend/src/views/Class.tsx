@@ -1,18 +1,19 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Intro from '../components/class/Intro';
 import { apiGetLectureDetail } from '../api/lecture';
 import { apiGetHomeworks } from '../api/homework';
-import UserContext from '../context/user';
-import { apiGetArticles } from '../api/article';
 import ArticleBoard from '../components/class/ArticleBoard';
 import HomeworkBoard from '../components/class/HomeworkBoard';
+import StudentList from '../components/class/StudentList';
+import UserContext from '../context/user';
 
 const StyledContainer = styled.section`
-	display: grid;
-	grid-template-columns: 1fr 3fr;
-	grid-gap: 20px;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-evenly;
 `;
 
 interface LectureDataType {
@@ -30,32 +31,27 @@ interface LectureDataType {
 	};
 	school: number;
 	teacher: number;
-	studentList: [number];
+	studentList: {
+		user: {
+			firstName: string;
+			id: number;
+			status: string;
+			username: string;
+		};
+	}[];
 }
 
 const StyledIntro = styled(Intro)``;
 
-interface ArticleDataType {
-	content: string;
-	createdAt: string;
-	id: number;
-	lecture: number;
-	notice: boolean;
-	title: string;
-	writer: number;
-	updatedAt: string;
-}
-
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
-	const { schoolId } = useContext(UserContext);
+	const { schoolId, userStat } = useContext(UserContext);
 	const { lectureId } = useParams();
-	const [articleData, setArticleData] = useState([] as ArticleDataType[]);
 
 	useEffect(() => {
 		if (lectureId) {
-			apiGetLectureDetail(schoolId, lectureId).then(res => {
+			apiGetLectureDetail(lectureId).then(res => {
 				setLectureData(res.data);
 			});
 		}
@@ -69,25 +65,14 @@ function Class() {
 		}
 	}, []);
 
-	const getArticles = () => {
-		if (lectureId) {
-			apiGetArticles(lectureId).then(res => {
-				setArticleData(res.data.articles);
-			});
-		}
-	};
-
-	useEffect(() => {
-		getArticles();
-	}, []);
-
 	if (lectureData) {
 		return (
 			<>
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
-					{articleData && <ArticleBoard articles={articleData} />}
+					<ArticleBoard />
+					{userStat === 'TE' && <StudentList students={lectureData.studentList} />}
 				</StyledContainer>
 			</>
 		);
