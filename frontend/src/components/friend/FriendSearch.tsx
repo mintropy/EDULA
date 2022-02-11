@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
@@ -6,6 +6,7 @@ import { apigetSearchFriend, apiPostFriendRequest } from '../../api/friend';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
+import UserContext from '../../context/user';
 
 interface SearchDataType {
 	studentCount: number;
@@ -14,11 +15,13 @@ interface SearchDataType {
 		id: number;
 		username: string;
 		firstName: string;
+		friendRequest: string;
 	}[];
 	teachers: {
 		id: number;
 		username: string;
 		firstName: string;
+		friendRequest: string;
 	}[];
 }
 
@@ -42,6 +45,7 @@ const StyledLink = styled(Link)`
 function FriendSearch() {
 	const [searchResult, setSearchResult] = useState({} as SearchDataType);
 	const [keyword, setKeyword] = useState('');
+	const { userId } = useContext(UserContext);
 
 	const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
@@ -89,25 +93,27 @@ function FriendSearch() {
 							<StyledLink to={`/profile/${friend.id}`}>
 								{friend.username} : {friend.firstName}
 							</StyledLink>
-							<StyledBtn
-								type='button'
-								value='친구 신청'
-								onClick={e => {
-									e.preventDefault();
+							{!friend.friendRequest && (
+								<StyledBtn
+									type='button'
+									value='친구 신청'
+									onClick={e => {
+										e.preventDefault();
 
-									apiPostFriendRequest(friend.id.toString())
-										.then(() => {
-											window.location.reload();
-										})
-										.catch(() => {});
-								}}
-							>
-								친구 신청
-							</StyledBtn>
+										apiPostFriendRequest(friend.id.toString())
+											.then(() => {
+												window.location.reload();
+											})
+											.catch(() => {});
+									}}
+								>
+									친구 신청
+								</StyledBtn>
+							)}
 						</StyledDiv>
 					))}
 				{searchResult.studentCount === 0 && (
-					<StyledDiv>검색 결과가 없어요.</StyledDiv>
+					<StyledDiv>검색 결과가 없어요. </StyledDiv>
 				)}
 			</StyledContainer>
 		</div>

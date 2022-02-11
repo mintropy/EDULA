@@ -55,7 +55,7 @@ function FriendList() {
 										}
 									}}
 								>
-									삭제
+									절교
 								</StyledDeleteBtn>
 							</StyledDiv>
 						</StyledLink>

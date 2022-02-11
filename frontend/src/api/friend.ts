@@ -55,7 +55,7 @@ export const apiPutFriendRequest = (requestId: string, requestStatus: string) =>
 export const apiDeleteFriendRequest = (requestId: string) =>
 	axios({
 		method: 'delete',
-		url: `${BASE_URL}/accounts/friend/request/${requestId}`,
+		url: `${BASE_URL}/accounts/friend/request/${requestId}/`,
 		headers: {
 			...setToken(),
 		},
