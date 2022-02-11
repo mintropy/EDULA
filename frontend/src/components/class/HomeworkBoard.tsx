@@ -12,8 +12,7 @@ const StyledListItem = styled.li`
 	margin: 1em;
 	background: ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
-	padding: 1em 1em 1em 2em;
-	border-left: 4px solid #ddd;
+	padding: 1em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
 `;
@@ -21,6 +20,10 @@ const StyledListItem = styled.li`
 const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
+`;
+
+const StyledContainer = styled.div`
+	margin: 0px 5em 0px 0px;
 `;
 
 interface BoardProps {
@@ -39,7 +42,7 @@ function HomeworkBoard({ homeworks }: BoardProps) {
 	const { lectureId } = useParams();
 
 	return (
-		<div>
+		<StyledContainer>
 			<StyledTitle>과제</StyledTitle>
 			<ul>
 				{homeworks &&
@@ -61,7 +64,7 @@ function HomeworkBoard({ homeworks }: BoardProps) {
 					<StyledButton>과제 등록</StyledButton>
 				</Link>
 			)}
-		</div>
+		</StyledContainer>
 	);
 }
 

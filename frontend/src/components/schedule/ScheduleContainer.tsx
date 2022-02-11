@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from 'react';
-import styled from 'styled-components';
 import ScheduleItem from './ScheduleItem';
 import ScheduleDate from './ScheduleDate';
 import {
@@ -51,7 +50,9 @@ function ScheduleContainer() {
 
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
-	const [scheduleData, setScheduleData] = useState([{} as ScheduleItemDataType]);
+	const [scheduleData, setScheduleData] = useState(
+		[] as Array<ScheduleItemDataType>
+	);
 
 	useEffect(() => {
 		switch (dayIdx) {
@@ -97,7 +98,7 @@ function ScheduleContainer() {
 			switch (userStat) {
 				case 'ST':
 					apiGetStudentLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleItemDataType[];
+						const dayLectureData = [] as Array<ScheduleItemDataType>;
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {
@@ -119,7 +120,7 @@ function ScheduleContainer() {
 
 				case 'TE':
 					apiGetTeacherLectureList(userId || '').then(res => {
-						const dayLectureData = [] as ScheduleItemDataType[];
+						const dayLectureData = [] as Array<ScheduleItemDataType>;
 						res.data.lectureList.forEach((lecture: ScheduleDataType) => {
 							lecture.timeList.lectures.forEach((idx: ScheduleItemProps) => {
 								if (idx.day === dayName) {

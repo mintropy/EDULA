@@ -10,9 +10,10 @@ import HomeworkBoard from '../components/class/HomeworkBoard';
 import StudentList from '../components/class/StudentList';
 
 const StyledContainer = styled.section`
-	display: grid;
-	grid-template-columns: 2fr 3fr;
-	grid-gap: 10rem;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-evenly;
 `;
 
 interface LectureDataType {
@@ -71,7 +72,7 @@ function Class() {
 				<StyledContainer>
 					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}
 					<ArticleBoard />
-					{userStat && <StudentList students={lectureData.studentList} />}
+					{userStat === 'TE' && <StudentList students={lectureData.studentList} />}
 				</StyledContainer>
 			</>
 		);

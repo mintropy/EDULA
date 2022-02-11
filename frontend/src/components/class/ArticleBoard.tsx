@@ -22,7 +22,9 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
 `;
-
+const StyledContainer = styled.div`
+	margin: 0px 0px 0px 5rem;
+`;
 interface ArticleDataType {
 	content: string;
 	createdAt: string;
@@ -56,7 +58,7 @@ function ArticleBoard() {
 
 	if (articles) {
 		return (
-			<div>
+			<StyledContainer>
 				<StyledTitle>게시판</StyledTitle>
 
 				{articles.length !== 0 && (
@@ -95,7 +97,7 @@ function ArticleBoard() {
 						<Pagination total={total} limit={limit} page={page} setPage={setPage} />
 					</footer>
 				)}
-			</div>
+			</StyledContainer>
 		);
 	}
 	return <h1>로딩 중</h1>;

@@ -18,7 +18,7 @@ const StyleDeleteBtn = styled(StyledDeleteBtn)`
 	box-shadow: 0 1px 3px black;
 `;
 const StyleSubmitBtn = styled(StyledDeleteBtn)`
-	background: ${props => props.theme.bgColor};
+	background: ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
 	box-shadow: 0 1px 3px black;
 `;
@@ -30,10 +30,12 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledContainer = styled.div`
+	position: absolute;
+	top: 20%;
+	left: 40%;
 	font-size: 1em;
 	text-align: center;
-	margin: 1em;
-	background: ${props => props.theme.subBgColor};
+	border: solid 2px ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
 	padding: 1em 1em 1em 2em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);

@@ -28,7 +28,9 @@ interface ScheduleDataType {
 function ScheduleAllContainer() {
 	const { userId } = useContext(UserContext);
 	const [userStat, setUserStat] = useState('');
-	const [scheduleData, setScheduleData] = useState([{} as ScheduleDataType]);
+	const [scheduleData, setScheduleData] = useState(
+		[] as Array<ScheduleDataType>
+	);
 
 	useEffect(() => {
 		if (userId) {

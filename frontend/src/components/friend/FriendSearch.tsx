@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
@@ -6,7 +6,6 @@ import { apigetSearchFriend, apiPostFriendRequest } from '../../api/friend';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
-import UserContext from '../../context/user';
 
 interface SearchDataType {
 	studentCount: number;
@@ -42,6 +41,16 @@ const StyledLink = styled(Link)`
 	color: ${props => props.theme.fontColor};
 `;
 
+const StyledInput = styled.input`
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 3px solid ${props => props.theme.mainBlue};
+	width: 16rem;
+	height: 2rem;
+	border-radius: 4px;
+`;
+
 function FriendSearch() {
 	const [searchResult, setSearchResult] = useState({} as SearchDataType);
 	const [keyword, setKeyword] = useState('');
@@ -72,7 +81,7 @@ function FriendSearch() {
 		<div>
 			<StyledContainer>
 				<StyledTitle>친구 검색</StyledTitle>
-				<input
+				<StyledInput
 					type='text'
 					ref={inputRef}
 					placeholder='친구 이름을 써보세요'

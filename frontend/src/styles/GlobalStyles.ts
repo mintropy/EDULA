@@ -6,6 +6,7 @@ const GlobalStyles = createGlobalStyle`
 
   body {
     background-color: ${props => props.theme.bgColor};
+    color:  ${props => props.theme.fontColor};
     font-family:'GangwonEdu_OTFBoldA', Times, Arial, Helvetica, sans-serif, serif;
   }
   @font-face {
