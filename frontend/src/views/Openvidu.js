@@ -59,9 +59,7 @@ function App() {
 		if (session) {
 			session.on('streamCreated', event => {
 				const subscriber = session.subscribe(event.stream, undefined);
-
-				subscribers.push(subscriber);
-				setSubscribers(subscribers);
+				setSubscribers(subscribers.concat([subscriber]));
 			});
 
 			session.on('streamDestroyed', event => {
