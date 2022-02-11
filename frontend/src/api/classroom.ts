@@ -19,6 +19,7 @@ export const apiPostClassroom = (schoolId: string, classroom: object) =>
 		},
 		data: {
 			...classroom,
+			school: parseInt(schoolId, 10),
 		},
 	});
 

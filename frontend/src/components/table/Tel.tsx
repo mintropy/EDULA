@@ -5,6 +5,7 @@ const STel = styled.div`
 	font-size: 1em;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 	width: 130px;
+	min-height: 20px;
 	text-align: center;
 `;
 type PropType = {
