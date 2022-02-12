@@ -1,6 +1,7 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import random
+from re import S
 import smtplib
 
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -339,95 +340,97 @@ class UserCUDView(ViewSet):
     )
     def create(self, request):
         user = decode_JWT(request)
-        if user == None or user.status != 'SA':
+        if user is None or user.status != 'SA':
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        student_creation_count_list = request.data.get('student_creation_count_list')
-        teacher_creation_count = request.data.get('teacher_creation_count')
-        
         school_pk = user.school_admin.school.pk
         abbreviation = user.school_admin.school.abbreviation
-        data = {
-            'abbreviation': abbreviation,
-            'student_creation_count_list': student_creation_count_list,
-            'teacher_creation_count': teacher_creation_count,
-            'student': [],
-            'teacher': [],
-        }
+        account_type = user.school_admin.account_type
+
+        max_creation = 10
+        if account_type == 'B':
+            max_creation = 50
+        elif account_type == 'E':
+            max_creation = 10_000
+        accounts_count = Student.objects.filter(school_id=school_pk).count()\
+            + Teacher.objects.filter(school_id=school_pk).count()
+        accounts_available = max(max_creation - accounts_count, 0)
+
+        student_creation_count_list = request.data.get('student_creation_count_list')
+        teacher_creation_count = request.data.get('teacher_creation_count')
+        for year, count in student_creation_count_list.items():
+            if count > accounts_available:
+                student_creation_count_list[year] = accounts_available
+                accounts_available = 0
+            else:
+                accounts_available -= count
+        if teacher_creation_count > accounts_available:
+            teacher_creation_count = accounts_available
 
         students = []
         for year in student_creation_count_list.keys():
             abb_num = (int(year) % 6) + 1
-            
             student_list = Student.objects.select_related('user')\
                 .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
                 .order_by('-pk').values('user__username')
-            
             if student_list.exists():
                 last_student = student_list[0]['user__username']
                 start_num = int(last_student[len(abbreviation) + 1:]) + 1
             else:
                 start_num = 0
-
             students += [
                 {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
                 for i in range(
                     start_num, start_num + student_creation_count_list[year]
                 )
             ]
-        
+
         teacher_list = Teacher.objects.select_related('user')\
             .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
             .order_by('-pk').values('user__username')
-            
         if teacher_list.exists():
             last_student = teacher_list[0]['user__username']
             start_num = int(last_student[len(abbreviation) + 1:]) + 1
         else:
             start_num = 0
-        
         teachers = [
             {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
             for i in range(
                 start_num, start_num + teacher_creation_count
             )
         ]
-        
+
+        data = {
+            'students': students,
+            'teachers': teachers,
+        }
         for student in students:
-            
             info = {
                 'username': student['username'],
                 'password': make_password(student['password']),
                 'status': 'ST'
             }
             serializer = UserCUDSerialzier(data=info)
-            
             if serializer.is_valid():
                 serializer.save()
-                
                 Student(user_id=serializer.data['id'],school_id=school_pk).save()
-        
         for teacher in teachers:
-            
             info = {
                 'username': teacher['username'],
                 'password': make_password(teacher['password']),
                 'status': 'TE'
             }
             serializer = UserCUDSerialzier(data=info)
-            
             if serializer.is_valid():
                 serializer.save()
-                
                 Teacher(user_id=serializer.data['id'],school_id=school_pk).save()
-
         return Response(
-            f'student : {len(students)}, teacher : {len(teachers)}',
+            data=data,
             status=status.HTTP_201_CREATED
         )
-    
+
     @extend_schema(
         responses={
             200: OpenApiResponse(

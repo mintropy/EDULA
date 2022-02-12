@@ -935,8 +935,18 @@ examples = {
             201: OpenApiExample(
                 name='user information',
                 value={
-                    'students' : [],
-                    'teachers' : [],
+                    'students' : [
+                        {
+                            'username': 'ABC30010',
+                            'password': 'test1234!',
+                        },
+                    ],
+                    'teachers' : [
+                        {
+                            'username': 'ABC00015',
+                            'password': 'apple234@',
+                        }
+                    ],
                 },
                 status_codes=['201'],
                 response_only=True,

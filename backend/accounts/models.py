@@ -55,9 +55,12 @@ class Student(models.Model):
         null=True,
         blank=True,
     )
-    
-    # def __str__(self):
-    #     return self.user.username
+
+    def __str__(self):
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
 
 
 class Teacher(models.Model):
@@ -81,10 +84,12 @@ class Teacher(models.Model):
         null=True,
         blank=True,
     )
-    
-    def __str__(self):
-        return self.user.username
 
+    def __str__(self):
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
 
 class SchoolAdmin(models.Model):
     
