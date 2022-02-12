@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import UserVideoComponent from './UserVideoComponent';
 
 const OPENVIDU_SERVER_URL = `https://${window.location.hostname}:${process.env.REACT_APP_OPENVIDU_PORT}`;
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
-function App() {
+function Openvidu() {
 	const [mySessionId, setMySessionId] = useState('SessionA');
 	const [myUserName, setMyUserName] = useState(
 		`Participant${Math.floor(Math.random() * 100)}`
@@ -20,7 +20,7 @@ function App() {
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
-		return window.removeEventListener('beforeunload', onbeforeunload);
+		return () => window.removeEventListener('beforeunload', onbeforeunload);
 	});
 
 	const handleChangeSessionId = e => {
@@ -45,21 +45,16 @@ function App() {
 		createSession(mySessionId).then(sessionId => createToken(sessionId));
 
 	const joinSession = () => {
-		setOV(new OpenVidu());
+		const tmpOV = new OpenVidu();
+		setOV(tmpOV);
+		setSession(tmpOV.initSession());
 	};
-
-	useLayoutEffect(() => {
-		if (!OV) {
-			return;
-		}
-		setSession(OV.initSession());
-	}, [OV]);
 
 	useEffect(() => {
 		if (session) {
 			session.on('streamCreated', event => {
 				const subscriber = session.subscribe(event.stream, undefined);
-				setSubscribers(subscribers.concat([subscriber]));
+				setSubscribers(prevSubscribers => prevSubscribers.concat([subscriber]));
 			});
 
 			session.on('streamDestroyed', event => {
@@ -107,13 +102,10 @@ function App() {
 	}, [session]);
 
 	const leaveSession = () => {
-		console.log(`leaveSession`);
 		if (session) {
 			session.disconnect();
 		}
 
-		// this.OV = null;
-		// OV = null;
 		setOV(null);
 		setSession(undefined);
 		setSubscribers([]);
@@ -154,11 +146,14 @@ function App() {
 	};
 
 	const deleteSubscriber = streamManager => {
-		const index = subscribers.indexOf(streamManager, 0);
-		if (index > -1) {
-			subscribers.splice(index, 1);
-			setSubscribers(subscribers);
-		}
+		setSubscribers(prevSubscribers => {
+			const tmpSubscribers = Array.from(prevSubscribers);
+			const index = tmpSubscribers.indexOf(streamManager, 0);
+			if (index > -1) {
+				tmpSubscribers.splice(index, 1);
+			}
+			return tmpSubscribers;
+		});
 	};
 
 	const createSession = sessionId =>
@@ -172,7 +167,7 @@ function App() {
 					},
 				})
 				.then(response => {
-					console.log('CREATE SESION', response);
+					console.log('CREATE SESSION', response);
 					resolve(response.data.id);
 				})
 				.catch(response => {
@@ -190,7 +185,9 @@ function App() {
 									`If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
 							)
 						) {
-							window.location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+							window.location.assign(
+								`${OPENVIDU_SERVER_URL}/openvidu/accept-certificate`
+							);
 						}
 					}
 				});
@@ -323,4 +320,4 @@ function App() {
 	);
 }
 
-export default App;
+export default Openvidu;
