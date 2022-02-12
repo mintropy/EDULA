@@ -41,8 +41,11 @@ function Openvidu() {
 		leaveSession();
 	};
 
-	const getToken = () =>
-		createSession(mySessionId).then(sessionId => createToken(sessionId));
+	const getToken = async () => {
+		const sessionId = await createSession(mySessionId);
+		const token = await createToken(sessionId);
+		return token;
+	};
 
 	const joinSession = () => {
 		const tmpOV = new OpenVidu();
@@ -50,54 +53,54 @@ function Openvidu() {
 		setSession(tmpOV.initSession());
 	};
 
-	useEffect(() => {
-		if (session) {
-			session.on('streamCreated', event => {
-				const subscriber = session.subscribe(event.stream, undefined);
-				setSubscribers(prevSubscribers => prevSubscribers.concat([subscriber]));
-			});
+	useEffect(async () => {
+		if (!session) {
+			return;
+		}
 
-			session.on('streamDestroyed', event => {
-				deleteSubscriber(event.stream.streamManager);
-			});
+		session.on('streamCreated', event => {
+			const subscriber = session.subscribe(event.stream, undefined);
+			setSubscribers(prevSubscribers => prevSubscribers.concat([subscriber]));
+		});
 
-			session.on('exception', exception => {
-				console.warn(exception);
-			});
+		session.on('streamDestroyed', event => {
+			deleteSubscriber(event.stream.streamManager);
+		});
 
-			getToken()
-				.then(token => {
-					session.connect(token, { clientData: myUserName }).then(async () => {
-						const devices = await OV.getDevices();
-						const videoDevices = devices.filter(
-							device => device.kind === 'videoinput'
-						);
+		session.on('exception', exception => {
+			console.warn(exception);
+		});
 
-						const newPublisher = OV.initPublisher(undefined, {
-							audioSource: undefined, // The source of audio. If undefined default microphone
-							videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-							publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-							publishVideo: true, // Whether you want to start publishing with your video enabled or not
-							resolution: '640x480', // The resolution of your video
-							frameRate: 30, // The frame rate of your video
-							insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-							mirror: false, // Whether to mirror your local video or not
-						});
+		try {
+			const token = await getToken();
+			await session.connect(token, { clientData: myUserName });
+			(async () => {
+				const devices = await OV.getDevices();
+				const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-						session.publish(newPublisher);
-
-						setCurrentVideoDevice(videoDevices[0]);
-						setMainStreamManager(newPublisher);
-						setPublisher(newPublisher);
-					});
-				})
-				.catch(error => {
-					console.log(
-						'There was an error connecting to the session:',
-						error.code,
-						error.message
-					);
+				const newPublisher = OV.initPublisher(undefined, {
+					audioSource: undefined, // The source of audio. If undefined default microphone
+					videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+					publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+					publishVideo: true, // Whether you want to start publishing with your video enabled or not
+					resolution: '640x480', // The resolution of your video
+					frameRate: 30, // The frame rate of your video
+					insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+					mirror: false, // Whether to mirror your local video or not
 				});
+
+				session.publish(newPublisher);
+
+				setCurrentVideoDevice(videoDevices[0]);
+				setMainStreamManager(newPublisher);
+				setPublisher(newPublisher);
+			})();
+		} catch (error) {
+			console.log(
+				'There was an error connecting to the session:',
+				error.code,
+				error.message
+			);
 		}
 	}, [session]);
 
@@ -156,63 +159,62 @@ function Openvidu() {
 		});
 	};
 
-	const createSession = sessionId =>
-		new Promise((resolve, reject) => {
-			const data = JSON.stringify({ customSessionId: sessionId });
-			axios
-				.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, data, {
+	const createSession = async sessionId => {
+		const data = JSON.stringify({ customSessionId: sessionId });
+		try {
+			const response = await axios.post(
+				`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
+				data,
+				{
 					headers: {
 						Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
 						'Content-Type': 'application/json',
 					},
-				})
-				.then(response => {
-					console.log('CREATE SESSION', response);
-					resolve(response.data.id);
-				})
-				.catch(response => {
-					const error = { ...response };
-					if (error?.response?.status === 409) {
-						resolve(sessionId);
-					} else {
-						console.log(error);
-						console.warn(
-							`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`
-						);
-						if (
-							window.confirm(
-								`No connection to OpenVidu Server. This may be a certificate error at "${OPENVIDU_SERVER_URL}"\n\nClick OK to navigate and accept it. ` +
-									`If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
-							)
-						) {
-							window.location.assign(
-								`${OPENVIDU_SERVER_URL}/openvidu/accept-certificate`
-							);
-						}
-					}
-				});
-		});
-
-	const createToken = sessionId => {
-		const data = {};
-		return new Promise((resolve, reject) => {
-			axios
-				.post(
-					`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`,
-					data,
-					{
-						headers: {
-							Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
-							'Content-Type': 'application/json',
-						},
-					}
+				}
+			);
+			console.log('CREATE SESSION', response);
+			return response.data.id;
+		} catch (response) {
+			const error = { ...response };
+			if (error?.response?.status === 409) {
+				return sessionId;
+			}
+			console.log(error);
+			console.warn(
+				`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`
+			);
+			if (
+				window.confirm(
+					`No connection to OpenVidu Server. This may be a certificate error at "${OPENVIDU_SERVER_URL}"\n\nClick OK to navigate and accept it. ` +
+						`If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
 				)
-				.then(response => {
-					console.log('TOKEN', response);
-					resolve(response.data.token);
-				})
-				.catch(error => reject(error));
-		});
+			) {
+				window.location.assign(
+					`${OPENVIDU_SERVER_URL}/openvidu/accept-certificate`
+				);
+			}
+			return new Error(error);
+		}
+	};
+
+	const createToken = async sessionId => {
+		const data = {};
+		try {
+			const response = await axios.post(
+				`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`,
+				data,
+				{
+					headers: {
+						Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+			console.log('TOKEN', response);
+			return response.data.token;
+		} catch (e) {
+			throw new Error(e);
+		}
 	};
 
 	return (
