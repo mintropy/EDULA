@@ -17,7 +17,6 @@ class SchoolAdminInline(admin.TabularInline):
     model = SchoolAdmin
 
 
-
 class CustomUserAdmin(UserAdmin):
     model = User
     list_display = ('id', 'username', 'first_name', 'school_name', 'status')
