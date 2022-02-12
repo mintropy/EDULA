@@ -350,6 +350,24 @@ num : 연도일 경우 입학 4자리 연도, 학생일 경우 학생 pk
     ''',
         },
     },
+    'ResisterViewSet': {
+        'create': {
+            'description':
+    '''
+    학교 관리자로 회원가입
+다음의 경우 400을 반환하고, 각 값에 대한 설명입니다
+- school : 학교와 관련한 입력값이 없는 경우
+- abbreviation not exist : 학교 약어가 없는 경우
+- abbreviation length : 학교 약어 길이가 3~5자가 아닌 경우
+- abbreviation : 이미 사용되는 약어인 경우
+    ''',
+            201:
+    '''
+    학교 관리자 계정을 생성했습니다
+accountType은 기본적으로 F(free)로 생성됩니다
+    ''',
+        }
+    },
 }
 
 summaries = {
@@ -404,6 +422,9 @@ summaries = {
     'FriendSearchViewSet': {
         'list': '친구 찾기',
     },
+    'ResisterViewSet': {
+        'create': '학교 관리자 회원가입'
+    }
 }
 
 examples = {
@@ -965,6 +986,44 @@ examples = {
                             },
                         ],
                     },
+                ),
+            ],
+        },
+    },
+    'ResisterViewSet': {
+        'request': [
+            OpenApiExample(
+                name='request',
+                value={
+                    'firstName': '김싸피',
+                    'password': 'ssafy1234!',
+                    'school': {
+                        'name': '싸피초등학교',
+                        'abbreviation': 'SFE'
+                    },
+                },
+                request_only=True
+            ),
+        ],
+        'create': {
+            201: [
+                OpenApiExample(
+                    name='user information',
+                    value={
+                        'id': 30,
+                        'username': 'ABC00000',
+                        'firstName': '김싸피',
+                        'schoolAdmin': {
+                            'school': {
+                                'id': 15,
+                                'name': '싸피초등학교',
+                                'abbreviation': 'ABC',
+                            },
+                            'accountType': 'F',
+                        },
+                    },
+                    status_codes=['200', '201'],
+                    response_only=True,
                 ),
             ],
         },

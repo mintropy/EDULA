@@ -11,6 +11,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.decorators import permission_classes
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -22,10 +25,11 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from server import basic_swagger_schema
+from schools.models import School
 from . import swagger_schema
-from ..models import FriendRequest, User, Student, Teacher
+from ..models import FriendRequest, User, Student, Teacher, SchoolAdmin
 from ..serializers.user import(
-    UserBasicSerializer, UserCUDSerialzier,
+    UserBasicSerializer, UserCUDSerialzier, ResisterSerializer,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
     FriendSerializer
 )
@@ -225,6 +229,82 @@ class UserSpecifyingView(APIView):
         return Response(
             serializer.data,
             status=status.HTTP_200_OK
+        )
+
+
+class ResisterViewSet(ViewSet):
+    """학교 관리자로 회원가입
+    """
+    model = User
+    queryset = User.objects.all()
+    serializer_class = ResisterSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+
+    @extend_schema(
+        responses={
+            201: OpenApiResponse(
+                response=ResisterSerializer,
+                description=swagger_schema.descriptions['ResisterViewSet']['create'][201],
+                examples=swagger_schema.examples['ResisterViewSet']['create'][201],
+            ),
+            400: basic_swagger_schema.open_api_response[400],
+        },
+        description=swagger_schema.descriptions['ResisterViewSet']['create']['description'],
+        summary=swagger_schema.summaries['ResisterViewSet']['create'],
+        tags=['유저', '학교 관리자',],
+        examples=[
+            basic_swagger_schema.examples[400],
+            *swagger_schema.examples['ResisterViewSet']['request'],
+        ]
+    )
+    def create(self, request):
+        school_data = request.data.get('school', None)
+        if school_data is None:
+            return Response(
+                {'error': 'school'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        abbreviation = school_data.get('abbreviation', None)
+        if abbreviation is None:
+            return Response(
+                {'error': 'abbreviation not exist'},
+                status.HTTP_400_BAD_REQUEST
+            )
+        elif len(abbreviation) < 3 or len(abbreviation) > 5:
+            return Response(
+                {'error': 'abbreviation length'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        school, create = School.objects.get_or_create(
+            abbreviation=school_data.get('abbreviation', None)
+        )
+        if not create:
+            return Response(
+                {'error': 'abbreviation'}
+            )
+        school.name = school_data.get('name', None)
+        school.save()
+        username = f'{school.abbreviation}00000'
+        
+        first_name = request.data.get('first_name', None)
+        password = request.data.get('password', None)
+        user = User.objects.create(
+            username=username,
+            first_name=first_name,
+            password=make_password(password),
+            status='SA'
+        )
+        school_admin = SchoolAdmin.objects.create(
+            user=user,
+            school=school,
+        )
+        serializer = ResisterSerializer(user)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
         )
 
 

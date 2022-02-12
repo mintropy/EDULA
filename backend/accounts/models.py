@@ -87,6 +87,12 @@ class Teacher(models.Model):
 
 
 class SchoolAdmin(models.Model):
+    
+    class account_type(models.TextChoices):
+        Free = 'F', _('Free')
+        Basic = 'B', _('Basic')
+        Every = 'E', _('Every')
+    
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -99,6 +105,11 @@ class SchoolAdmin(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+    )
+    account_type = models.CharField(
+        max_length=1,
+        choices=account_type.choices,
+        default='F',
     )
     
     def __str__(self):

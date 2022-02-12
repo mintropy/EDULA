@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from ..models import SchoolAdmin
-from .user import UserBasicSerializer, UserDetailSerializer
+from .user import UserDetailSerializer
 from schools.serializers import (
-    SchoolSerializer, LectureSerializer, ClassroomSerializer
+    SchoolSerializer, ClassroomSerializer
 )
 
 class SchoolAdminSerializer(serializers.ModelSerializer):
