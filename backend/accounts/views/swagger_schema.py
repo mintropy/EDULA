@@ -211,8 +211,11 @@ and get updated information
         'get': {
             'description':
     '''
-    Get school admin information
-school admin information using teacher_pk
+    학교 관리자 정보를 조회합니다
+accountType에따라 생성 가능한 유저의수가 달라집니다
+- F(free) : 10명
+- B(Basic) : 50명
+- E(Every) : 10,000명
     ''',
         200 : 
     '''
@@ -783,6 +786,7 @@ examples = {
                         'id': 0,
                         'name': '싸피 초등학교',
                     },
+                    'accountType': 'F'
                 },
                 status_codes=['200'],
                 response_only=True,

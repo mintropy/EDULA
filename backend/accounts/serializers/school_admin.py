@@ -14,6 +14,7 @@ class SchoolAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolAdmin
         fields = '__all__'
+        read_only_fields = ('account_type',)
     
     def update(self, instance, validated_data):
         if 'user' in validated_data:
