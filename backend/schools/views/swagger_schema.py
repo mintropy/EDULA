@@ -303,25 +303,37 @@ teacher와 studentList는 선택적 입력 가능합니다\n
         'get': {
             'description': 
     '''
-    Get total lecture of school information
-Use lecture_pk, return total lecture information
+    해당 학교의 모든 수업을 조회를 합니다
+학생, 교사, 학교 관리자의 학교에 대한 모든 수업을 조회할 수 있습니다\n
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우\n
     ''',
             200: 
     '''
-    Successfully get total lecture list
-successfully get total lecture information from lecture_pk
+    모든 수업을 조회했습니다
+id : 수업 pk\n
+name : 수업 이름\n
+time_list : 수업 시간\n
+school : 학교 pk\n
+teacher : 선생의 상세 정보\n
+student_list : 학생의 상세 정보 리스트
     ''',
         },
         'post': {
             'description': 
     '''
-    Post lecture information
-Input lecture information
+    수업을 생성합니다.
+수업을 작성하여 생성합니다.\n
+name : 수업이름\n
+time_list : 요일, 시간\n
+teacher : 선생 pk\n
+student_list : 학생 pk 리스트\n
     ''',
             201: 
     '''
-    Successfully post lecture
-successfully input lecture
+    수업이 생성되었습니다
+수업이 생성됩니다.
     ''',
         },
     },
@@ -329,13 +341,18 @@ successfully input lecture
         'get': {
             'description': 
     '''
-    Get lecture information
-Use lecture_pk and school_pk, return lecture information
+    수업의 상세 정보에 대해 조회한다.
+해당 수업의 상세 정보를 조회해준다.
     ''',
             200: 
     '''
-    Successfully get lecture information
-successfully get lecture information from lecture_pk and school_pk
+    수업 상세 정보를 조회하였습니다.
+id : 수업 pk\n
+name : 수업 이름\n
+time_list : 수업 시간\n
+school : 학교 pk\n
+teacher : 선생의 상세 정보\n
+student_list : 학생의 상세 정보 리스트
     ''',
         },
         'put': {
@@ -919,8 +936,7 @@ examples = {
                         "additionalProp2": "string",
                         "additionalProp3": "string"
                     },
-                    "school": 0,
-                    "teacher": 0,
+                    "teacher_pk": 0,
                     "student_list": [
                         0
                     ]
