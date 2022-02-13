@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { createRef, useEffect } from 'react';
+import styled from 'styled-components';
 
 function OpenVideoCompnent({ streamManager }) {
 	const videoRef = createRef();

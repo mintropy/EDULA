@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import UserVideoComponent from './UserVideoComponent';
 
 const OPENVIDU_SERVER_URL = `https://${window.location.hostname}:${process.env.REACT_APP_OPENVIDU_PORT}`;
@@ -221,20 +222,13 @@ function Openvidu() {
 		<div className='container'>
 			{session === undefined ? (
 				<div id='join'>
-					<div id='img-div'>
-						<img
-							src='resources/images/openvidu_grey_bg_transp_cropped.png'
-							alt='OpenVidu logo'
-						/>
-					</div>
-					<div id='join-dialog' className='jumbotron vertical-center'>
+					<div id='join-dialog'>
 						<h1> Join a video session </h1>
-						<form className='form-group' onSubmit={joinSession}>
+						<form onSubmit={joinSession}>
 							<p>
 								<label htmlFor='userName'>
 									Participant:
 									<input
-										className='form-control'
 										type='text'
 										id='userName'
 										value={myUserName}
@@ -248,7 +242,6 @@ function Openvidu() {
 									{' '}
 									Session:
 									<input
-										className='form-control'
 										type='text'
 										id='sessionId'
 										value={mySessionId}
@@ -257,13 +250,8 @@ function Openvidu() {
 									/>{' '}
 								</label>
 							</p>
-							<p className='text-center'>
-								<input
-									className='btn btn-lg btn-success'
-									name='commit'
-									type='submit'
-									value='JOIN'
-								/>
+							<p>
+								<input name='commit' type='submit' value='JOIN' />
 							</p>
 						</form>
 					</div>
@@ -275,7 +263,6 @@ function Openvidu() {
 					<div id='session-header'>
 						<h1 id='session-title'>{mySessionId}</h1>
 						<input
-							className='btn btn-large btn-danger'
 							type='button'
 							id='buttonLeaveSession'
 							onClick={leaveSession}
@@ -284,10 +271,9 @@ function Openvidu() {
 					</div>
 
 					{mainStreamManager !== undefined ? (
-						<div id='main-video' className='col-md-6'>
+						<div id='main-video'>
 							<UserVideoComponent streamManager={mainStreamManager} />
 							<input
-								className='btn btn-large btn-success'
 								type='button'
 								id='buttonSwitchCamera'
 								onClick={switchCamera}
@@ -295,20 +281,15 @@ function Openvidu() {
 							/>
 						</div>
 					) : null}
-					<div id='video-container' className='col-md-6'>
+					<div id='video-container'>
 						{publisher !== undefined ? (
-							<button
-								className='stream-container col-md-6 col-xs-6'
-								onClick={() => handleMainVideoStream(publisher)}
-								type='button'
-							>
+							<button onClick={() => handleMainVideoStream(publisher)} type='button'>
 								<UserVideoComponent streamManager={publisher} />
 							</button>
 						) : null}
 						{subscribers.map(sub => (
 							<button
 								key={sub}
-								className='stream-container col-md-6 col-xs-6'
 								onClick={() => handleMainVideoStream(sub)}
 								type='button'
 							>
