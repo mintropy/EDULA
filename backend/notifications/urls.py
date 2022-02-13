@@ -7,7 +7,11 @@ notification_list = NotificationViewSet.as_view({
     'get': 'list',
 })
 notification_detail = NotificationViewSet.as_view({
-    'get': 'retireve',
+    'patch': 'partial_update',
+    'delete': 'destroy',
+})
+notification_count = NotificationViewSet.as_view({
+    'get': 'count',
 })
 
 urlpatterns = [
@@ -18,6 +22,10 @@ urlpatterns = [
     path(
         '<int:notification_pk>/',
         notification_detail,
+    ),
+    path(
+        'count/',
+        notification_count,
     )
 ]
 

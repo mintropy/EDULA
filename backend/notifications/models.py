@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
-
+from schools.models import Lecture
 
 # Create your models here.
 class Notification(models.Model):
@@ -10,7 +10,9 @@ class Notification(models.Model):
         FRIEND = 'FR', _('Friend')
         FRIEND_REQUEST = 'FQ', _('Friend Request')
         LECTURE = 'LE', _('Lecture')
-        HOMEWORK = 'HO', _('Homework')
+        HOMEWORK_CREATE = 'HC', _('Homework Create')
+        HOMEWORK_UPDATE = 'HU', _('Homework Update')
+        HOMEWORK_SUMBISSION = 'HS', _('Homework Submission')
         ARTICLE = 'AR', _('Article')
 
     user = models.ForeignKey(
@@ -30,6 +32,13 @@ class Notification(models.Model):
     from_user = models.ForeignKey(
         User,
         related_name='notifications_send',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    lecture = models.ForeignKey(
+        Lecture,
+        related_name='notifications',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
