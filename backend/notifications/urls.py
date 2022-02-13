@@ -28,4 +28,3 @@ urlpatterns = [
         notification_count,
     )
 ]
-

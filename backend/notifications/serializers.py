@@ -6,6 +6,8 @@ from .models import Notification
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    """Notification Serializer
+    """
     from_user = UserBasicSerializer()
     lecture = LectureSerializer()
 

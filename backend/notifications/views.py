@@ -15,6 +15,9 @@ from . import swagger_schema
 
 # Create your views here.
 class NotificationPagination(PageNumberPagination):
+    """Notification Pagination
+    기본 한 페이지 10개, 최대 100개로 요청 가능
+    """
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 100
@@ -31,6 +34,8 @@ class NotificationViewSet(ViewSet):
 
     @swagger_schema.notification_view_set_list
     def list(self, request):
+        """알림 목록 조회
+        """
         user = decode_JWT(request)
         if user is None:
             return Response(
@@ -55,6 +60,9 @@ class NotificationViewSet(ViewSet):
 
     @swagger_schema.notification_view_set_partial_update
     def partial_update(self, request, notification_pk):
+        """알림 읽음 처리
+        notification_pk : int
+        """
         user = decode_JWT(request)
         if user is None:
             return Response(
@@ -76,6 +84,9 @@ class NotificationViewSet(ViewSet):
 
     @swagger_schema.notification_view_set_destroy
     def destroy(self, request, notification_pk):
+        """알림 삭제
+        notification_pk : int
+        """
         user = decode_JWT(request)
         if user is None:
             return Response(
@@ -93,6 +104,8 @@ class NotificationViewSet(ViewSet):
 
     @swagger_schema.notification_view_set_count
     def count(self, request):
+        """알림 개수
+        """
         user = decode_JWT(request)
         if user is None:
             return Response(

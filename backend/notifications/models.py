@@ -5,8 +5,14 @@ from schools.models import Lecture
 
 # Create your models here.
 class Notification(models.Model):
+    """Notification Model
+    """
 
     class NotificationType(models.TextChoices):
+        """Notification Type Choices
+        지금은 친구 추가 요청, 숙제 생성 및 수정, 숙제 제출만 사용
+        추가적으로 친구, 게시글 등 활용할 수 있음
+        """
         FRIEND = 'FR', _('Friend')
         FRIEND_REQUEST = 'FQ', _('Friend Request')
         LECTURE = 'LE', _('Lecture')
