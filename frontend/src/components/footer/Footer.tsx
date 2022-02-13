@@ -2,12 +2,6 @@ import styled from 'styled-components';
 import { BsGithub, BsYoutube } from 'react-icons/bs';
 
 const StyledFooter = styled.footer`
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	overflow: hidden;
-
 	margin: 0px auto;
 	width: 100%;
 	background-color: ${props => props.theme.mainBlue};
