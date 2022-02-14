@@ -1,5 +1,5 @@
+import styled from 'styled-components';
 import OpenViduVideoComponent from './OvVideo';
-// import './UserVideo.css';
 
 function UserVideoComponent({ streamManager }) {
 	const getNicknameTag = () =>
@@ -8,7 +8,7 @@ function UserVideoComponent({ streamManager }) {
 	return (
 		<div>
 			{streamManager !== undefined ? (
-				<div className='streamcomponent'>
+				<div>
 					<OpenViduVideoComponent streamManager={streamManager} />
 					<div>
 						<p>{getNicknameTag()}</p>

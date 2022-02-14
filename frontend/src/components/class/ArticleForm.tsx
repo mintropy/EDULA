@@ -108,7 +108,7 @@ function ArticleForm(props: InnerProps) {
 						},
 					})}
 					type='text'
-					placeholder='Title'
+					placeholder='당신은 우리 학교의 자랑❤'
 					defaultValue={originTitle}
 				/>
 			</ClassFormInput>
@@ -128,7 +128,7 @@ function ArticleForm(props: InnerProps) {
 						},
 					})}
 					type='text'
-					placeholder='Content'
+					placeholder='예쁜 글을 써주세요 :)'
 					defaultValue={originContent}
 				/>
 			</ClassFormInput>

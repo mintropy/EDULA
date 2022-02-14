@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Error404 from './views/Error404';
 import Main from './views/Main';
@@ -29,6 +30,7 @@ import HomeworkSubmitForm from './views/HomeworkSubmit';
 import Openvidu from './views/Openvidu';
 import Friend from './views/Friend';
 import HomeworkSubmitDetail from './views/HomeworkSubmitDetail';
+import Signup from './views/Signup';
 
 function App() {
 	return (
@@ -40,6 +42,7 @@ function App() {
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
 					<Route path='/con' element={<Openvidu />} />
+					<Route path={routes.signup} element={<Signup />} />
 					<Route path={routes.main} element={<Home />}>
 						<Route index element={<Main />} />
 						<Route path={routes.setting} element={<Setting />} />
