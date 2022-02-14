@@ -46,7 +46,7 @@ const StyledIntro = styled(Intro)``;
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
-	const { schoolId, userStat } = useContext(UserContext);
+	const { userStat } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	useEffect(() => {
