@@ -11,7 +11,9 @@ classroom_list = classroom.ClassroomViewSet.as_view({
     'post': 'create',
 })
 classroom_detail = classroom.ClassroomViewSet.as_view({
-    'get': 'retrieve'
+    'get': 'retrieve',
+    'put': 'update',
+    'delete': 'destroy',
 })
 
 homework_list = homework.HomeworkViewSet.as_view({
@@ -51,8 +53,14 @@ urlpatterns = [
             path('student/', student.StudentView.as_view()),
             path('teacher/', teacher.TeacherView.as_view()),
             # 교실
-            path('classroom/', classroom_list),
-            path('classroom/<int:classroom_pk>/', classroom_detail)
+            path('classroom/',
+                classroom_list,
+                name='classroom_list'
+            ),
+            path('classroom/<int:classroom_pk>/',
+                classroom_detail,
+                name='classroom_detail'
+            )
         ]),
     ),
     path(

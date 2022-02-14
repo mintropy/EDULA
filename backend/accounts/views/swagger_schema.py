@@ -287,7 +287,68 @@ request_pk에 해당하는 신청이 존재하지 않거나, 해당 유저가 �
     '''
     친구 신청을 삭제하고 친구 목록을 반환합니다
     ''',
-        }
+        },
+    },
+    'FriendSearchViewSet': {
+        'list': {
+            'description':
+    '''
+    친구 검색을 합니다
+search parameter를 통하여 친구 검색을 합니다\n
+한글 완성형이 아니면 검색이 되지 않을 수 있습니다\n
+같은 학교의 학생과 교사의 이름을 검색합니다\n
+friendRequest는 해당 유저와 친구 상태에 따라 값이 결정됩니다
+- friend: 이미 친구인 경우
+- requestSend: 내가 친구 요청을 보낸 유저인 경우
+- requestReveive : 내가 친구 요청을 받은 유저인 경우
+- null : 아무런 관계가 없는 경우
+    ''',
+            200:
+    '''
+    학교의 학생, 교사를 조회했습니다
+    ''',
+        },
+    },
+    'UserCUDView': {
+        'post': {
+            'description': 
+    '''
+    학생 및 선생 생성
+학생 및 선생의 수를 입력 받고 생성합니다.\n
+학교 관리자만 생성이 가능합니다.\n
+입력의 경우
+- 학생 : 입학 연도와 학생 수를 dict로 입력
+- 선생 : 선생 수만 입력
+
+다음의 경우 401을 반환합니다
+- 토큰이 존재하지 않거나 만료 된 경우
+- 허가되지 않은 사용자인 경우
+
+    ''',
+            201: 
+    '''
+    학생 및 선생이 생성되었습니다.
+해당 수 만큼 학생과 선생을 생성
+    ''',
+        },
+        'delete': {
+            'description':
+    '''
+    학생을 삭제합니다
+특정 학생 한명을 삭제하거나 한 연도의 학생 모두를 삭제합니다.
+학생이 없으면 204를 반환합니다\n
+YS : 연도(Y)와 학생(S) 구분(대문자 하나 입력)\n
+num : 연도일 경우 입학 4자리 연도, 학생일 경우 학생 pk
+    ''',
+            200:
+    '''
+    학년의 학생들을 삭제 완료하였습니다
+    ''',
+            204:
+    '''
+    학년의 학생이 없습니다
+    ''',
+        },
     },
 }
 
@@ -335,7 +396,14 @@ summaries = {
         'create': '친구 신청 생성',
         'update': '친구 신청 승인/거절',
         'destroy': '보낸 친구 신청 취소',
-    }
+    },
+    'UserCUDView': {
+        'post': '학생 및 선생 생성',
+        'delete': '학생 삭제',
+    },
+    'FriendSearchViewSet': {
+        'list': '친구 찾기',
+    },
 }
 
 examples = {
@@ -827,6 +895,76 @@ examples = {
                     },
                     status_codes=['200'],
                     response_only=True,
+                ),
+            ],
+        },
+    },
+    'UserCUDView': {
+        'post': {
+            'input': OpenApiExample(
+                name='request',
+                value={
+                    "student_creation_count_list": {
+                        "2014": 1
+                    },
+                    "teacher_creation_count": 0
+                },
+                request_only=True,
+            ),
+            201: OpenApiExample(
+                name='user information',
+                value={
+                    'students' : [],
+                    'teachers' : [],
+                },
+                status_codes=['201'],
+                response_only=True,
+            ),
+        },
+        'delete': {
+            200: [
+                OpenApiExample(
+                    name='delete',
+                    value={
+                        'OK': 'deleted',
+                    },
+                    status_codes=['200'],
+                    response_only=True,
+                ),
+            ],
+        },
+    },
+    'FriendSearchViewSet': {
+        'list': {
+            200: [
+                OpenApiExample(
+                    name='friends',
+                    value={
+                        'studentCount': 2,
+                        'teacherCount': 1,
+                        'students': [
+                            {
+                                'id': 10,
+                                'username': 'ssafy0001',
+                                'firstName': '김싸피',
+                                'friendRequest': 'friend',
+                            },
+                            {
+                                'id': 16,
+                                'username': 'ssafy0006',
+                                'firstName': '박싸피',
+                                'friendRequest': 'requestSend',
+                            },
+                        ],
+                        'teachers': [
+                            {
+                                'id': 5,
+                                'username': 'ssafy1000',
+                                'firstName': '이싸피',
+                                'friendRequest': 'requestReveive',
+                            },
+                        ],
+                    },
                 ),
             ],
         },

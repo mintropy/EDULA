@@ -55,6 +55,16 @@ class ClassroomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ClassroomDetailSerializer(serializers.ModelSerializer):
+    school = SchoolSerializer(read_only=True)
+    student_list = StudentBasciSerializer(many=True, read_only=True)
+    teacher = TeacherBasicSerialzier(read_only=True)
+    
+    class Meta:
+        model = Classroom
+        fields = '__all__'
+
+
 class HomeworkSerializer(serializers.ModelSerializer):
     
     class Meta:

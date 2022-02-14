@@ -25,6 +25,15 @@ class StudentSerializer(serializers.ModelSerializer):
         return super(StudentSerializer, self).update(instance, validated_data)
 
 
+class StudentPostSerializer(serializers.ModelSerializer):
+    user = UserDetailSerializer()
+    school = SchoolSerializer()
+    
+    class Meta:
+        model = Student
+        fields = '__all__'
+
+
 class StudentLectureSerializer(serializers.ModelSerializer):
     user = UserBasicSerializer()
     lecture_list = LectureSerializer(many=True)

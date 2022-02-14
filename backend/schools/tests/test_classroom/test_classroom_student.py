@@ -4,8 +4,8 @@ from rest_framework.views import status
 from ..test_setup import TestSetUp
 
 
-class TestLectureStudent(TestSetUp):
-    """Test lecture Student
+class TestClassroomStudent(TestSetUp):
+    """Test Classroom Student
     student1 기준으로 테스트 진행
     """
     def setUp(self) -> None:
@@ -17,14 +17,14 @@ class TestLectureStudent(TestSetUp):
         self.student1_token = res.data.get('access')
         return super().setUp()
 
-    def test_lecture_list(self):
-        """수업 목록 조회
+    def test_classroom_list(self):
+        """교실 전체 목록 조회
         JWT에 따라서 테스트 진행
         JWT를 사용하지 않고 lecture list 조회 >> 401
-        JWT를 사용하여 조회 >> 200
+        JWT를 사용하고 조회 >> 200
         """
         # 401
-        url = reverse('lecture_list')
+        url = reverse('classroom_list', kwargs={'school_pk': self.school1.pk})
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         # 200
@@ -34,56 +34,78 @@ class TestLectureStudent(TestSetUp):
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-    def test_lecture_create(self):
-        """수업 생성
+    def test_classroom_create(self):
+        """교실 생성
         JWT 인증 후 진행
         학교 관리자만 가능하므로 >> 401
         """
-        url = reverse('lecture_list')
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f'JWT {self.student1_token}'
-        )
+        url = reverse('classroom_list', kwargs={'school_pk': self.school1.pk})
         res = self.client.post(url)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_lecture_detail(self):
-        """수업 상세 조회
+    def test_classroom_detail(self):
+        """교실 상세 조회
         JWT 인증 후 진행
-        자신이 속한 수업 >> 200
-        자신이 속하지 않은 수업(같은 학교, 다른학교) >> 401
+        자신이 속한 교실 + 속한 학교의 교실 >> 200
+        자신이 속하지 않은 교실(같은 학교, 다른학교) >> 401
         """
-        url = reverse('lecture_detail', kwargs={'lecture_pk': self.lecture1_1.pk})
+        url = reverse('classroom_detail',
+            kwargs={
+                'school_pk': self.school1.pk,
+                'classroom_pk': self.classroom1_1.pk,
+            }
+        )
         self.client.credentials(
             HTTP_AUTHORIZATION=f'JWT {self.student1_token}'
         )
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # 401
-        url = reverse('lecture_detail', kwargs={'lecture_pk': self.lecture1_2.pk})
+        url = reverse('classroom_detail',
+            kwargs={
+                'school_pk': self.school1.pk,
+                'classroom_pk': self.classroom1_2.pk,
+            }
+        )
         res = self.client.get(url)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-        url = reverse('lecture_detail', kwargs={'lecture_pk': self.lecture2_1.pk})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        url = reverse('classroom_detail',
+            kwargs={
+                'school_pk': self.school2.pk,
+                'classroom_pk': self.classroom2_1.pk,
+            }
+        )
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_lecture_update(self):
-        """수업 수정
+    def test_classroom_update(self):
+        """교실 수정
         JWT 인증 후 진행
         학교 관리자만 가능하므로 >> 401
         """
-        url = reverse('lecture_detail', kwargs={'lecture_pk': self.lecture1_1.pk})
+        url = reverse('classroom_detail',
+            kwargs={
+                'school_pk': self.school1.pk,
+                'classroom_pk': self.classroom1_1.pk,
+            }
+        )
         self.client.credentials(
             HTTP_AUTHORIZATION=f'JWT {self.student1_token}'
         )
         res = self.client.put(url)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_lecture_delete(self):
-        """수업 삭제
+    def test_classroom_delete(self):
+        """교실 삭제
         JWT 인증 후 진행
         학교 관리자만 가능하므로 >> 401
         """
-        url = reverse('lecture_detail', kwargs={'lecture_pk': self.lecture1_1.pk})
+        url = reverse('classroom_detail',
+            kwargs={
+                'school_pk': self.school1.pk,
+                'classroom_pk': self.classroom1_1.pk,
+            }
+        )
         self.client.credentials(
             HTTP_AUTHORIZATION=f'JWT {self.student1_token}'
         )
