@@ -121,7 +121,7 @@ function Login() {
 									message: '아이디는 8자 이상, 16자 이하입니다.',
 								},
 								pattern: {
-									value: /^\D{2}\d{6,}$/,
+									value: /^[a-z]{2,5}\d{5,}$/,
 									message: '잘못된 아이디 형식입니다.',
 								},
 							})}

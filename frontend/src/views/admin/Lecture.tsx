@@ -37,7 +37,7 @@ interface Lecture {
 	name: string;
 	school: number;
 	studentList: Array<number>;
-	teacher: { user: User };
+	teacher: User;
 	timeList: TimeList;
 }
 
@@ -165,6 +165,10 @@ function LectureManager() {
 	};
 
 	useEffect(() => {
+		console.log(lectures);
+	}, [lectures]);
+
+	useEffect(() => {
 		console.log(timeList);
 	}, [timeList]);
 
@@ -230,8 +234,8 @@ function LectureManager() {
 						<SLink to={`/lecture/${e.id}`}>
 							<Tel value={e.name} />
 						</SLink>
-						<SLink to={`${routes.profile}/${e.teacher?.user?.id}`}>
-							<Tel value={e.teacher?.user?.firstName} />
+						<SLink to={`${routes.profile}/${e.teacher?.id}`}>
+							<Tel value={e.teacher?.firstName} />
 						</SLink>
 						<Tel value={e?.timeList.lectures.map(el => el.day).join(' ')} />
 						<button type='button' onClick={() => deleteLecture(e.id.toString())}>
