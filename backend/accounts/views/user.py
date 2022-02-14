@@ -486,6 +486,8 @@ class FindUsernameView(APIView):
     """
     model = User
     serializer_class = FindUsernameSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
@@ -549,6 +551,8 @@ class PasswordChangeView(APIView):
     """
     model = User
     serializer_class = PasswordChangeSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
