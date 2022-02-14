@@ -422,6 +422,16 @@ successfully get total teacher information from school_pk
     ''',
         },
     },
+    'SchoolAbbreviationViewSet': {
+        'retrieve': {
+            'description':
+    '''
+    학교 약어의 유효성을 겁사합니다
+사용여부만 확인할 수 있고, 규칙(길이 등)에 대한 유효성은 검사하지 않습니다\n
+사용 가능하면 200, 불가능하면 400을 반환합니다
+    '''
+        }
+    }
 }
 
 summaries = {
@@ -470,6 +480,9 @@ summaries = {
     'TeacherView': {
         'get' : 'Get teacher of school information',
     },
+    'SchoolAbbreviationViewSet': {
+        'retrieve': '학교 약어 유효성 검사'
+    }
 }
 
 examples = {
