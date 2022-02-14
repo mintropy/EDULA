@@ -21,6 +21,8 @@ function Openvidu() {
 	const [OVCamera, setOVCamera] = useState(null);
 	const [OVScreen, setOVScreen] = useState(null);
 	const [screensharing, setScreensharing] = useState(null);
+	const [audioEnabled, setAudioEnabled] = useState(true);
+	const [videoEnabled, setVideoEnabled] = useState(true);
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
@@ -238,6 +240,20 @@ function Openvidu() {
 		}
 	};
 
+	const audioOnOFF = () => {
+		setAudioEnabled(preAudioEnabled => {
+			publisher.publishAudio(!preAudioEnabled);
+			return !preAudioEnabled;
+		});
+	};
+
+	const videoOnOFF = () => {
+		setVideoEnabled(preVideoEnabled => {
+			publisher.publishVideo(!preVideoEnabled);
+			return !preVideoEnabled;
+		});
+	};
+
 	const deleteSubscriber = streamManager => {
 		setSubscribers(prevSubscribers => {
 			const tmpSubscribers = Array.from(prevSubscribers);
@@ -365,6 +381,18 @@ function Openvidu() {
 								value='Screen share'
 							/>
 						)}
+						<input
+							type='button'
+							id='buttonAudioOnOff'
+							onClick={audioOnOFF}
+							value={audioEnabled ? 'audio OFF' : 'audio ON'}
+						/>
+						<input
+							type='button'
+							id='buttonVideoOnOff'
+							onClick={videoOnOFF}
+							value={videoEnabled ? 'video OFF' : 'video ON'}
+						/>
 					</div>
 
 					{mainStreamManager && (
