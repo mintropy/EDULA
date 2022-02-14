@@ -41,6 +41,7 @@ urlpatterns = [
         user.UserSpecifyingView.as_view(),
         name='user_other_information',
     ),
+    path('profile-image/', user.UserProfileImageView.as_view()),
     # Friend
     path('friend/',
         friend_list,

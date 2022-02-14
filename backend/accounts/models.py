@@ -5,12 +5,17 @@ from schools.models import School, Classroom
 
 # Create your models here.
 class User(AbstractUser):
-    
+
     class Status(models.TextChoices):
         STUDENT = 'ST', _('Student')
         TEACHER = 'TE', _('Teacher')
         SCHOOLADMIN = 'SA', _('SchoolAdmin')
-    
+
+    def profile_image_path(instance, filename):
+        """path of profile image
+        """
+        return f'profile-image/{instance.pk}/{filename}'
+
     phone = models.CharField(
         max_length=13,
         null=True,
@@ -25,6 +30,11 @@ class User(AbstractUser):
     friend_list = models.ManyToManyField(
         'self',
         symmetrical=True,
+        blank=True,
+    )
+    profile_image = models.ImageField(
+        upload_to=profile_image_path,
+        null=True,
         blank=True,
     )
 
