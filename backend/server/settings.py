@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'accounts',
     'schools',
+    'notifications',
 
     'rest_framework',
     'django_extensions',
