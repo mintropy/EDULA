@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=20)),
                 ('content', models.TextField()),
                 ('creted_ad', models.DateTimeField(auto_now_add=True)),
-                ('file', models.FileField(blank=True, upload_to=schools.models.HomeworkSubmission.homework_submission_path)),
+                # ('file', models.FileField(blank=True, upload_to=schools.models.HomeworkSubmission.homework_submission_path)),
                 ('homework', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='submission', to='schools.homework')),
                 ('writer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='homework_submission_list', to=settings.AUTH_USER_MODEL)),
             ],
