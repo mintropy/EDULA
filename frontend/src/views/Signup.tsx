@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/user';
 import routes from '../routes';
 import ErrorMsg from '../components/auth/ErrorMsg';
@@ -55,11 +55,6 @@ function Signup() {
 		<EmptyMsg />
 	);
 
-	// const idError = errors.id?.message ? (
-	// 	<ErrorMsg message={errors.id?.message} />
-	// ) : (
-	// 	<EmptyMsg />
-	// );
 	const pwError = errors.password?.message ? (
 		<ErrorMsg message={errors.password?.message} />
 	) : (
