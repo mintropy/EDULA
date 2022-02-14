@@ -11,6 +11,7 @@ import FormInput from '../components/auth/FormInput';
 import EmptyMsg from '../components/auth/EmptyMsg';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
+import { apiSignup } from '../api/schoolAdmin';
 
 const StyledContainer = styled.div`
 	margin: 2em;
@@ -18,9 +19,11 @@ const StyledContainer = styled.div`
 
 type SignupInput = {
 	result: string;
+	firstName: string;
 	password: string;
 	passwordConfirmation: string;
-	abbreviation: string;
+	schoolAbbreviation: string;
+	schoolName: string;
 };
 function Signup() {
 	const { isLoggedIn } = useContext(UserContext);
@@ -67,18 +70,53 @@ function Signup() {
 	) : (
 		<EmptyMsg />
 	);
-	const schoolAbbError = errors.abbreviation?.message ? (
-		<ErrorMsg message={errors.abbreviation?.message} />
+	const schoolNameError = errors.schoolName?.message ? (
+		<ErrorMsg message={errors.schoolName?.message} />
+	) : (
+		<EmptyMsg />
+	);
+	const schoolAbbError = errors.schoolAbbreviation?.message ? (
+		<ErrorMsg message={errors.schoolAbbreviation?.message} />
+	) : (
+		<EmptyMsg />
+	);
+	const firstNameError = errors.firstName?.message ? (
+		<ErrorMsg message={errors.firstName?.message} />
 	) : (
 		<EmptyMsg />
 	);
 
 	const onValidSubmit: SubmitHandler<SignupInput> = async () => {
-		const { password, passwordConfirmation, abbreviation } = getValues();
-		try {
-			// 학교 관리자 회원 가입 api
-		} catch (e) {
-			setError('result', { message: '정보를 잘못 입력했어요.' });
+		const {
+			firstName,
+			password,
+			passwordConfirmation,
+			schoolName,
+			schoolAbbreviation,
+		} = getValues();
+		if (password !== passwordConfirmation) {
+			setError('passwordConfirmation', {
+				message: '비밀번호, 비밀번호 확인이 일치하지 않아요.',
+			});
+		} else {
+			try {
+				apiSignup(firstName, password, schoolName, schoolAbbreviation)
+					.then(res => {
+						if (res.data?.error) {
+							const errorType = res.data?.error;
+							if (errorType) {
+								setError('result', {
+									message: '학교 코드가 중복됩니다. 학교 코드를 변경해주세요.',
+								});
+							}
+						} else {
+							navigate(routes.login);
+						}
+					})
+					.catch();
+			} catch (e) {
+				setError('result', { message: '정보를 잘못 입력했어요.' });
+			}
 		}
 	};
 	return (
@@ -90,18 +128,36 @@ function Signup() {
 			<StyledContent>
 				교사와 학생 계정은 학교 관리자를 통해서 생성합니다.
 			</StyledContent>
-			<StyledContent>
-				테스트 버전으로는 계정 10개를 생성할 수 있습니다. (더 많은 계정이
-				필요하시면, 가입 후 유료 버전을 신청해주세요.)
-			</StyledContent>
+
+			<StyledContent>아이디는 학교 코드 + 00000입니다.</StyledContent>
 
 			<FormBox>
 				<form onSubmit={handleSubmit(onValidSubmit)}>
 					{resultError}
-					<FormInput htmlFor='abbreviation'>
+					<FormInput htmlFor='schoolName'>
+						<span>학교 이름</span>
+						<input
+							{...register('schoolName', {
+								required: '학교 이름을 입력하세요.',
+								minLength: {
+									value: 1,
+									message: '학교 이름은 최소 1글자, 최대 30글자입니다.',
+								},
+								maxLength: {
+									value: 30,
+									message: '학교 이름은 최소 1글자, 최대 30글자입니다.',
+								},
+							})}
+							type='text'
+							placeholder='학교 이름을 입력하세요.'
+							onInput={clearLoginError}
+						/>
+					</FormInput>
+					{schoolNameError}
+					<FormInput htmlFor='schoolAbbreviation'>
 						<span>학교 코드</span>
 						<input
-							{...register('abbreviation', {
+							{...register('schoolAbbreviation', {
 								required: '학교 코드를 입력하세요.',
 								minLength: {
 									value: 3,
@@ -125,30 +181,26 @@ function Signup() {
 						/>
 					</FormInput>
 					{schoolAbbError}
-					{/* <FormInput htmlFor='id'>
-						<span>아이디</span>
+					<FormInput htmlFor='firstName'>
+						<span>계정 이름</span>
 						<input
-							{...register('id', {
-								required: '아이디를 입력하세요.',
+							{...register('firstName', {
+								required: '관리자 계정 이름을 입력하세요.',
 								minLength: {
-									value: 8,
-									message: '아이디는 8자 이상, 16자 이하입니다.',
+									value: 1,
+									message: '최소 1글자, 최대 30글자 가능합니다',
 								},
 								maxLength: {
-									value: 16,
-									message: '아이디는 8자 이상, 16자 이하입니다.',
-								},
-								pattern: {
-									value: /^[a-zA-Z]{3,5}\d{5,}$/,
-									message: '잘못된 아이디 형식입니다.',
+									value: 30,
+									message: '최소 1글자, 최대 30글자 가능합니다.',
 								},
 							})}
 							type='text'
-							placeholder='아이디를 입력하세요.'
+							placeholder='관리자 계정 이름을 입력하세요.'
 							onInput={clearLoginError}
 						/>
 					</FormInput>
-					{idError} */}
+					{firstNameError}
 					<FormInput htmlFor='password'>
 						<div>비밀번호</div>
 						<input

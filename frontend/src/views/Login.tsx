@@ -161,6 +161,8 @@ function Login() {
 				<Link to={routes.findid}>아이디</Link>
 				<span>|</span>
 				<Link to={routes.findpw}>비밀번호 찾기</Link>
+				<span>|</span>
+				<Link to={routes.signup}>회원 가입</Link>
 			</LinkBox>
 		</AuthLayout>
 	);
