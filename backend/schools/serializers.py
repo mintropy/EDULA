@@ -5,7 +5,7 @@ from . models import (
     Homework, HomeworkSubmission,
     Article
 )
-from accounts.models import Student, Teacher
+from accounts.models import Student, Teacher, User
 from accounts.serializers.user import UserBasicSerializer
 
 class StudentBasciSerializer(serializers.ModelSerializer):
@@ -32,11 +32,16 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class LectureSerializer(serializers.ModelSerializer):
-    teacher = TeacherBasicSerialzier(read_only=True)
     
     class Meta:
         model = Lecture
         fields = '__all__'
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['teacher'] = UserBasicSerializer(
+            User.objects.get(pk=data['teacher'])).data
+        return data
 
 
 class LectrueDetailSerializer(serializers.ModelSerializer):

@@ -13,6 +13,7 @@ from accounts.models import User
 from server import basic_swagger_schema
 from . import swagger_schema
 from ..models import Lecture
+from accounts.models import User, Teacher, Student
 from ..serializers import LectureSerializer, LectrueDetailSerializer
 
 
@@ -57,13 +58,15 @@ class LectureView(APIView):
                 description=swagger_schema.descriptions['LectureView']['get'][200],
                 examples=swagger_schema.examples['LectureView']['get'][200]
             ),
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
         },
         description=swagger_schema.descriptions['LectureView']['get']['description'],
         summary=swagger_schema.summaries['LectureView']['get'],
         tags=['수업',],
         examples=[
-            basic_swagger_schema.examples[401]
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
         ],
     )
     def get(self, request):
@@ -122,6 +125,7 @@ class LectureView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        
         data = {
             'name': request.data.get('name', None),
             'time_list': request.data.get('time_list', None),
@@ -130,7 +134,8 @@ class LectureView(APIView):
             'student_list': request.data.get('student_list', None)
         }
         serializer = LectureSerializer(data=data)
-        if serializer.is_valid():
+
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
                 serializer.data,
@@ -159,13 +164,15 @@ class LectureDetailView(APIView):
                 description=swagger_schema.descriptions['LectureDetailView']['get'][200],
                 examples=swagger_schema.examples['LectureDetailView']['get'][200]
             ),
-            401: basic_swagger_schema.open_api_response[401]
+            401: basic_swagger_schema.open_api_response[401],
+            404: basic_swagger_schema.open_api_response[404],
         },
         description=swagger_schema.descriptions['LectureDetailView']['get']['description'],
         summary=swagger_schema.summaries['LectureDetailView']['get'],
         tags=['수업',],
         examples=[
-            basic_swagger_schema.examples[401]
+            basic_swagger_schema.examples[401],
+            basic_swagger_schema.examples[404],
         ],
     )
     def get(self, request, lecture_pk):
