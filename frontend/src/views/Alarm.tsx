@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { apiGetNotifications } from '../api/notice';
+import { apiDeleteNotification, apiGetNotifications } from '../api/notice';
 import AlarmItem from '../components/alarm/AlarmItem';
+import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 
 const StyledTitle = styled.h1`
 	font-size: 2em;
@@ -10,6 +11,11 @@ const StyledTitle = styled.h1`
 	color: ${props => props.theme.fontColor};
 `;
 
+const StyleRefuseBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.bgColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
 interface NotificationDataType {
 	id: number;
 	fromUser: {
@@ -44,11 +50,24 @@ function Alarm() {
 			})
 			.catch(() => {});
 	}, []);
-	console.log(notifications);
 
 	return (
 		<>
 			<StyledTitle>새 소식</StyledTitle>
+			<StyleRefuseBtn
+				onClick={e => {
+					e.preventDefault();
+
+					try {
+						apiDeleteNotification('0');
+						window.location.reload();
+					} catch (error) {
+						// console.log(error);
+					}
+				}}
+			>
+				모두 읽음
+			</StyleRefuseBtn>
 			{notifications &&
 				notifications
 					.filter(notification => notification.notificationType === 'FQ')
@@ -56,22 +75,36 @@ function Alarm() {
 						<div key={noti.id}>
 							{noti.content === null && (
 								<p>
-									{noti.fromUser?.username}({noti.fromUser?.firstName})에게 친구 요청을
-									받았어요!
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)에게 친구 요청을 받았어요!
 								</p>
 							)}
 							{noti.content === 'AC' && (
 								<p>
-									{noti.fromUser?.username}({noti.fromUser?.firstName})가(이) 친구 요청을
-									수락했어요!
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)가(이) 친구 요청을 수락했어요!
 								</p>
 							)}
 							{noti.content === 'RF' && (
 								<p>
-									{noti.fromUser?.username}({noti.fromUser?.firstName})가(이) 친구 요청을
-									거절했어요ㅠ
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)가(이) 친구 요청을 거절했어요ㅠ
 								</p>
 							)}
+							<StyleRefuseBtn
+								onClick={e => {
+									e.preventDefault();
+
+									try {
+										apiDeleteNotification(noti.id.toString());
+										window.location.reload();
+									} catch (error) {
+										// console.log(error);
+									}
+								}}
+							>
+								읽음
+							</StyleRefuseBtn>
 						</div>
 					))}
 			{notifications &&
@@ -82,9 +115,22 @@ function Alarm() {
 							<p>
 								{noti.lecture?.name}과목의 {noti.content} 과제 선물이 도착했어요!
 							</p>
+							<StyleRefuseBtn
+								onClick={e => {
+									e.preventDefault();
+
+									try {
+										apiDeleteNotification(noti.id.toString());
+										window.location.reload();
+									} catch (error) {
+										// console.log(error);
+									}
+								}}
+							>
+								읽음
+							</StyleRefuseBtn>
 						</div>
 					))}
-
 			{notifications &&
 				notifications
 					.filter(notification => notification.notificationType === 'HU')
@@ -93,9 +139,22 @@ function Alarm() {
 							<p>
 								{noti.lecture?.name}과목의 {noti.content} 과제가 변경되었어요!
 							</p>
+							<StyleRefuseBtn
+								onClick={e => {
+									e.preventDefault();
+
+									try {
+										apiDeleteNotification(noti.id.toString());
+										window.location.reload();
+									} catch (error) {
+										// console.log(error);
+									}
+								}}
+							>
+								읽음
+							</StyleRefuseBtn>
 						</div>
 					))}
-
 			{notifications &&
 				notifications
 					.filter(notification => notification.notificationType === 'HS')
@@ -105,6 +164,20 @@ function Alarm() {
 								{noti.lecture?.name}과목의 {noti.fromUser?.firstName}가 {noti.content}
 								과제를 제출했어요!
 							</p>
+							<StyleRefuseBtn
+								onClick={e => {
+									e.preventDefault();
+
+									try {
+										apiDeleteNotification(noti.id.toString());
+										window.location.reload();
+									} catch (error) {
+										// console.log(error);
+									}
+								}}
+							>
+								읽음
+							</StyleRefuseBtn>
 						</div>
 					))}
 		</>
