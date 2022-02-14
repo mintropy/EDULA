@@ -85,14 +85,14 @@ function Signup() {
 		<StyledContainer>
 			<StyledTitle> Edula 학교 관리자 회원가입</StyledTitle>
 			<StyledContent>
-				Edula 서비스는 학교 관리자만 회원 가입을 하면 됩니다 !
+				Edula 서비스를 사용하시려면, 학교 관리자만 회원 가입을 하면 됩니다 !
 			</StyledContent>
 			<StyledContent>
 				교사와 학생 계정은 학교 관리자를 통해서 생성합니다.
 			</StyledContent>
 			<StyledContent>
-				테스트 버전으로는 계정 10개를 생성할 수 있습니다. (유료 버전으로 등급에
-				따라서 계정 생성 수를 다르게 제공할 예정입니다.)
+				테스트 버전으로는 계정 10개를 생성할 수 있습니다. (더 많은 계정이
+				필요하시면, 가입 후 유료 버전을 신청해주세요.)
 			</StyledContent>
 
 			<FormBox>
