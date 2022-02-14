@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from ..models import SchoolAdmin
-from .user import UserBasicSerializer, UserDetailSerializer
+from .user import UserDetailSerializer
 from schools.serializers import (
-    SchoolSerializer, LectureSerializer, ClassroomSerializer
+    SchoolSerializer, ClassroomSerializer
 )
 
 class SchoolAdminSerializer(serializers.ModelSerializer):
@@ -14,6 +14,7 @@ class SchoolAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolAdmin
         fields = '__all__'
+        read_only_fields = ('account_type',)
     
     def update(self, instance, validated_data):
         if 'user' in validated_data:

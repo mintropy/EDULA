@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(base_api_url + api_version + 'accounts/', include('accounts.urls')),
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
+    path(base_api_url + api_version + 'notifications/', include('notifications.urls')),
     # JWT
     path(
         base_api_url + api_version + 'token/',
