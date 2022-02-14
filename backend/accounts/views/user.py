@@ -30,7 +30,8 @@ from ..models import FriendRequest, User, Student, Teacher, SchoolAdmin
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier, ResisterSerializer,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
-    FriendSerializer
+    FriendSerializer,
+    UserProfileImageSerializer,
 )
 import serect
 
@@ -843,3 +844,30 @@ class FriendSearchViewSet(ViewSet):
             data,
             status=status.HTTP_200_OK,
         )
+
+
+class UserProfileImageView(APIView):
+    model = User
+    queryset = User.objects.all()
+    serializer_class = UserProfileImageSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+
+    @extend_schema(
+        tags=['유저',]
+    )
+    def post(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        data = {'profile_image': request.FILES.get('profile_image')}
+        serializer = UserProfileImageSerializer(user, data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
