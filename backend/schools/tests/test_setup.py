@@ -166,9 +166,7 @@ class TestSetUp(APITestCase):
         cls.lecture1_1.teacher = cls.teacher1
         cls.lecture1_2.teacher = cls.teacher1_2
         cls.lecture2_1.teacher = cls.teacher2_1
-        # cls.lecture1_1.student_list = [cls.student1]
-        # cls.lecture1_2.student_list = [cls.student1]
-        # cls.lecture2_1.student_list = [cls.student1]
+
         cls.lecture1_1.save()
         cls.lecture1_2.save()
         cls.lecture2_1.save()
@@ -199,21 +197,3 @@ class TestSetUp(APITestCase):
             'student_list': [cls.student1.pk],
         }
         cls.lecture_data_json = json.dumps(cls.lecture_data)
-        
-        # cls.lecture_data = {
-        #     'pk' : cls.lecture1_2.pk,
-        #     'name': cls.lecture1_2.name,
-        #     'time_list': cls.lecture1_2.time_list,
-        #     'teacher' : cls.teacher1.pk,
-        #     'student_list': [cls.student1.pk],
-        # }
-        # cls.lecture1_2 = cls.lecture_data
-        
-        # cls.lecture_data = {
-        #     'pk' : cls.lecture2_1.pk,
-        #     'name': cls.lecture2_1.name,
-        #     'time_list': cls.lecture2_1.time_list,
-        #     'teacher' : cls.teacher1.pk,
-        #     'student_list': [cls.student1.pk],
-        # }
-        # cls.lecture2_1 = cls.lecture_data
