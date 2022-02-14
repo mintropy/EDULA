@@ -14,15 +14,19 @@ function Openvidu() {
 	);
 	const [sessionCamera, setSessionCamera] = useState(undefined);
 	const [sessionScreen, setSessionScreen] = useState(undefined);
+	const [sessionChat, setSessionChat] = useState(undefined);
 	const [mainStreamManager, setMainStreamManager] = useState(undefined);
 	const [publisher, setPublisher] = useState(undefined);
 	const [subscribers, setSubscribers] = useState([]);
 	const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
 	const [OVCamera, setOVCamera] = useState(null);
 	const [OVScreen, setOVScreen] = useState(null);
+	const [OVChat, setOVChat] = useState(null);
 	const [screensharing, setScreensharing] = useState(null);
 	const [audioEnabled, setAudioEnabled] = useState(true);
 	const [videoEnabled, setVideoEnabled] = useState(true);
+	const [myMessage, setMyMessage] = useState('');
+	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
@@ -35,6 +39,10 @@ function Openvidu() {
 
 	const handleChangeUserName = e => {
 		setMyUserName(e.target.value);
+	};
+
+	const handleChangeMyMessage = e => {
+		setMyMessage(e.target.value);
 	};
 
 	const handleMainVideoStream = stream => {
@@ -56,10 +64,32 @@ function Openvidu() {
 	const joinSession = () => {
 		const OVCameraTmp = new OpenVidu();
 		const OVScreenTmp = new OpenVidu();
+		const OVChatTmp = new OpenVidu();
 		setOVCamera(OVCameraTmp);
 		setOVScreen(OVScreenTmp);
+		setOVChat(OVChatTmp);
 		setSessionCamera(OVCameraTmp.initSession());
 		setSessionScreen(OVScreenTmp.initSession());
+		setSessionChat(OVChatTmp.initSession());
+	};
+
+	const sendMessage = e => {
+		e.preventDefault();
+		setMyMessage(preMyMessage => {
+			(async () => {
+				try {
+					await sessionChat.signal({
+						data: `${preMyMessage}`, // Any string (optional)
+						to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+						// type: 'my-chat', // The type of message (optional)
+					});
+					console.log('Message successfully sent');
+				} catch (error) {
+					console.error(error);
+				}
+			})();
+			return '';
+		});
 	};
 
 	useEffect(async () => {
@@ -141,7 +171,7 @@ function Openvidu() {
 		try {
 			const token = await getToken();
 			await sessionScreen.connect(token, { clientData: myUserName });
-			(() => {
+			(async () => {
 				// document.getElementById('buttonScreenShare').style.visibility = 'visible';
 				console.log('Session screen connected');
 			})();
@@ -153,6 +183,51 @@ function Openvidu() {
 			);
 		}
 	}, [sessionScreen]);
+
+	useEffect(async () => {
+		if (!sessionChat) {
+			return;
+		}
+
+		// Receiver of the message (usually before calling 'session.connect')
+		// sessionChat.on('signal:my-chat', event => {
+		// 	console.log(event.data); // Message
+		// 	console.log(event.from); // Connection object of the sender
+		// 	console.log(event.type); // The type of message ("my-chat")
+		// });
+
+		// Receiver of all messages (usually before calling 'session.connect')
+		sessionChat.on('signal', event => {
+			setMessages(preMessages => {
+				console.log(event.data); // Message
+				console.log(event.from); // Connection object of the sender
+				console.log(event.type); // The type of message
+				const id = event.from.creationTime;
+				const msg = event.data;
+				const user = JSON.parse(event.from.data);
+				return preMessages.concat([{ id, msg, user: user.clientData }]);
+			});
+		});
+
+		sessionChat.on('connectionCreated', event => {
+			console.log(event.connection);
+		});
+
+		try {
+			const token = await getToken();
+			await sessionChat.connect(token, { clientData: myUserName });
+			(async () => {
+				// document.getElementById('buttonScreenShare').style.visibility = 'visible';
+				console.log('Session chat connected');
+			})();
+		} catch (error) {
+			console.warn(
+				'There was an error connecting to the session for chat:',
+				error.code,
+				error.message
+			);
+		}
+	}, [sessionChat]);
 
 	// --- 9). Create a function to be called when the 'Screen share' button is clicked.
 	const publishScreenShare = () => {
@@ -199,10 +274,16 @@ function Openvidu() {
 			sessionScreen.disconnect();
 		}
 
+		if (sessionChat) {
+			sessionChat.disconnect();
+		}
+
 		setOVCamera(null);
 		setOVScreen(null);
+		setOVChat(null);
 		setSessionCamera(undefined);
 		setSessionScreen(undefined);
+		setSessionChat(undefined);
 		setSubscribers([]);
 		setMySessionId('SessionA');
 		setMyUserName(`Participant${Math.floor(Math.random() * 100)}`);
@@ -393,6 +474,29 @@ function Openvidu() {
 							onClick={videoOnOFF}
 							value={videoEnabled ? 'video OFF' : 'video ON'}
 						/>
+						<form onSubmit={sendMessage}>
+							<p>
+								<label htmlFor='userName'>
+									Message:
+									<input
+										type='text'
+										id='message'
+										value={myMessage}
+										onChange={handleChangeMyMessage}
+										required
+									/>
+								</label>
+								<input name='commit' type='submit' value='Send' />
+							</p>
+						</form>
+					</div>
+
+					<div id='session-chat'>
+						<ul>
+							{messages.map(data => (
+								<li key={data.id}>{`${data.user} : ${data.msg}`}</li>
+							))}
+						</ul>
 					</div>
 
 					{mainStreamManager && (
