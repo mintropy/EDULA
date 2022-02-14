@@ -949,7 +949,7 @@ examples = {
                         "additionalProp2": "string",
                         "additionalProp3": "string"
                     },
-                    "teacher_pk": 0,
+                    "teacher": 0,
                     "student_list": [
                         0
                     ]

@@ -48,10 +48,6 @@ article_detail = article.ArticleViewSet.as_view({
 
 urlpatterns = [
     path(
-        '<str:abbreviation>/',
-        school.SchoolAbbreviationViewSet.as_view({'get': 'retrieve'}),
-    ),
-    path(
         '<int:school_pk>/', include([
             # 유저
             path('student/', student.StudentView.as_view()),
@@ -98,5 +94,9 @@ urlpatterns = [
                 ]),
             ),
         ]),
+    ),
+    path(
+        '<str:abbreviation>/',
+        school.SchoolAbbreviationViewSet.as_view({'get': 'retrieve'}),
     ),
 ]

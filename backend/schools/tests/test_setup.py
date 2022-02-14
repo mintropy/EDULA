@@ -144,6 +144,32 @@ class TestSetUp(APITestCase):
         cls.school_admin1 = SchoolAdminFactory()
         cls.school_admin1.school = cls.school1
         cls.school_admin1.save()
+        
+        cls.teacher1 = TeacherFactory()
+        cls.teacher1.school = cls.school1
+        cls.teacher1.lecture = cls.lecture1_1
+        cls.teacher1.classroom = cls.classroom1_1
+        cls.teacher1.save()
+        
+        cls.teacher1_2 = TeacherFactory()
+        cls.teacher1_2.school = cls.school1
+        cls.teacher1_2.lecture = cls.lecture1_2
+        cls.teacher1_2.classroom = cls.classroom1_2
+        cls.teacher1_2.save()
+        
+        cls.teacher2_1 = TeacherFactory()
+        cls.teacher2_1.school = cls.school2
+        cls.teacher2_1.lecture = cls.lecture2_1
+        cls.teacher2_1.classroom = cls.classroom2_1
+        cls.teacher2_1.save()
+        
+        cls.lecture1_1.teacher = cls.teacher1
+        cls.lecture1_2.teacher = cls.teacher1_2
+        cls.lecture2_1.teacher = cls.teacher2_1
+
+        cls.lecture1_1.save()
+        cls.lecture1_2.save()
+        cls.lecture2_1.save()
 
         # JSON data for JWT
         cls.student1_info = {
@@ -157,10 +183,17 @@ class TestSetUp(APITestCase):
             'password': cls.test_password,
         }
         cls.school_admin1_info_json = json.dumps(cls.school_admin1_info)
-
+        
+        cls.teacher1_info = {
+            'username': cls.teacher1.user.username,
+            'password': cls.test_password,
+        }
+        cls.teacher1_info_json = json.dumps(cls.teacher1_info)
+        
         cls.lecture_data = {
-            'name': 'test',
-            'time_list': {'test': 'test'},
+            'name': 'test',#cls.lecture1_1.name,
+            'time_list': {'test':'test'},#cls.lecture1_1.time_list,
+            'teacher' : cls.teacher1.pk,
             'student_list': [cls.student1.pk],
         }
         cls.lecture_data_json = json.dumps(cls.lecture_data)
