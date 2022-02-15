@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'accounts',
     'schools',
     'notifications',
+    'message',
 
     'rest_framework',
     'django_extensions',
