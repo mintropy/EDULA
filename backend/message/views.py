@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -40,9 +41,16 @@ class MessageViewSet(ViewSet):
             return Response(
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        messages = Message.objects.filter(
-            user=user.pk, from_user=user_pk
-        ).order_by('-pk')
+        if user_pk == 0:
+            messages = Message.objects.filter(
+                user=user.pk, send=False).order_by('-pk')
+        elif user_pk == user.pk:
+            messages = Message.objects.filter(
+                user=user.pk, send=True).order_by('-pk')
+        else:
+            messages = Message.objects.filter(
+                user=user.pk, from_user=user_pk
+            ).order_by('-pk')
         paginator = MessagePagination()
         serializer = MessageSerializer(
             paginator.paginate_queryset(messages, request), 
