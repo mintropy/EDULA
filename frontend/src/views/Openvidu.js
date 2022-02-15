@@ -14,15 +14,20 @@ function Openvidu() {
 	);
 	const [sessionCamera, setSessionCamera] = useState(undefined);
 	const [sessionScreen, setSessionScreen] = useState(undefined);
+	const [sessionChat, setSessionChat] = useState(undefined);
 	const [mainStreamManager, setMainStreamManager] = useState(undefined);
 	const [publisher, setPublisher] = useState(undefined);
+	const [publisherScreen, setPublisherScreen] = useState(undefined);
 	const [subscribers, setSubscribers] = useState([]);
 	const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
 	const [OVCamera, setOVCamera] = useState(null);
 	const [OVScreen, setOVScreen] = useState(null);
+	const [OVChat, setOVChat] = useState(null);
 	const [screensharing, setScreensharing] = useState(null);
 	const [audioEnabled, setAudioEnabled] = useState(true);
 	const [videoEnabled, setVideoEnabled] = useState(true);
+	const [myMessage, setMyMessage] = useState('');
+	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
@@ -37,6 +42,10 @@ function Openvidu() {
 		setMyUserName(e.target.value);
 	};
 
+	const handleChangeMyMessage = e => {
+		setMyMessage(e.target.value);
+	};
+
 	const handleMainVideoStream = stream => {
 		if (mainStreamManager !== stream) {
 			setMainStreamManager(stream);
@@ -49,17 +58,42 @@ function Openvidu() {
 
 	const getToken = async () => {
 		const sessionId = await createSession(mySessionId);
-		const token = await createToken(sessionId);
-		return token;
+		const tokenTmp = await createToken(sessionId);
+		return tokenTmp;
 	};
 
-	const joinSession = () => {
+	const joinSession = e => {
+		e.preventDefault();
+		console.log(`mySessionId : ${mySessionId}`);
+		console.log(`myUserName : ${myUserName}`);
 		const OVCameraTmp = new OpenVidu();
 		const OVScreenTmp = new OpenVidu();
+		const OVChatTmp = new OpenVidu();
 		setOVCamera(OVCameraTmp);
 		setOVScreen(OVScreenTmp);
+		setOVChat(OVChatTmp);
 		setSessionCamera(OVCameraTmp.initSession());
 		setSessionScreen(OVScreenTmp.initSession());
+		setSessionChat(OVChatTmp.initSession());
+	};
+
+	const sendMessage = e => {
+		e.preventDefault();
+		setMyMessage(preMyMessage => {
+			(async () => {
+				try {
+					await sessionChat.signal({
+						data: `${preMyMessage}`, // Any string (optional)
+						to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+						// type: 'my-chat', // The type of message (optional)
+					});
+					console.log('Message successfully sent');
+				} catch (error) {
+					console.error(error);
+				}
+			})();
+			return '';
+		});
 	};
 
 	useEffect(async () => {
@@ -85,27 +119,25 @@ function Openvidu() {
 		try {
 			const token = await getToken();
 			await sessionCamera.connect(token, { clientData: myUserName });
-			(async () => {
-				const devices = await OVCamera.getDevices();
-				const videoDevices = devices.filter(device => device.kind === 'videoinput');
+			const devices = await OVCamera.getDevices();
+			const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-				const newPublisher = OVCamera.initPublisher(undefined, {
-					audioSource: undefined, // The source of audio. If undefined default microphone
-					videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-					publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-					publishVideo: true, // Whether you want to start publishing with your video enabled or not
-					resolution: '640x480', // The resolution of your video
-					frameRate: 30, // The frame rate of your video
-					insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-					mirror: false, // Whether to mirror your local video or not
-				});
+			const newPublisher = OVCamera.initPublisher(undefined, {
+				audioSource: undefined, // The source of audio. If undefined default microphone
+				videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+				publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+				publishVideo: true, // Whether you want to start publishing with your video enabled or not
+				resolution: '640x480', // The resolution of your video
+				frameRate: 30, // The frame rate of your video
+				insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+				mirror: false, // Whether to mirror your local video or not
+			});
 
-				sessionCamera.publish(newPublisher);
+			sessionCamera.publish(newPublisher);
 
-				setCurrentVideoDevice(videoDevices[0]);
-				setMainStreamManager(newPublisher);
-				setPublisher(newPublisher);
-			})();
+			setCurrentVideoDevice(videoDevices[0]);
+			setMainStreamManager(newPublisher);
+			setPublisher(newPublisher);
 		} catch (error) {
 			console.log(
 				'There was an error connecting to the sessionCamera:',
@@ -122,14 +154,7 @@ function Openvidu() {
 
 		sessionScreen.on('streamCreated', event => {
 			if (event.stream.typeOfVideo === 'SCREEN') {
-				// Subscribe to the Stream to receive it. HTML video will be appended to element with 'container-screens' id
-				const subscriberScreen = sessionScreen.subscribe(
-					event.stream,
-					'container-screens'
-				);
-				// setSubscribers(prevSubscribers =>
-				// 	prevSubscribers.concat([subscriberScreen])
-				// );
+				sessionScreen.subscribe(event.stream, 'container-screens');
 				// When the HTML video has been appended to DOM...
 				// subscriberScreen.on('videoElementCreated', event => {
 				// 	// Add a new <p> element for the user's nickname just below its video
@@ -141,10 +166,7 @@ function Openvidu() {
 		try {
 			const token = await getToken();
 			await sessionScreen.connect(token, { clientData: myUserName });
-			(() => {
-				// document.getElementById('buttonScreenShare').style.visibility = 'visible';
-				console.log('Session screen connected');
-			})();
+			console.log('Session screen connected');
 		} catch (error) {
 			console.warn(
 				'There was an error connecting to the session for screen share:',
@@ -154,30 +176,64 @@ function Openvidu() {
 		}
 	}, [sessionScreen]);
 
-	// --- 9). Create a function to be called when the 'Screen share' button is clicked.
+	useEffect(async () => {
+		if (!sessionChat) {
+			return;
+		}
+
+		// Receiver of the message (usually before calling 'session.connect')
+		// sessionChat.on('signal:my-chat', event => {
+		// 	console.log(event.data); // Message
+		// 	console.log(event.from); // Connection object of the sender
+		// 	console.log(event.type); // The type of message ("my-chat")
+		// });
+
+		// Receiver of all messages (usually before calling 'session.connect')
+		sessionChat.on('signal', event => {
+			setMessages(preMessages => {
+				console.log(event.data); // Message
+				console.log(event.from); // Connection object of the sender
+				console.log(event.type); // The type of message
+				const id = event.from.creationTime;
+				const msg = event.data;
+				const user = JSON.parse(event.from.data);
+				return preMessages.concat([{ id, msg, user: user.clientData }]);
+			});
+		});
+
+		sessionChat.on('connectionCreated', event => {
+			console.log(event.connection);
+		});
+
+		try {
+			const token = await getToken();
+			await sessionChat.connect(token, { clientData: myUserName });
+			console.log('Session chat connected');
+		} catch (error) {
+			console.warn(
+				'There was an error connecting to the session for chat:',
+				error.code,
+				error.message
+			);
+		}
+	}, [sessionChat]);
+
 	const publishScreenShare = () => {
-		// --- 9.1) To create a publisherScreen it is very important that the property 'videoSource' is set to 'screen'
-		const publisherScreen = OVScreen.initPublisher('container-screens', {
+		const newPublisherScreen = OVScreen.initPublisher('container-screens', {
 			videoSource: 'screen',
 		});
 
-		// --- 9.2) If the user grants access to the screen share function, publish the screen stream
-		publisherScreen.once('accessAllowed', event => {
-			// document.getElementById('buttonScreenShare').style.visibility = 'hidden';
-			// screensharing = true;
+		newPublisherScreen.once('accessAllowed', event => {
 			setScreensharing(true);
-			// It is very important to define what to do when the stream ends.
-			publisherScreen.stream
+			newPublisherScreen.stream
 				.getMediaStream()
 				.getVideoTracks()[0]
 				.addEventListener('ended', () => {
 					console.log('User pressed the "Stop sharing" button');
-					sessionScreen.unpublish(publisherScreen);
-					// document.getElementById('buttonScreenShare').style.visibility = 'visible';
-					// screensharing = false;
+					sessionScreen.unpublish(newPublisherScreen);
 					setScreensharing(false);
 				});
-			sessionScreen.publish(publisherScreen);
+			sessionScreen.publish(newPublisherScreen);
 		});
 
 		// publisherScreen.on('videoElementCreated', event => {
@@ -185,9 +241,17 @@ function Openvidu() {
 		// 	// event.element['muted'] = true;
 		// });
 
-		publisherScreen.once('accessDenied', event => {
+		newPublisherScreen.once('accessDenied', event => {
 			console.error('Screen Share: Access Denied');
 		});
+
+		setPublisherScreen(newPublisherScreen);
+	};
+
+	const stopScreenShare = () => {
+		console.log('User pressed the "Stop sharing" button');
+		sessionScreen.unpublish(publisherScreen);
+		setScreensharing(false);
 	};
 
 	const leaveSession = () => {
@@ -199,11 +263,18 @@ function Openvidu() {
 			sessionScreen.disconnect();
 		}
 
+		if (sessionChat) {
+			sessionChat.disconnect();
+		}
+
 		setOVCamera(null);
 		setOVScreen(null);
+		setOVChat(null);
 		setSessionCamera(undefined);
 		setSessionScreen(undefined);
+		setSessionChat(undefined);
 		setSubscribers([]);
+		setMessages([]);
 		setMySessionId('SessionA');
 		setMyUserName(`Participant${Math.floor(Math.random() * 100)}`);
 		setMainStreamManager(undefined);
@@ -373,12 +444,19 @@ function Openvidu() {
 							onClick={leaveSession}
 							value='Leave session'
 						/>
-						{!screensharing && (
+						{!screensharing ? (
 							<input
 								type='button'
 								id='buttonScreenShare'
 								onClick={publishScreenShare}
 								value='Screen share'
+							/>
+						) : (
+							<input
+								type='button'
+								id='buttonScreenShare'
+								onClick={stopScreenShare}
+								value='Stop Screen share'
 							/>
 						)}
 						<input
@@ -393,6 +471,27 @@ function Openvidu() {
 							onClick={videoOnOFF}
 							value={videoEnabled ? 'video OFF' : 'video ON'}
 						/>
+						<form onSubmit={sendMessage}>
+							<p>
+								<input
+									type='text'
+									id='message'
+									placeholder='Message'
+									value={myMessage}
+									onChange={handleChangeMyMessage}
+									required
+								/>
+								<input name='commit' type='submit' value='Send' />
+							</p>
+						</form>
+					</div>
+
+					<div id='session-chat'>
+						<ul>
+							{messages.map(data => (
+								<li key={data.id}>{`${data.user} : ${data.msg}`}</li>
+							))}
+						</ul>
 					</div>
 
 					{mainStreamManager && (

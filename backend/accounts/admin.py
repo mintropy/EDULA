@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin 
 from django.contrib.auth.admin import UserAdmin
+from django.db.models.functions import Lower
 from .models import User, Student, Teacher, SchoolAdmin, FriendRequest
 
 # Register your models here.
@@ -23,7 +24,8 @@ class CustomUserAdmin(UserAdmin):
         ('Custom fields', {'fields': ('status', 'friend_list',)}),
     )
     list_display_links = ('username',)
-    list_filter = ('status', )
+    list_filter = ('status',)
+    ordering = ('-id',)
     inlines = [
         StudentInline, TeacherInline, SchoolAdminInline,
     ]
@@ -40,7 +42,6 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(FriendRequest)
 class FriendRequestAdmin(ModelAdmin):
-    # model = FriendRequest
     list_display = ('id', 'request_status', 'from_user_detail', 'to_user_detail')
     list_display_links = ('request_status',)
     list_filter = ('request_status',)
@@ -56,4 +57,9 @@ class FriendRequestAdmin(ModelAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Student)
 admin.site.register(Teacher)
-admin.site.register(SchoolAdmin)
+
+
+@admin.register(SchoolAdmin)
+class SchoolAdminAdmin(ModelAdmin):
+    list_display = ('user', 'school', 'account_type',)
+    list_filter = ('account_type',)

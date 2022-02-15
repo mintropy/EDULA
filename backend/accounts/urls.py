@@ -26,9 +26,15 @@ user_D = user.UserCUDView.as_view({
     'delete': 'destroy',
 })
 
+
+
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view(), name='user_self_information'),
+    path('resister/',
+        user.ResisterViewSet.as_view({'post': 'create'}),
+        name='resister',
+    ),
     path('user/', user_C),
     path('user/<str:YS>/<int:num>/', user_D),
     path('<int:user_pk>/',
