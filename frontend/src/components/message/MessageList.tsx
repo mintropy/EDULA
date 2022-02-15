@@ -85,8 +85,9 @@ function MessageList() {
 					<>
 						{!message.read && (
 							<p key={message.id}>
-								{message.time.slice(0, 10)} | {message.fromUser?.username} (
-								{message.fromUser?.firstName || '이름 없음'}) | {message.content}
+								{message.time.slice(0, 10)} {message.time.slice(11, 18)}|{' '}
+								{message.fromUser?.username} (
+								{message.fromUser?.firstName || '이름 없음'}) : {message.content}
 								<StyledReadBtn
 									onClick={e => {
 										e.preventDefault();
@@ -108,7 +109,8 @@ function MessageList() {
 						)}
 						{message.read && (
 							<ReadMessage key={message.id}>
-								{message.time.slice(0, 10)} | {message.fromUser?.username} (
+								{message.time.slice(0, 10)} {message.time.slice(11, 18)}| |{' '}
+								{message.fromUser?.username} (
 								{message.fromUser?.firstName || '이름 없음'}) : {message.content}
 							</ReadMessage>
 						)}
