@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
-	font-family: 'Helvetica', 'Arial', sans-serif;
 	display: inline;
 	font-size: 1em;
 	padding: 0.5em;

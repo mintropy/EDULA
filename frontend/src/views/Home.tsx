@@ -5,6 +5,7 @@ import TopNavBar from '../components/navbar/TopNavBar';
 import UserContext from '../context/user';
 import routes from '../routes';
 import SideBar from '../components/sidebar/SideBar';
+import Footer from '../components/footer/Footer';
 
 const OutletContainer = styled.div`
 	display: flex;
@@ -12,6 +13,14 @@ const OutletContainer = styled.div`
 	align-items: center;
 `;
 
+const BodyWrapper = styled.div`
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+`;
+const BodyContent = styled.div`
+	flex: 1;
+`;
 const Container = styled.div`
 	display: flex;
 `;
@@ -24,16 +33,19 @@ function Main() {
 	}
 
 	return (
-		<>
-			<TopNavBar />
-			<Container>
-				<SideBar />
+		<BodyWrapper>
+			<BodyContent>
+				<TopNavBar />
+				<Container>
+					<SideBar />
 
-				<OutletContainer>
-					<Outlet />
-				</OutletContainer>
-			</Container>
-		</>
+					<OutletContainer>
+						<Outlet />
+					</OutletContainer>
+				</Container>
+			</BodyContent>
+			<Footer />
+		</BodyWrapper>
 	);
 }
 

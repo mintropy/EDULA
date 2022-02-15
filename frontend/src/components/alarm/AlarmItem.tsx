@@ -35,7 +35,6 @@ const StyledContainer = styled.div<Type>`
 		text-align: center;
 		line-height: 30px;
 		font-weight: bold;
-		font-family: Georgia;
 		text-shadow: 1px 1px ${props => props.theme.fontColor};
 	}
 

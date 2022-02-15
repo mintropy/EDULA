@@ -9,6 +9,9 @@ const GlobalStyles = createGlobalStyle`
     color:  ${props => props.theme.fontColor};
     font-family:'GangwonEdu_OTFBoldA', Times, Arial, Helvetica, sans-serif, serif;
   }
+  button{
+    font-family:'GangwonEdu_OTFBoldA', Times, Arial, Helvetica, sans-serif, serif;
+  }
   @font-face {
     font-family: 'GangwonEdu_OTFBoldA';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');

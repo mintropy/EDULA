@@ -9,6 +9,7 @@ const UserContext = createContext({
 	userStat: '',
 	schoolId: '',
 	currentLecture: '',
+	profileImg: '',
 });
 
 export default UserContext;

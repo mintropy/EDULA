@@ -11,6 +11,7 @@ import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
 
+
 interface FriendRequestDataType {
 	requsetSend: {
 		id: number;
