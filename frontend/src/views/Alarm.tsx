@@ -94,6 +94,7 @@ function Alarm() {
 		getTotalCnt();
 		getUnreadCnt();
 	}, []);
+	
 	return (
 		<>
 			<StyledTitle>새 소식</StyledTitle>
