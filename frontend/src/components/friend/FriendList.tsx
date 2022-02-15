@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
@@ -7,7 +7,6 @@ import { apiPostMessage } from '../../api/directMessage';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
-import MessageForm from '../message/MessageForm';
 
 interface FriendDataType {
 	id: number;
@@ -22,10 +21,17 @@ const StyledLink = styled(Link)`
 const StyledSpan = styled.span`
 	color: ${props => props.theme.fontColor};
 `;
+const StyledMessageBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.bgColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+
 function FriendList() {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [isModalOn, setIsModalOn] = useState(false);
 	const [pickedFriend, setPickedFriend] = useState(0);
+	const [pickedFriendName, setPickedFriendName] = useState('');
 	const [friendList, setFriendList] = useState([] as FriendDataType[]);
 	const getFriendList = () => {
 		apiGetFriendList().then(res => {
@@ -47,7 +53,7 @@ function FriendList() {
 							type='text'
 							name='text'
 							ref={inputRef}
-							placeholder='친구에게 예쁜 말을 보내줘요.'
+							placeholder={`${pickedFriendName || '친구'}에게 예쁜 말을 보내줘요.`}
 						/>
 						<button
 							type='submit'
@@ -72,7 +78,7 @@ function FriendList() {
 						<StyledLink to={`/profile/${friend.id}`}>
 							<StyledDiv key={friend.id}>
 								<StyledSpan>{friend.username}</StyledSpan>
-								<StyledDeleteBtn
+								<StyledMessageBtn
 									type='button'
 									value='쪽지'
 									onClick={e => {
@@ -80,6 +86,7 @@ function FriendList() {
 										if (friend.id) {
 											try {
 												setPickedFriend(friend.id);
+												setPickedFriendName(friend.firstname);
 												setIsModalOn(true);
 											} catch (error) {
 												// console.log(error);
@@ -88,7 +95,7 @@ function FriendList() {
 									}}
 								>
 									쪽지
-								</StyledDeleteBtn>
+								</StyledMessageBtn>
 								<StyledDeleteBtn
 									type='button'
 									value='삭제'

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import FriendList from '../components/friend/FriendList';
 import FriendGivenRequest from '../components/friend/FriendRequest';
 import FriendSearch from '../components/friend/FriendSearch';
+import MessageList from '../components/message/MessageList';
 
 const Container = styled.div`
 	display: flex;
@@ -13,6 +14,7 @@ function Friend() {
 			<FriendList />
 			<FriendSearch />
 			<FriendGivenRequest />
+			<MessageList />
 		</Container>
 	);
 }
