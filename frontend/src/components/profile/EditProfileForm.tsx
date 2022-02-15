@@ -23,7 +23,7 @@ type EditProfileInput = {
 };
 
 type PropType = {
-	toggleMode: () => void;
+	toggleMode: (mode: string) => void;
 	changeUserData: (_: object) => void;
 };
 
@@ -62,7 +62,7 @@ function EditProfileForm({ toggleMode, changeUserData }: PropType) {
 					break;
 			}
 			changeUserData({ user, guardianPhone });
-			toggleMode();
+			toggleMode('profile');
 		} catch (e) {
 			const error = e as AxiosError;
 			if (error?.response?.status === 401) {
@@ -105,7 +105,7 @@ function EditProfileForm({ toggleMode, changeUserData }: PropType) {
 						})}
 						type='text'
 						placeholder='이메일'
-						onChange={() => clearErrors()}
+						onInput={() => clearErrors()}
 					/>
 				</FormInput>
 				{emailError}
@@ -122,7 +122,7 @@ function EditProfileForm({ toggleMode, changeUserData }: PropType) {
 						})}
 						type='text'
 						placeholder='전화번호'
-						onChange={() => clearErrors()}
+						onInput={() => clearErrors()}
 					/>
 				</FormInput>
 				{phoneNumberError}
@@ -148,7 +148,7 @@ function EditProfileForm({ toggleMode, changeUserData }: PropType) {
 					</>
 				)}
 				<button type='submit'>수정</button>
-				<button onClick={() => toggleMode()} type='button'>
+				<button onClick={() => toggleMode('profile')} type='button'>
 					취소
 				</button>
 			</form>

@@ -31,3 +31,31 @@ export const apiGetClassroomDetail = (schoolId: string, classroomId: string) =>
 			...setToken(),
 		},
 	});
+
+export const apiPutClassroomDetail = (
+	schoolId: string,
+	classroomId: string,
+	classroom: object
+) =>
+	axios({
+		method: 'put',
+		url: `${BASE_URL}/schools/${schoolId}/classroom/${classroomId}/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			...classroom,
+		},
+	});
+
+export const apiDeleteClassroomDetail = (
+	schoolId: string,
+	classroomId: string
+) =>
+	axios({
+		method: 'delete',
+		url: `${BASE_URL}/schools/${schoolId}/classroom/${classroomId}/`,
+		headers: {
+			...setToken(),
+		},
+	});

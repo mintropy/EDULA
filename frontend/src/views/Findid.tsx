@@ -13,6 +13,7 @@ import FormInput from '../components/auth/FormInput';
 import LinkBox from '../components/auth/LinkBox';
 import PageTitle from '../components/PageTitle';
 import routes from '../routes';
+import { apiFindId } from '../api/user';
 
 const HeaderContainer = styled.div`
 	width: 100%;
@@ -28,6 +29,7 @@ const HeaderContainer = styled.div`
 `;
 
 type FindidInput = {
+	result: string;
 	name: string;
 	email: string;
 };
@@ -37,17 +39,31 @@ function Findid() {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
-		// getValues,
+		getValues,
+		setError,
+		clearErrors,
 	} = useForm<FindidInput>({ mode: 'all' });
 
 	const onValidSubmit: SubmitHandler<FindidInput> = async () => {
-		// const { name, email } = getValues();
+		const { name, email } = getValues();
 		// find id logic
+		try {
+			await apiFindId(name, email).then(res => console.log(res));
+			alert('이메일로 아이디가 발송되었습니다.');
+		} catch (e) {
+			setError('result', { message: '사용자 정보가 일치하지 않습니다.' });
+		}
 	};
 
-	const onInValidSubmit: SubmitErrorHandler<FindidInput> = () => {
-		// error handling
+	const clearFindError = () => {
+		clearErrors('result');
 	};
+
+	const resultError = errors.result?.message ? (
+		<ErrorMsg message={errors.result?.message} />
+	) : (
+		<EmptyMsg />
+	);
 
 	const nameError = errors.name?.message ? (
 		<ErrorMsg message={errors.name?.message} />
@@ -67,7 +83,8 @@ function Findid() {
 				<h1>아이디 찾기</h1>
 			</HeaderContainer>
 			<FormBox>
-				<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+				<form onSubmit={handleSubmit(onValidSubmit)}>
+					{resultError}
 					<FormInput htmlFor='name'>
 						<span>
 							<FaUserTag />

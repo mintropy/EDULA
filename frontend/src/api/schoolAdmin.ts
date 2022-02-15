@@ -28,3 +28,31 @@ export const apiGetAdmin = (schoolAdminPk: string) =>
 			...setToken(),
 		},
 	});
+
+export const apiCreateUsers = (data: object) =>
+	axios({
+		method: 'post',
+		url: `${BASE_URL}/accounts/user/`,
+		headers: {
+			...setToken(),
+		},
+		data,
+	});
+
+export const apiDeleteUsers = (year: string) =>
+	axios({
+		method: 'delete',
+		url: `${BASE_URL}/accounts/user/Y/${year}/`,
+		headers: {
+			...setToken(),
+		},
+	});
+
+export const apiDeleteUser = (studentId: string) =>
+	axios({
+		method: 'delete',
+		url: `${BASE_URL}/accounts/user/S/${studentId}/`,
+		headers: {
+			...setToken(),
+		},
+	});

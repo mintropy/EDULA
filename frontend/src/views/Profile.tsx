@@ -13,6 +13,7 @@ import {
 } from '../api/user';
 import UserContext from '../context/user';
 import EditProfileForm from '../components/profile/EditProfileForm';
+import EditPasswordForm from '../components/profile/EditPasswordForm';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -118,10 +119,10 @@ function Profile() {
 		school: {},
 		guardianPhone: '',
 	} as UserDataType);
-	const [isEditMode, setEditMode] = useState(false);
+	const [editMode, setEditMode] = useState('profile');
 
-	const toggleMode = () => {
-		setEditMode(!isEditMode);
+	const toggleMode = (newMode: string) => {
+		setEditMode(newMode);
 	};
 
 	const changeUserData = (newData: object) => {
@@ -166,11 +167,66 @@ function Profile() {
 
 	const editBtn =
 		loggedInUserId.toString() === userId ? (
-			<button className='edit' type='button' onClick={() => toggleMode()}>
+			<button
+				className='edit'
+				type='button'
+				onClick={() => toggleMode('editProfile')}
+			>
 				<FaUserEdit />
 				정보 수정
 			</button>
 		) : null;
+
+	const pwEditBtn =
+		loggedInUserId.toString() === userId ? (
+			<button
+				className='edit'
+				type='button'
+				onClick={() => toggleMode('editPassword')}
+			>
+				<FaUserEdit />
+				비밀번호 수정
+			</button>
+		) : null;
+
+	const contents = (mode: string) => {
+		switch (mode) {
+			case 'editProfile':
+				return (
+					<EditProfileForm toggleMode={toggleMode} changeUserData={changeUserData} />
+				);
+			case 'editPassword':
+				return <EditPasswordForm toggleMode={toggleMode} />;
+			default:
+				return (
+					<>
+						<div className='name'>{userData?.user?.firstName}</div>
+						<div className='class'>
+							<FiUser />
+							{userData?.school?.name}
+							{userData?.classroom &&
+								` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
+						</div>
+						<div className='email'>
+							<VscMail />
+							{userData?.user?.email}
+						</div>
+						<div className='phone'>
+							<BiPhone />
+							{userData?.user?.phone}
+						</div>
+						{userStat === 'ST' && (
+							<div className='guadianPhone'>
+								<BiPhone />
+								{userData?.guardianPhone}
+							</div>
+						)}
+						{editBtn}
+						{pwEditBtn}
+					</>
+				);
+		}
+	};
 
 	return (
 		<UserContainer>
@@ -181,39 +237,7 @@ function Profile() {
 						alt=''
 					/>
 				</UserProfileContainer>
-				<UserDataContainer>
-					{isEditMode ? (
-						<EditProfileForm
-							toggleMode={toggleMode}
-							changeUserData={changeUserData}
-						/>
-					) : (
-						<>
-							<div className='name'>{userData?.user?.firstName}</div>
-							<div className='class'>
-								<FiUser />
-								{userData?.school?.name}
-								{userData?.classroom &&
-									` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
-							</div>
-							<div className='email'>
-								<VscMail />
-								{userData?.user?.email}
-							</div>
-							<div className='phone'>
-								<BiPhone />
-								{userData?.user?.phone}
-							</div>
-							{userStat === 'ST' && (
-								<div className='guadianPhone'>
-									<BiPhone />
-									{userData?.guardianPhone}
-								</div>
-							)}
-							{editBtn}
-						</>
-					)}
-				</UserDataContainer>
+				<UserDataContainer>{contents(editMode)}</UserDataContainer>
 			</UserInfoContainer>
 			<ScheduleContainer>
 				<span>오늘의 일정</span>
