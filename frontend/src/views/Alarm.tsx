@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { apiDeleteNotification, apiGetNotifications } from '../api/notice';
+import {
+	apiDeleteNotification,
+	apiGetNotifications,
+	apiPatchNotification,
+} from '../api/notice';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import routes from '../routes';
 import Pagination from '../components/class/ArticlePagination';
@@ -96,6 +100,20 @@ function Alarm() {
 							}
 						}}
 					>
+						모두 삭제
+					</StyleRefuseBtn>
+					<StyleRefuseBtn
+						onClick={e => {
+							e.preventDefault();
+
+							try {
+								apiPatchNotification('0');
+								window.location.reload();
+							} catch (error) {
+								// console.log(error);
+							}
+						}}
+					>
 						모두 읽음
 					</StyleRefuseBtn>
 				</>
@@ -130,6 +148,20 @@ function Alarm() {
 
 									try {
 										apiDeleteNotification(noti.id.toString());
+										window.location.reload();
+									} catch (error) {
+										// console.log(error);
+									}
+								}}
+							>
+								삭제
+							</StyleRefuseBtn>
+							<StyleRefuseBtn
+								onClick={e => {
+									e.preventDefault();
+
+									try {
+										apiPatchNotification(noti.id.toString());
 										window.location.reload();
 									} catch (error) {
 										// console.log(error);
