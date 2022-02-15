@@ -22,6 +22,10 @@ const StyledLink = styled(Link)`
 	font-size: 1.5em;
 `;
 
+const ReadNotification = styled.p`
+	opacity: 0.5;
+`;
+
 const StyleRefuseBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
@@ -124,22 +128,28 @@ function Alarm() {
 					.filter(notification => notification.notificationType === 'FQ')
 					.map(noti => (
 						<StyledLink key={noti.id} to={routes.friend}>
-							{noti.content === null && (
+							{noti.content === null && noti.read && (
+								<ReadNotification>
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)에게 친구 요청을 받았어요! 😊
+								</ReadNotification>
+							)}
+							{noti.content === null && !noti.read && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)에게 친구 요청을 받았어요!
+									)에게 친구 요청을 받았어요! 😊
 								</p>
 							)}
 							{noti.content === 'AC' && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)가(이) 친구 요청을 수락했어요!
+									)가(이) 친구 요청을 수락했어요! 😁
 								</p>
 							)}
 							{noti.content === 'RF' && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)가(이) 친구 요청을 거절했어요ㅠ
+									)가(이) 친구 요청을 거절했어요. 😥
 								</p>
 							)}
 							<StyleRefuseBtn
