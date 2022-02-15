@@ -72,6 +72,12 @@ class Student(models.Model):
         except:
             return f'{self.user_id}'
 
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
+
 
 class Teacher(models.Model):
     user = models.OneToOneField(
@@ -101,6 +107,13 @@ class Teacher(models.Model):
         except:
             return f'{self.user_id}'
 
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
+
+
 class SchoolAdmin(models.Model):
     
     class account_type(models.TextChoices):
@@ -126,9 +139,18 @@ class SchoolAdmin(models.Model):
         choices=account_type.choices,
         default='F',
     )
-    
+
     def __str__(self):
-        return self.user.username
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
+
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
 
 
 class FriendRequest(models.Model):
