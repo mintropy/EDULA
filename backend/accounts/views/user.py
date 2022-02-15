@@ -359,49 +359,61 @@ class UserCUDView(ViewSet):
             + Teacher.objects.filter(school_id=school_pk).count()
         accounts_available = max(max_creation - accounts_count, 0)
 
-        student_creation_count_list = request.data.get('student_creation_count_list')
-        teacher_creation_count = request.data.get('teacher_creation_count')
-        for year, count in student_creation_count_list.items():
-            if count > accounts_available:
-                student_creation_count_list[year] = accounts_available
-                accounts_available = 0
-            else:
-                accounts_available -= count
-        if teacher_creation_count > accounts_available:
-            teacher_creation_count = accounts_available
+        student_creation_count_list = request.data.get('student_creation_count_list',None)
+        
+        if type(student_creation_count_list) == type(dict()): 
+            for year, count in student_creation_count_list.items():
+                if count > accounts_available:
+                    student_creation_count_list[year] = accounts_available
+                    accounts_available = 0
+                else:
+                    accounts_available -= count
 
-        students = []
-        for year in student_creation_count_list.keys():
-            abb_num = (int(year) % 6) + 1
-            student_list = Student.objects.select_related('user')\
-                .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
+            students = []
+            for year in student_creation_count_list.keys():
+                try:
+                    abb_num = (int(year) % 6) + 1
+                    student_list = Student.objects.select_related('user')\
+                        .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
+                        .order_by('-pk').values('user__username')
+                    if student_list.exists():
+                        last_student = student_list[0]['user__username']
+                        start_num = int(last_student[len(abbreviation) + 1:]) + 1
+                    else:
+                        start_num = 0
+                    students += [
+                        {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
+                        for i in range(
+                            start_num, start_num + student_creation_count_list[year]
+                        )
+                    ]
+                except:
+                    pass
+        else:
+            students = []
+            
+        teacher_creation_count = request.data.get('teacher_creation_count',None)    
+        
+        if type(teacher_creation_count) == int:
+            if teacher_creation_count > accounts_available:
+                teacher_creation_count = accounts_available
+            
+            teacher_list = Teacher.objects.select_related('user')\
+                .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
                 .order_by('-pk').values('user__username')
-            if student_list.exists():
-                last_student = student_list[0]['user__username']
+            if teacher_list.exists():
+                last_student = teacher_list[0]['user__username']
                 start_num = int(last_student[len(abbreviation) + 1:]) + 1
             else:
-                start_num = 0
-            students += [
-                {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
+                start_num = 1
+            teachers = [
+                {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
                 for i in range(
-                    start_num, start_num + student_creation_count_list[year]
+                    start_num, start_num + teacher_creation_count
                 )
             ]
-
-        teacher_list = Teacher.objects.select_related('user')\
-            .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
-            .order_by('-pk').values('user__username')
-        if teacher_list.exists():
-            last_student = teacher_list[0]['user__username']
-            start_num = int(last_student[len(abbreviation) + 1:]) + 1
         else:
-            start_num = 0
-        teachers = [
-            {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
-            for i in range(
-                start_num, start_num + teacher_creation_count
-            )
-        ]
+            teachers = []
 
         data = {
             'students': students,
