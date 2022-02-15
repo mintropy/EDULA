@@ -20,13 +20,11 @@ request_detail = friend_request.FriendRequestViewSet.as_view({
 
 user_C = user.UserCUDView.as_view({
     'post': 'create',
+    'put': 'update',
 })
-
 user_D = user.UserCUDView.as_view({
     'delete': 'destroy',
 })
-
-
 
 urlpatterns = [
     # User Information

@@ -925,6 +925,18 @@ examples = {
         },
     },
     'UserCUDView': {
+        'request_update': [
+            OpenApiExample(
+                name='request',
+                value={
+                    'user': 5,
+                    'username': 'new name',
+                    'email': 'new@email.com',
+                    'phone': '000-0000-0000',
+                },
+                request_only=True,
+            ),
+        ],
         'post': {
             'input': OpenApiExample(
                 name='request',
