@@ -36,3 +36,12 @@ export const apiGetNotificationCnt = () =>
 			...setToken(),
 		},
 	});
+
+export const apiGetTotalNotificationCnt = () =>
+	axios({
+		method: 'get',
+		url: `${BASE_URL}/notifications/count/all/`,
+		headers: {
+			...setToken(),
+		},
+	});

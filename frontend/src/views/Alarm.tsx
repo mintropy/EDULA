@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import {
 	apiDeleteNotification,
+	apiGetNotificationCnt,
 	apiGetNotifications,
+	apiGetTotalNotificationCnt,
 	apiPatchNotification,
 } from '../api/notice';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
@@ -54,6 +56,8 @@ interface NotificationDataType {
 }
 
 function Alarm() {
+	const [totalCnt, setTotalCnt] = useState(0);
+	const [unreadCnt, setUnreadCnt] = useState(0);
 	const [limit, setLimit] = useState(10);
 	const [page, setPage] = useState(1);
 	const [total, setTotal] = useState(0);
@@ -74,9 +78,28 @@ function Alarm() {
 		getNotifications();
 	}, [page, limit]);
 
+	const getTotalCnt = () => {
+		apiGetTotalNotificationCnt().then(res => {
+			setTotalCnt(res.data.count);
+		});
+	};
+
+	const getUnreadCnt = () => {
+		apiGetNotificationCnt().then(res => {
+			setUnreadCnt(res.data.count);
+		});
+	};
+
+	useEffect(() => {
+		getTotalCnt();
+		getUnreadCnt();
+	}, []);
 	return (
 		<>
 			<StyledTitle>새 소식</StyledTitle>
+			<p>
+				안 읽은 소식: {unreadCnt}/ 전체 소식: {totalCnt}
+			</p>
 
 			{notifications.length !== 0 && (
 				<>
