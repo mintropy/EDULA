@@ -7,6 +7,7 @@ const UserContext = createContext({
 	userId: '',
 	userStat: '',
 	schoolId: '',
+	profileImg: '',
 });
 
 export default UserContext;

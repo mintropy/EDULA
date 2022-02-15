@@ -86,12 +86,19 @@ function NavbarDropdown() {
 	const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false);
 	const onClick = () => setIsActive(!isActive);
 	const { logout, userId } = useContext(UserContext);
+	const { profileImg } = useContext(UserContext);
 
 	return (
 		<StyledContainer>
 			<StyledMenuContainer>
 				<StyledMenuTrigger type='button' onClick={onClick}>
-					<img src='https://picsum.photos/50/50.jpg' alt='User avatar' />
+					<img
+						src={
+							profileImg ||
+							'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+						}
+						alt='User avatar'
+					/>
 				</StyledMenuTrigger>
 				<StyledMenu ref={dropdownRef} isactive={isActive ? 'active' : 'inactive'}>
 					<ul>

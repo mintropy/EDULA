@@ -1,10 +1,12 @@
+import { useContext } from 'react';
 import { FaSmileWink } from 'react-icons/fa';
 import NavbarDropdown from './NavbarDropdown';
+import UserContext from '../../context/user';
 
 function Profile() {
-	const profileURL = 'https://picsum.photos/50/50';
+	const { profileImg } = useContext(UserContext);
 
-	if (profileURL) {
+	if (profileImg) {
 		return (
 			<span>
 				<NavbarDropdown />
@@ -15,6 +17,7 @@ function Profile() {
 	return (
 		<span>
 			<FaSmileWink />
+			<NavbarDropdown />
 		</span>
 	);
 }
