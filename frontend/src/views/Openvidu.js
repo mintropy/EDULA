@@ -279,6 +279,7 @@ function Openvidu() {
 		setMyUserName(`Participant${Math.floor(Math.random() * 100)}`);
 		setMainStreamManager(undefined);
 		setPublisher(undefined);
+		setPublisherScreen(undefined);
 	};
 
 	const switchCamera = async () => {
