@@ -26,7 +26,6 @@ const StyledAlarmBtn = styled.span<InnerAlarm>`
 				min-width: 20px;
 				height: 20px;
 				background-color: ${props.theme.pointColor};
-				font-family: monospace;
 				font-weight: bolt;
 				font-size: 14px;
 				display: flex;
