@@ -50,6 +50,13 @@ class UserCUDSerialzier(serializers.ModelSerializer):
         fields = ('id', 'username', 'password', 'status')
 
 
+class UserInformationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'email', 'phone',)
+
+
 class FindUsernameSerializer(serializers.ModelSerializer):
     
     class Meta:

@@ -31,7 +31,7 @@ from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier, ResisterSerializer,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
     FriendSerializer,
-    UserProfileImageSerializer,
+    UserProfileImageSerializer, UserInformationSerializer,
 )
 import serect
 
@@ -478,6 +478,39 @@ class UserCUDView(ViewSet):
                 )
         return Response(
             status=status.HTTP_204_NO_CONTENT,
+        )
+
+    @extend_schema(
+        tags=['학교 관리자',],
+        examples=[
+            *swagger_schema.examples['UserCUDView']['request_update']
+        ]
+    )
+    def update(self, request):
+        user = decode_JWT(request)
+        if user is None or user.status != 'SA':
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        target_user = get_object_or_404(
+            User, pk=request.data.get('user', None)
+        )
+        data = {
+            'first_name': request.data.get('first_name', target_user.first_name),
+            'email': request.data.get('email', target_user.email),
+            'phone': request.data.get('phone', target_user.phone),
+        }
+        serializer = UserInformationSerializer(target_user, data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
         )
 
 
