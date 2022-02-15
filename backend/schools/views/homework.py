@@ -9,16 +9,17 @@ from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
+from accounts.models import User
 from accounts.views.user import decode_JWT
 from server import basic_swagger_schema
+from notifications.models import Notification
 from . import swagger_schema
-from ..models import Homework, HomeworkSubmission
+from ..models import Lecture, Homework
 from ..serializers import HomeworkSerializer, HomeworkDetailSerializer
 
 
 class HomeworkViewSet(ViewSet):
     """About Homework
-    
     """
     model = Homework
     queryset = Homework.objects.all()
@@ -31,13 +32,13 @@ class HomeworkViewSet(ViewSet):
     }
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
-    
+
     def get_serializer_class(self):
         try:
             return self.serializer_classes[self.action]
         except:
             return HomeworkSerializer
-    
+
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -115,7 +116,7 @@ class HomeworkViewSet(ViewSet):
                 data,
                 status=status.HTTP_200_OK,
             )
-    
+
     @extend_schema(
         responses={
             201: OpenApiResponse(
@@ -142,20 +143,28 @@ class HomeworkViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        data = request.data
-        new_data = {
-            'title': data.get('title'),
-            'content': data.get('content'),
-            'deadline': data.get('deadline'),
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
+        data = {
+            'title': request.data.get('title', None),
+            'content': request.data.get('content', None),
+            'deadline': request.data.get('deadline', None),
             'writer': user.pk,
             'lecture':lecture_pk,
         }
-        serializer = HomeworkSerializer(data=new_data)
+        serializer = HomeworkSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
+            for student in lecture.student_list.all():
+                Notification.objects.create(
+                    user=User.objects.get(pk=student.pk),
+                    notification_type='HC',
+                    content=data['title'],
+                    from_user=user,
+                    lecture=lecture
+                )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -184,7 +193,7 @@ class HomeworkViewSet(ViewSet):
         return Response(
             serializer.data,
         )
-    
+
     @extend_schema(
         responses={
             201: OpenApiResponse(
@@ -211,6 +220,7 @@ class HomeworkViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
         homework = get_object_or_404(Homework, lecture_id=lecture_pk, id=homework_pk)
         data = {
             'title': request.data.get('title', homework.title),
@@ -222,13 +232,21 @@ class HomeworkViewSet(ViewSet):
         serializer = HomeworkSerializer(instance=homework, data=data)
         if serializer.is_valid():
             serializer.save()
+            for student in lecture.student_list.all():
+                Notification.objects.create(
+                    user=User.objects.get(pk=student.pk),
+                    notification_type='HU',
+                    content=data['title'],
+                    from_user=user,
+                    lecture=lecture
+                )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    
+
     @extend_schema(
         responses={
             200: OpenApiResponse(

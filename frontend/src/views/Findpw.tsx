@@ -13,6 +13,7 @@ import FormInput from '../components/auth/FormInput';
 import LinkBox from '../components/auth/LinkBox';
 import PageTitle from '../components/PageTitle';
 import routes from '../routes';
+import { apiResetPassword } from '../api/user';
 
 const HeaderContainer = styled.div`
 	width: 100%;
@@ -28,6 +29,7 @@ const HeaderContainer = styled.div`
 `;
 
 type FindpwInput = {
+	result: string;
 	id: string;
 	email: string;
 };
@@ -37,17 +39,31 @@ function Findpw() {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
-		// getValues,
+		getValues,
+		setError,
+		clearErrors,
 	} = useForm<FindpwInput>({ mode: 'all' });
 
 	const onValidSubmit: SubmitHandler<FindpwInput> = async () => {
-		// const { id, email } = getValues();
-		// find id logic
+		const { id, email } = getValues();
+
+		try {
+			await apiResetPassword(id, email).then(res => console.log(res));
+			alert('이메일로 새로운 비밀번호가 발송되었습니다.');
+		} catch (e) {
+			setError('result', { message: '사용자 정보가 일치하지 않습니다.' });
+		}
 	};
 
-	const onInValidSubmit: SubmitErrorHandler<FindpwInput> = () => {
-		// error handling
+	const clearFindError = () => {
+		clearErrors('result');
 	};
+
+	const resultError = errors.result?.message ? (
+		<ErrorMsg message={errors.result?.message} />
+	) : (
+		<EmptyMsg />
+	);
 
 	const idError = errors.id?.message ? (
 		<ErrorMsg message={errors.id?.message} />
@@ -60,6 +76,7 @@ function Findpw() {
 	) : (
 		<EmptyMsg />
 	);
+
 	return (
 		<AuthLayout>
 			<PageTitle title='Find Id' />
@@ -67,7 +84,8 @@ function Findpw() {
 				<h1>비밀번호 찾기</h1>
 			</HeaderContainer>
 			<FormBox>
-				<form onSubmit={handleSubmit(onValidSubmit, onInValidSubmit)}>
+				<form onSubmit={handleSubmit(onValidSubmit)}>
+					{resultError}
 					<FormInput htmlFor='id'>
 						<span>
 							<FaUserTag />
@@ -84,12 +102,13 @@ function Findpw() {
 									message: '아이디는 8자 이상, 16자 이하입니다.',
 								},
 								pattern: {
-									value: /^\D{2}\d{6,}$/,
+									value: /^[a-z]{2,5}\d{5,}$/,
 									message: '잘못된 아이디 형식입니다.',
 								},
 							})}
 							type='id'
 							placeholder='id'
+							onInput={clearFindError}
 						/>
 					</FormInput>
 					{idError}
@@ -107,6 +126,7 @@ function Findpw() {
 							})}
 							type='email'
 							placeholder='Email'
+							onInput={clearFindError}
 						/>
 					</FormInput>
 					{emailError}

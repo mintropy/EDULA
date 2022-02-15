@@ -27,9 +27,11 @@ const Container = styled.div`
 
 function Main() {
 	const { isLoggedIn } = useContext(UserContext);
+
 	if (!isLoggedIn) {
 		return <Navigate to={routes.login} />;
 	}
+
 	return (
 		<BodyWrapper>
 			<BodyContent>

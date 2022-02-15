@@ -12,10 +12,7 @@ import EmptyMsg from '../components/auth/EmptyMsg';
 import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import { apiSignup } from '../api/schoolAdmin';
-
-const StyledContainer = styled.div`
-	margin: 2em;
-`;
+import AuthLayout from '../components/auth/AuthLayout';
 
 type SignupInput = {
 	result: string;
@@ -45,7 +42,7 @@ function Signup() {
 		}
 	}, [isLoggedIn]);
 
-	const clearLoginError = () => {
+	const clearSignupError = () => {
 		clearErrors('result');
 	};
 
@@ -115,7 +112,7 @@ function Signup() {
 		}
 	};
 	return (
-		<StyledContainer>
+		<AuthLayout>
 			<StyledTitle> Edula 학교 관리자 회원가입</StyledTitle>
 			<StyledContent>
 				Edula 서비스를 사용하시려면, 학교 관리자만 회원 가입을 하면 됩니다 !
@@ -145,7 +142,7 @@ function Signup() {
 							})}
 							type='text'
 							placeholder='학교 이름을 입력하세요.'
-							onInput={clearLoginError}
+							onInput={clearSignupError}
 						/>
 					</FormInput>
 					{schoolNameError}
@@ -172,7 +169,7 @@ function Signup() {
 							})}
 							type='text'
 							placeholder='학교 코드(영문자 3글자)를 입력하세요.'
-							onInput={clearLoginError}
+							onInput={clearSignupError}
 						/>
 					</FormInput>
 					{schoolAbbError}
@@ -192,7 +189,7 @@ function Signup() {
 							})}
 							type='text'
 							placeholder='관리자 계정 이름을 입력하세요.'
-							onInput={clearLoginError}
+							onInput={clearSignupError}
 						/>
 					</FormInput>
 					{firstNameError}
@@ -212,7 +209,7 @@ function Signup() {
 							})}
 							type='password'
 							placeholder='비밀 번호를 입력하세요. (8~16자)'
-							onInput={clearLoginError}
+							onInput={clearSignupError}
 						/>
 					</FormInput>
 					{pwError}
@@ -232,14 +229,14 @@ function Signup() {
 							})}
 							type='password'
 							placeholder='비밀 번호를 다시 한번 입력하세요.'
-							onInput={clearLoginError}
+							onInput={clearSignupError}
 						/>
 					</FormInput>
 					{pwConfirmationError}
 					<FormBtn value='회원 가입' disabled={!isValid} />
 				</form>
 			</FormBox>
-		</StyledContainer>
+		</AuthLayout>
 	);
 }
 

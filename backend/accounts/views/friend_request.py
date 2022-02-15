@@ -12,6 +12,7 @@ from drf_spectacular.utils import (
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from notifications.models import Notification
 from . import swagger_schema
 from server import basic_swagger_schema
 from .user import decode_JWT
@@ -77,7 +78,7 @@ class FriendRequestViewSet(ViewSet):
             friend_request_data,
             status=status.HTTP_200_OK,
         )
-    
+
     @extend_schema(
         request=swagger_schema.schema_serializers['FriendRequestViewSet']['create']['request'],
         responses={
@@ -123,6 +124,11 @@ class FriendRequestViewSet(ViewSet):
         serializer = FriendRequestSerializer(data=friend_request_data)
         if serializer.is_valid():
             serializer.save()
+            Notification.objects.create(
+                user=to_user,
+                notification_type='FQ',
+                from_user=user,
+            )
             return Response(
                 {
                     'requset_send': FriendRequestDetailSerializer(
@@ -139,7 +145,7 @@ class FriendRequestViewSet(ViewSet):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    
+
     @extend_schema(
         request=swagger_schema.schema_serializers['FriendRequestViewSet']['update']['request'],
         responses={
@@ -189,6 +195,12 @@ class FriendRequestViewSet(ViewSet):
         )
         if serializer.is_valid():
             serializer.save()
+            Notification.objects.create(
+                user=from_user,
+                notification_type='FQ',
+                from_user=to_user,
+                content=f'{status_after}',
+            )
             FriendRequest.objects.filter(from_user=from_user, to_user=to_user,).delete()
             FriendRequest.objects.filter(from_user=to_user, to_user=from_user,).delete()
             if status_after == 'AC':
@@ -203,7 +215,7 @@ class FriendRequestViewSet(ViewSet):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    
+
     @extend_schema(
         responses={
             200: OpenApiResponse(
