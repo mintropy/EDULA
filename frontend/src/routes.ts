@@ -1,24 +1,30 @@
 const routes = {
-	main: '/',
+	// auth
 	login: '/login',
+	findid: '/findid',
+	findpw: '/findpw',
+	signup: '/signup',
+
+	main: '/',
+
+	conference: '/conference',
 	setting: '/setting',
 	profile: '/profile',
 	alarm: '/alarm',
 	class: '/lecture/:lectureId',
 	classroom: '/classroom',
-	findid: '/findid',
-	findpw: '/findpw',
 	createarticle: '/:lectureId/articleCreate',
 	updatearticle: '/:lectureId/articleUpdate/:articleId',
 	articleDetail: '/:lectureId/article/:articleId',
+
 	createHomework: '/:lectureId/homeworkCreate',
 	updateHomework: '/:lectureId/homeworkUpdate/:homeworkId',
 	homeworkDetail: '/:lectureId/homework/:homeworkId',
 	homeworkSubmit: '/:lectureId/homework/:homeworkId/submit',
 	homeworkSubmitDetail: '/:lectureId/homework/:homeworkId/submit/:userId',
+
 	schedule: '/schedule',
 	friend: '/friend',
-	signup: '/signup',
 	// Admin Page
 	admin: '/manage',
 	studentManager: '/manage/student',
