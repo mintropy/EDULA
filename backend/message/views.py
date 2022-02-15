@@ -51,7 +51,7 @@ class MessageViewSet(ViewSet):
         augmented_serializer = {
             'total_count': messages.count(),
             'page_count': len(serializer.data),
-            'notifications': serializer.data,
+            'messages': serializer.data,
         }
         return Response(
             augmented_serializer,
