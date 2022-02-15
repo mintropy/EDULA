@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import StyledTitle from '../class/StyledTitle';
 import { apiGetFriendList, apiDeleteFriend } from '../../api/friend';
+import { apiPostMessage } from '../../api/directMessage';
 import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
@@ -20,7 +21,17 @@ const StyledLink = styled(Link)`
 const StyledSpan = styled.span`
 	color: ${props => props.theme.fontColor};
 `;
+const StyledMessageBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.bgColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+
 function FriendList() {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const [isModalOn, setIsModalOn] = useState(false);
+	const [pickedFriend, setPickedFriend] = useState(0);
+	const [pickedFriendName, setPickedFriendName] = useState('');
 	const [friendList, setFriendList] = useState([] as FriendDataType[]);
 	const getFriendList = () => {
 		apiGetFriendList().then(res => {
@@ -36,11 +47,55 @@ function FriendList() {
 		<div>
 			<StyledContainer>
 				<StyledTitle>친구 목록</StyledTitle>
+				{isModalOn && (
+					<form>
+						<input
+							type='text'
+							name='text'
+							ref={inputRef}
+							placeholder={`${pickedFriendName || '친구'}에게 예쁜 말을 보내줘요.`}
+						/>
+						<button
+							type='submit'
+							onClick={e => {
+								e.preventDefault();
+								if (inputRef?.current?.value) {
+									try {
+										apiPostMessage(pickedFriend.toString(), inputRef?.current?.value);
+										setIsModalOn(false);
+									} catch (error) {
+										// console.log(error);
+									}
+								}
+							}}
+						>
+							쪽지 보내기
+						</button>
+					</form>
+				)}
 				{friendList &&
 					friendList.map(friend => (
 						<StyledLink to={`/profile/${friend.id}`}>
 							<StyledDiv key={friend.id}>
 								<StyledSpan>{friend.username}</StyledSpan>
+								<StyledMessageBtn
+									type='button'
+									value='쪽지'
+									onClick={e => {
+										e.preventDefault();
+										if (friend.id) {
+											try {
+												setPickedFriend(friend.id);
+												setPickedFriendName(friend.firstname);
+												setIsModalOn(true);
+											} catch (error) {
+												// console.log(error);
+											}
+										}
+									}}
+								>
+									쪽지
+								</StyledMessageBtn>
 								<StyledDeleteBtn
 									type='button'
 									value='삭제'

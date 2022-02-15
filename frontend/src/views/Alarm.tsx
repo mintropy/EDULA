@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { apiDeleteNotification, apiGetNotifications } from '../api/notice';
+import {
+	apiDeleteNotification,
+	apiGetNotificationCnt,
+	apiGetNotifications,
+	apiGetTotalNotificationCnt,
+	apiPatchNotification,
+} from '../api/notice';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import routes from '../routes';
 import Pagination from '../components/class/ArticlePagination';
@@ -16,6 +22,10 @@ const StyledLink = styled(Link)`
 	text-decoration: none;
 	color: ${props => props.theme.fontColor};
 	font-size: 1.5em;
+`;
+
+const ReadNotification = styled.p`
+	opacity: 0.5;
 `;
 
 const StyleRefuseBtn = styled(StyledDeleteBtn)`
@@ -46,6 +56,8 @@ interface NotificationDataType {
 }
 
 function Alarm() {
+	const [totalCnt, setTotalCnt] = useState(0);
+	const [unreadCnt, setUnreadCnt] = useState(0);
 	const [limit, setLimit] = useState(10);
 	const [page, setPage] = useState(1);
 	const [total, setTotal] = useState(0);
@@ -66,9 +78,28 @@ function Alarm() {
 		getNotifications();
 	}, [page, limit]);
 
+	const getTotalCnt = () => {
+		apiGetTotalNotificationCnt().then(res => {
+			setTotalCnt(res.data.count);
+		});
+	};
+
+	const getUnreadCnt = () => {
+		apiGetNotificationCnt().then(res => {
+			setUnreadCnt(res.data.count);
+		});
+	};
+
+	useEffect(() => {
+		getTotalCnt();
+		getUnreadCnt();
+	}, []);
 	return (
 		<>
 			<StyledTitle>새 소식</StyledTitle>
+			<p>
+				안 읽은 소식: {unreadCnt}/ 전체 소식: {totalCnt}
+			</p>
 
 			{notifications.length !== 0 && (
 				<>
@@ -96,6 +127,20 @@ function Alarm() {
 							}
 						}}
 					>
+						모두 삭제
+					</StyleRefuseBtn>
+					<StyleRefuseBtn
+						onClick={e => {
+							e.preventDefault();
+
+							try {
+								apiPatchNotification('0');
+								window.location.reload();
+							} catch (error) {
+								// console.log(error);
+							}
+						}}
+					>
 						모두 읽음
 					</StyleRefuseBtn>
 				</>
@@ -106,24 +151,85 @@ function Alarm() {
 					.filter(notification => notification.notificationType === 'FQ')
 					.map(noti => (
 						<StyledLink key={noti.id} to={routes.friend}>
-							{noti.content === null && (
+							{noti.content === null && noti.read && (
+								<ReadNotification>
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)에게 친구 요청을 받았어요! 😊
+								</ReadNotification>
+							)}
+							{noti.content === null && !noti.read && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)에게 친구 요청을 받았어요!
+									)에게 친구 요청을 받았어요! 😊
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
 								</p>
 							)}
-							{noti.content === 'AC' && (
+							{noti.content === 'AC' && noti.read && (
+								<ReadNotification>
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)가(이) 친구 요청을 수락했어요! 😁
+								</ReadNotification>
+							)}
+							{noti.content === 'AC' && !noti.read && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)가(이) 친구 요청을 수락했어요!
+									)가(이) 친구 요청을 수락했어요! 😁
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
 								</p>
 							)}
-							{noti.content === 'RF' && (
+							{noti.content === 'RF' && noti.read && (
+								<ReadNotification>
+									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
+									)가(이) 친구 요청을 거절했어요. 😥
+								</ReadNotification>
+							)}
+							{noti.content === 'RF' && !noti.read && (
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
-									)가(이) 친구 요청을 거절했어요ㅠ
+									)가(이) 친구 요청을 거절했어요. 😥
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
 								</p>
 							)}
+
 							<StyleRefuseBtn
 								onClick={e => {
 									e.preventDefault();
@@ -136,7 +242,7 @@ function Alarm() {
 									}
 								}}
 							>
-								읽음
+								삭제
 							</StyleRefuseBtn>
 						</StyledLink>
 					))}
@@ -145,9 +251,30 @@ function Alarm() {
 					.filter(notification => notification.notificationType === 'HC')
 					.map(noti => (
 						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
-							<p>
-								{noti.lecture?.name}과목의 {noti.content} 과제 선물이 도착했어요!
-							</p>
+							{noti.read && (
+								<ReadNotification>
+									{noti.lecture?.name}과목의 {noti.content} 과제 선물이 도착했어요!
+								</ReadNotification>
+							)}
+							{!noti.read && (
+								<p>
+									{noti.lecture?.name}과목의 {noti.content} 과제 선물이 도착했어요!
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
+								</p>
+							)}
 							<StyleRefuseBtn
 								onClick={e => {
 									e.preventDefault();
@@ -160,7 +287,7 @@ function Alarm() {
 									}
 								}}
 							>
-								읽음
+								삭제
 							</StyleRefuseBtn>
 						</StyledLink>
 					))}
@@ -169,9 +296,30 @@ function Alarm() {
 					.filter(notification => notification.notificationType === 'HU')
 					.map(noti => (
 						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
-							<p>
-								{noti.lecture?.name}과목의 {noti.content} 과제가 변경되었어요!
-							</p>
+							{noti.read && (
+								<ReadNotification>
+									{noti.lecture?.name}과목의 {noti.content} 과제가 변경되었어요!
+								</ReadNotification>
+							)}
+							{!noti.read && (
+								<p>
+									{noti.lecture?.name}과목의 {noti.content} 과제가 변경되었어요!
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
+								</p>
+							)}
 							<StyleRefuseBtn
 								onClick={e => {
 									e.preventDefault();
@@ -184,7 +332,7 @@ function Alarm() {
 									}
 								}}
 							>
-								읽음
+								삭제
 							</StyleRefuseBtn>
 						</StyledLink>
 					))}
@@ -193,10 +341,34 @@ function Alarm() {
 					.filter(notification => notification.notificationType === 'HS')
 					.map(noti => (
 						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
-							<p>
-								{noti.lecture?.name} 과목의 {noti.fromUser?.firstName}가 {noti.content}
-								과제를 제출했어요!
-							</p>
+							{noti.read && (
+								<ReadNotification>
+									{noti.lecture?.name} 과목의 {noti.fromUser?.username}(
+									{noti.fromUser?.firstName || '이름 없음'})가(이) {noti.content}
+									과제를 제출했어요!
+								</ReadNotification>
+							)}
+							{!noti.read && (
+								<p>
+									{noti.lecture?.name} 과목의 {noti.fromUser?.username}(
+									{noti.fromUser?.firstName || '이름 없음'})가(이) {noti.content}
+									과제를 제출했어요!
+									<StyleRefuseBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiPatchNotification(noti.id.toString());
+												window.location.reload();
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										읽음
+									</StyleRefuseBtn>
+								</p>
+							)}
 							<StyleRefuseBtn
 								onClick={e => {
 									e.preventDefault();
@@ -209,7 +381,7 @@ function Alarm() {
 									}
 								}}
 							>
-								읽음
+								삭제
 							</StyleRefuseBtn>
 						</StyledLink>
 					))}

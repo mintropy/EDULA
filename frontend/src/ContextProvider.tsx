@@ -25,6 +25,7 @@ function ContextProvider({ children }: PropType) {
 	const [userId, setUserId] = useState('');
 	const [userStat, setUserStat] = useState('');
 	const [schoolId, setSchoolId] = useState('');
+	const [profileImg, setProfile] = useState('');
 
 	const changeTheme = (themename: string): void => {
 		setMainTheme((theme as any)[themename] || theme.base);
@@ -60,16 +61,19 @@ function ContextProvider({ children }: PropType) {
 			case 'ST':
 				apiGetStudentInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			case 'TE':
 				apiGetTeacherInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			case 'SA':
 				apiGetAdminInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			default:
@@ -105,8 +109,9 @@ function ContextProvider({ children }: PropType) {
 			userId,
 			userStat,
 			schoolId,
+			profileImg,
 		}),
-		[isLoggedIn, login, logout, userId, userStat, schoolId]
+		[isLoggedIn, login, logout, userId, userStat, schoolId, profileImg]
 	);
 
 	return (
