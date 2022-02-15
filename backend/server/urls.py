@@ -35,6 +35,7 @@ urlpatterns = [
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
     path(base_api_url + api_version + 'notifications/', include('notifications.urls')),
     path(base_api_url + api_version + 'messages/', include('message.urls')),
+    path(base_api_url + api_version + 'quiz/', include('quiz.urls')),
     # JWT
     path(
         base_api_url + api_version + 'token/',
