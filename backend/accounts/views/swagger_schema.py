@@ -930,7 +930,7 @@ examples = {
                 name='request',
                 value={
                     'user': 5,
-                    'username': 'new name',
+                    'firstName': 'new name',
                     'email': 'new@email.com',
                     'phone': '000-0000-0000',
                 },
