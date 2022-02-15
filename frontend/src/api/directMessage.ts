@@ -2,9 +2,9 @@ import axios from 'axios';
 import { BASE_URL, setToken } from './utils';
 
 export const apiGetMessages = (
+	userPk: string,
 	page: string,
-	pageSize: string,
-	userPk: string
+	pageSize: string
 ) =>
 	axios({
 		method: 'get',
