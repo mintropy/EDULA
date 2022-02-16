@@ -107,25 +107,17 @@ export const apiDeleteHomeworkSubmission = (
 
 export const apiPostHomeworkSubmission = (
 	lectureId: string,
-	homework: string,
-	title: string,
-	content: string,
-	// formData: FormData,
-	file: File,
-	writer: string
+	homeworkId: string,
+	formData: FormData
 ) =>
 	axios({
 		method: 'post',
-		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homework}/submission/`,
+		url: `${BASE_URL}/schools/lecture/${lectureId}/homework/${homeworkId}/submission/`,
 		headers: {
 			...setToken(),
 		},
-		data: {
-			title,
-			content,
-			// formData,
-			file,
-			homework,
-			writer,
-		},
+		data: formData,
+	}).then(res => {
+		// console.log(res);
+		// console.log();
 	});

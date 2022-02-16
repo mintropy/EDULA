@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import HomeworkForm from '../components/class/HomeworkForm';
 import StyledTitle from '../components/class/StyledTitle';
 
+const StyledUpContainer = styled.div`
+	position: absolute;
+	top: 20%;
+	left: 40%;
+`;
+
 const StyledContainer = styled.div`
 	margin: 1rem 10rem;
 	color: ${props => props.theme.fontColor};
@@ -9,7 +15,7 @@ const StyledContainer = styled.div`
 
 function CreateHomework() {
 	return (
-		<div>
+		<StyledUpContainer>
 			<StyledContainer>
 				<StyledTitle>과제 만들기 📑</StyledTitle>
 				<HomeworkForm
@@ -19,7 +25,7 @@ function CreateHomework() {
 					originDeadline=''
 				/>
 			</StyledContainer>
-		</div>
+		</StyledUpContainer>
 	);
 }
 

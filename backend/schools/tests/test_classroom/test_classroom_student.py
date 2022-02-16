@@ -49,6 +49,7 @@ class TestClassroomStudent(TestSetUp):
         자신이 속한 교실 + 속한 학교의 교실 >> 200
         자신이 속하지 않은 교실(같은 학교, 다른학교) >> 401
         """
+        # 200
         url = reverse('classroom_detail',
             kwargs={
                 'school_pk': self.school1.pk,
@@ -60,7 +61,6 @@ class TestClassroomStudent(TestSetUp):
         )
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        # 401
         url = reverse('classroom_detail',
             kwargs={
                 'school_pk': self.school1.pk,
@@ -69,6 +69,7 @@ class TestClassroomStudent(TestSetUp):
         )
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # 401
         url = reverse('classroom_detail',
             kwargs={
                 'school_pk': self.school2.pk,

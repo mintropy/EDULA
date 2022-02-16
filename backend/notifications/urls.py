@@ -10,8 +10,11 @@ notification_detail = NotificationViewSet.as_view({
     'patch': 'partial_update',
     'delete': 'destroy',
 })
-notification_count = NotificationViewSet.as_view({
-    'get': 'count',
+notification_count_all = NotificationViewSet.as_view({
+    'get': 'count_all',
+})
+notification_count_none_read = NotificationViewSet.as_view({
+    'get': 'count_none_read',
 })
 
 urlpatterns = [
@@ -25,6 +28,10 @@ urlpatterns = [
     ),
     path(
         'count/',
-        notification_count,
-    )
+        notification_count_none_read,
+    ),
+    path(
+        'count/all/',
+        notification_count_all,
+    ),
 ]

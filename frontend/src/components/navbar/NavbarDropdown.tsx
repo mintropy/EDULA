@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import UserContext from '../../context/user';
 import routes from '../../routes';
 import { useDetectOutsideClick } from '../useDetectOutsideClick';
+import StyledDeleteBtn from '../friend/StyledDeleteBtn';
 
 const StyledContainer = styled.div`
 	box-sizing: border-box;
@@ -41,6 +42,12 @@ const StyledMenuTrigger = styled.button`
 interface MenuProp {
 	isactive: string;
 }
+const StyledLogoutBtn = styled(StyledDeleteBtn)`
+	font-size: 0.5rem;
+	background: ${props => props.theme.pointColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
 
 const StyledMenu = styled.nav<MenuProp>`
 	background: ${props => props.theme.subBgColor};
@@ -105,6 +112,7 @@ function NavbarDropdown() {
 			<StyledMenuContainer>
 				<StyledMenuTrigger type='button' onClick={onClick}>
 					<img
+						width='50px'
 						src={
 							profileImg ||
 							'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
@@ -125,9 +133,9 @@ function NavbarDropdown() {
 							</Link>
 						</li>
 						<li>
-							<button type='button' onClick={logout}>
-								Log out
-							</button>
+							<StyledLogoutBtn type='button' onClick={logout}>
+								로그 아웃
+							</StyledLogoutBtn>
 						</li>
 					</ul>
 				</StyledMenu>

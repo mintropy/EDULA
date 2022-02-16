@@ -1,3 +1,5 @@
+"""Model for schools app
+"""
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
@@ -97,14 +99,8 @@ class Homework(models.Model):
 
 
 class HomeworkSubmission(models.Model):
+    """Homework submission model
     """
-    Homework submission model
-    """
-    def homework_submission_path(self, instance, filename):
-        """
-        Make homework submission media file path
-        """
-        return f'submission/{instance.homework.title}/{instance.writer.username}/{filename}'
 
     homework = models.ForeignKey(
         Homework,
@@ -119,14 +115,33 @@ class HomeworkSubmission(models.Model):
         related_name='homework_submission_list',
         on_delete=models.CASCADE,
     )
-    file = models.FileField(
+
+    def __str__(self):
+        return f'{self.homework} : {self.title}'
+
+
+class HomeworkSubmissionFiles(models.Model):
+    """Homework Submission Files Model
+    """
+
+    def homework_submission_path(instance, filename):
+        """Make homework submission media file path
+        """
+        return f'submission/{instance.homework_submission.pk}/{filename}'
+
+    homework_submission = models.ForeignKey(
+        HomeworkSubmission,
+        related_name='homework_submission_files',
+        on_delete=models.CASCADE
+    )
+    files = models.FileField(
         upload_to=homework_submission_path,
         null=True,
         blank=True,
     )
 
     def __str__(self):
-        return f'{self.homework} : {self.title}'
+        return f'{self.files}'
 
 
 class Article(models.Model):

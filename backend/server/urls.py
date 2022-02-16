@@ -14,7 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
@@ -22,6 +25,9 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+import re
+
 
 base_api_url = 'api/'
 api_version = ''
@@ -32,6 +38,8 @@ urlpatterns = [
     path(base_api_url + api_version + 'accounts/', include('accounts.urls')),
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
     path(base_api_url + api_version + 'notifications/', include('notifications.urls')),
+    path(base_api_url + api_version + 'messages/', include('message.urls')),
+    path(base_api_url + api_version + 'quiz/', include('quiz.urls')),
     # JWT
     path(
         base_api_url + api_version + 'token/',
@@ -52,4 +60,10 @@ urlpatterns = [
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     # silk
     path('silk/', include('silk.urls', namespace='silk')),
+    # media, static
+    re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

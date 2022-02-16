@@ -23,6 +23,7 @@ from drf_spectacular.utils import (
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+import serect
 from server import basic_swagger_schema
 from schools.models import School
 from . import swagger_schema
@@ -30,9 +31,9 @@ from ..models import FriendRequest, User, Student, Teacher, SchoolAdmin
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier, ResisterSerializer,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
-    FriendSerializer
+    FriendSerializer,
+    UserProfileImageSerializer, UserInformationSerializer,
 )
-import serect
 
 
 def decode_JWT(request) -> User:
@@ -151,13 +152,11 @@ def check_friend_request(friend_requests: FriendRequest, from_user: int, to_user
 
 class UserView(APIView):
     """About user
-    
     """
     model = User
     serializer_class = UserBasicSerializer
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
-    
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -358,49 +357,61 @@ class UserCUDView(ViewSet):
             + Teacher.objects.filter(school_id=school_pk).count()
         accounts_available = max(max_creation - accounts_count, 0)
 
-        student_creation_count_list = request.data.get('student_creation_count_list')
-        teacher_creation_count = request.data.get('teacher_creation_count')
-        for year, count in student_creation_count_list.items():
-            if count > accounts_available:
-                student_creation_count_list[year] = accounts_available
-                accounts_available = 0
-            else:
-                accounts_available -= count
-        if teacher_creation_count > accounts_available:
-            teacher_creation_count = accounts_available
+        student_creation_count_list = request.data.get('student_creation_count_list',None)
+        
+        if isinstance(student_creation_count_list, dict): 
+            for year, count in student_creation_count_list.items():
+                if count > accounts_available:
+                    student_creation_count_list[year] = accounts_available
+                    accounts_available = 0
+                else:
+                    accounts_available -= count
 
-        students = []
-        for year in student_creation_count_list.keys():
-            abb_num = (int(year) % 6) + 1
-            student_list = Student.objects.select_related('user')\
-                .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
+            students = []
+            for year in student_creation_count_list.keys():
+                try:
+                    abb_num = (int(year) % 6) + 1
+                    student_list = Student.objects.select_related('user')\
+                        .filter(school_id=school_pk,user__username__startswith=abbreviation+str(abb_num))\
+                        .order_by('-pk').values('user__username')
+                    if student_list.exists():
+                        last_student = student_list[0]['user__username']
+                        start_num = int(last_student[len(abbreviation) + 1:]) + 1
+                    else:
+                        start_num = 0
+                    students += [
+                        {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
+                        for i in range(
+                            start_num, start_num + student_creation_count_list[year]
+                        )
+                    ]
+                except:
+                    pass
+        else:
+            students = []
+            
+        teacher_creation_count = request.data.get('teacher_creation_count',None)    
+        
+        if isinstance(teacher_creation_count,int):
+            if teacher_creation_count > accounts_available:
+                teacher_creation_count = accounts_available
+            
+            teacher_list = Teacher.objects.select_related('user')\
+                .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
                 .order_by('-pk').values('user__username')
-            if student_list.exists():
-                last_student = student_list[0]['user__username']
+            if teacher_list.exists():
+                last_student = teacher_list[0]['user__username']
                 start_num = int(last_student[len(abbreviation) + 1:]) + 1
             else:
-                start_num = 0
-            students += [
-                {'username': abbreviation + str(abb_num) + str(i).zfill(4), 'password': create_password()}
+                start_num = 1
+            teachers = [
+                {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
                 for i in range(
-                    start_num, start_num + student_creation_count_list[year]
+                    start_num, start_num + teacher_creation_count
                 )
             ]
-
-        teacher_list = Teacher.objects.select_related('user')\
-            .filter(school_id=school_pk,user__username__startswith=abbreviation + str(0))\
-            .order_by('-pk').values('user__username')
-        if teacher_list.exists():
-            last_student = teacher_list[0]['user__username']
-            start_num = int(last_student[len(abbreviation) + 1:]) + 1
         else:
-            start_num = 0
-        teachers = [
-            {'username': abbreviation + str(0) + str(i).zfill(4), 'password': create_password()}
-            for i in range(
-                start_num, start_num + teacher_creation_count
-            )
-        ]
+            teachers = []
 
         data = {
             'students': students,
@@ -477,6 +488,39 @@ class UserCUDView(ViewSet):
                 )
         return Response(
             status=status.HTTP_204_NO_CONTENT,
+        )
+
+    @extend_schema(
+        tags=['학교 관리자',],
+        examples=[
+            *swagger_schema.examples['UserCUDView']['request_update']
+        ]
+    )
+    def update(self, request):
+        user = decode_JWT(request)
+        if user is None or user.status != 'SA':
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        target_user = get_object_or_404(
+            User, pk=request.data.get('user', None)
+        )
+        data = {
+            'first_name': request.data.get('first_name', target_user.first_name),
+            'email': request.data.get('email', target_user.email),
+            'phone': request.data.get('phone', target_user.phone),
+        }
+        serializer = UserInformationSerializer(target_user, data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -679,8 +723,7 @@ class PasswordResetView(APIView):
 
 
 class FriendViewSet(ViewSet):
-    """About user friends list
-    
+    """About user friends list   
     """
     model = User
     queryset = User.objects.all()
@@ -843,3 +886,30 @@ class FriendSearchViewSet(ViewSet):
             data,
             status=status.HTTP_200_OK,
         )
+
+
+class UserProfileImageView(APIView):
+    model = User
+    queryset = User.objects.all()
+    serializer_class = UserProfileImageSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+
+    @extend_schema(
+        tags=['유저',]
+    )
+    def post(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        data = {'profile_image': request.FILES.get('profile_image')}
+        serializer = UserProfileImageSerializer(user, data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )

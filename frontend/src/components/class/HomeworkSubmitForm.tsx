@@ -12,7 +12,7 @@ import FormInput from '../auth/FormInput';
 interface HomeworkData {
 	title: string;
 	content: string;
-	file: File[];
+	file: FileList;
 	homework: string;
 	writer: string;
 }
@@ -38,28 +38,24 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 		const { title, content, file } = getValues();
 
 		if (lectureId && homeworkId) {
-			console.log(file);
 			const formData = new FormData();
 
-			formData.append('files', file[0]);
+			for (let i = 0; i < file.length; i += 1) {
+				formData.append(`file${i}`, file[i]);
+			}
+
 			formData.append('enctype', 'multipart/form-data');
+			formData.append('title', title);
+			formData.append('content', content);
+			formData.append('userId', userId);
 			try {
-				await apiPostHomeworkSubmission(
-					lectureId,
-					homeworkId,
-					title,
-					content,
-					// formData,
-					file[0],
-					userId
-				)
+				await apiPostHomeworkSubmission(lectureId, homeworkId, formData)
 					.then(() => {})
 					.catch(() => {});
 				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);
 			}
-			console.log(formData);
 		}
 	};
 
@@ -95,7 +91,7 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 								},
 							})}
 							type='text'
-							placeholder='Title'
+							placeholder='제목'
 							defaultValue={data.title}
 						/>
 					</FormInput>
@@ -115,7 +111,7 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 								},
 							})}
 							type='text'
-							placeholder='Content'
+							placeholder='내용'
 							defaultValue={data.content}
 						/>
 					</FormInput>

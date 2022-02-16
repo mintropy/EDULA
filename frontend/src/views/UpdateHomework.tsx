@@ -8,6 +8,12 @@ import HomeworkForm from '../components/class/HomeworkForm';
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
+
+const StyledUpContainer = styled.div`
+	position: absolute;
+	top: 20%;
+	left: 40%;
+`;
 interface HomeworkDataType {
 	content: string;
 	createdAt: string;
@@ -33,7 +39,7 @@ function UpdateHomework() {
 	}
 
 	return (
-		<div>
+		<StyledUpContainer>
 			<StyledTitle>과제 수정</StyledTitle>
 			<StyledContainer>
 				<HomeworkForm
@@ -46,7 +52,7 @@ function UpdateHomework() {
 					)}
 				/>
 			</StyledContainer>
-		</div>
+		</StyledUpContainer>
 	);
 }
 

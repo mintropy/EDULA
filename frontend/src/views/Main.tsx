@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import {
 	apiGetStudentLectureList,
@@ -8,6 +9,12 @@ import StyledTitle from '../components/class/StyledTitle';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
 import UserContext from '../context/user';
 import routes from '../routes';
+
+const StyledContainer = styled.div`
+	position: absolute;
+	top: 20%;
+	left: 40%;
+`;
 
 function Home() {
 	const navigate = useNavigate();
@@ -40,13 +47,13 @@ function Home() {
 	console.log(currentDate.getHours(), currentDate.getMinutes());
 
 	return (
-		<>
-			<StyledTitle>꿈, 사랑, 감사</StyledTitle>
+		<StyledContainer>
+			<StyledTitle>오늘도 화이팅! </StyledTitle>
 			<ScheduleContainer />
 			<button type='button' onClick={() => navigate(routes.conference)}>
 				{currentLecture} 수업 입장
 			</button>
-		</>
+		</StyledContainer>
 	);
 }
 

@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -7,11 +9,12 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from accounts.views.user import decode_JWT
-from accounts.models import User
+from accounts.models import User, Teacher, Student
+from server import basic_swagger_schema
 from . import swagger_schema
+from .school import school_validation
 from ..models import School, Classroom
 from ..serializers import ClassroomSerializer, ClassroomDetailSerializer
-from server import basic_swagger_schema
 
 
 def verify_user_school(user: User, school_pk: int) -> bool:
@@ -63,7 +66,6 @@ class ClassroomViewSet(ViewSet):
             200: OpenApiResponse(
                 response=ClassroomSerializer,
                 description=swagger_schema.descriptions['ClassroomViewSet']['list'][200],
-                # examples=swagger_schema.examples['ClassroomViewSet']['list'][200]
             ),
             401: basic_swagger_schema.open_api_response[401]
         },
@@ -157,12 +159,17 @@ class ClassroomViewSet(ViewSet):
         serializer = ClassroomSerializer(data=data)
         if serializer.is_valid():
             class_grade, class_num = data['class_grade'], data['class_num']
-            if Classroom.objects.filter(
-                school=school_pk, class_grade=class_grade, class_num=class_num).exists():
-                    return Response(
-                        {'error': 'Bad Request'},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+            if (
+                    Classroom.objects.filter(
+                        school=school_pk,
+                        class_grade=class_grade,
+                        class_num=class_num
+                    ).exists()
+                ):
+                return Response(
+                    {'error': 'Bad Request'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             serializer.save()
             return Response(
                 serializer.data,
@@ -205,17 +212,15 @@ class ClassroomViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
-            return Response(
-                {'error': 'Not Found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        classroom = get_object_or_404(
+            Classroom,
+            pk=classroom_pk, school_id=school_pk,
+        )
         if not verify_user_school(user, school_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        classroom = Classroom.objects.get(pk=classroom_pk)
         serializer = ClassroomDetailSerializer(classroom)
         return Response(
             serializer.data,
@@ -257,49 +262,60 @@ class ClassroomViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
-            return Response(
-                {'error': 'Not Found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
         if not verify_user_school(user, school_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        classroom = Classroom.objects.get(pk=classroom_pk)
+        classroom = get_object_or_404(
+            Classroom,
+            pk=classroom_pk, school_id=school_pk
+        )
         data = {
             'class_grade': request.data.get('class_grade', classroom.class_grade),
             'class_num': request.data.get('class_num', classroom.class_num),
             'school': school_pk,
-            'teacher': request.data.get(
+            'teacher_pk': request.data.get(
                 'teacher',
-                classroom.get_teacher()
+                classroom.get_teacher().pk
             ),
-            'student_list': request.data.get(
+            'student_pk_list': request.data.get(
                 'student_list',
                 classroom.student_list.all()
             ),
         }
-        serializer = ClassroomSerializer(instance=classroom, data=data)
-        if serializer.is_valid():
-            class_grade, class_num = data['class_grade'], data['class_num']
-            if Classroom.objects.filter(
-                school=school_pk, class_grade=class_grade, class_num=class_num).exists():
-                    return Response(
-                        {'error': 'Bad Request'},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-            serializer.save()
-            serializer = ClassroomDetailSerializer(
-                Classroom.objects.get(pk=classroom_pk)
+        if (
+            not school_validation(school_pk, data['teacher_pk']) or
+            not school_validation(school_pk, data['student_pk_list'], many=True)
+        ):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND
             )
+
+        serializer = ClassroomDetailSerializer(instance=classroom, data=data)
+        if serializer.is_valid():
+            class_grade_before, class_num_before = classroom.class_grade, classroom.class_num
+            class_grade_after, class_num_after = data['class_grade'], data['class_num']
+            if (
+                    not (class_grade_before == class_grade_after and
+                        class_num_before == class_num_after) and
+                    Classroom.objects.filter(
+                        school=school_pk,
+                        class_grade=class_grade_after,
+                        class_num=class_num_after
+                    ).exists()
+                ):
+                return Response(
+                    {'error': 'Bad Request'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            serializer.save()
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED,
             )
         return Response(
-            {'error': 'Bad Request'},
+            serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -335,17 +351,15 @@ class ClassroomViewSet(ViewSet):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        if not Classroom.objects.filter(pk=classroom_pk, school_id=school_pk).exists():
-            return Response(
-                {'error': 'Not Found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        classroom = get_object_or_404(
+            Classroom,
+            pk=classroom_pk, school_id=school_pk
+        )
         if not verify_user_school(user, school_pk):
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        classroom = Classroom.objects.get(pk=classroom_pk)
         classroom.delete()
         classrooms = Classroom.objects.filter(school=school_pk)
         serializer = ClassroomSerializer(classrooms, many=True)

@@ -11,8 +11,12 @@ interface HomeworkDataType {
 	title: string;
 	content: string;
 	cretedAt: string;
-	file: null;
-	homework: number;
+
+	homeworkSubmissionFiles: {
+		files: string;
+		homeworkSubmission: number;
+		id: number;
+	}[];
 	writer: number;
 }
 
@@ -37,6 +41,21 @@ function HomeworkSubmitDetail() {
 				{HomeworkData.cretedAt?.slice(11, 19)}
 			</StyledContent>
 			<StyledContent>{HomeworkData.content}</StyledContent>
+			<ul>
+				{HomeworkData.homeworkSubmissionFiles?.length > 0 &&
+					Array.from(Array(HomeworkData.homeworkSubmissionFiles?.length).keys()).map(
+						i => (
+							<li key={i}>
+								<a
+									href={`${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${HomeworkData.homeworkSubmissionFiles[i]?.files}`}
+									download
+								>
+									<StyledButton>과제 {i + 1}번 파일 다운로드</StyledButton>
+								</a>
+							</li>
+						)
+					)}
+			</ul>
 
 			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
 				<StyledButton>목록</StyledButton>
