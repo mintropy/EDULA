@@ -5,7 +5,6 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledContainer from '../components/schedule/StyledContainer';
 import StyledButton from '../components/class/StyledButton';
-import { BASE_URL } from '../api/utils';
 
 interface HomeworkDataType {
 	id: number;
@@ -42,14 +41,21 @@ function HomeworkSubmitDetail() {
 				{HomeworkData.cretedAt?.slice(11, 19)}
 			</StyledContent>
 			<StyledContent>{HomeworkData.content}</StyledContent>
-			{HomeworkData.homeworkSubmissionFiles && (
-				<a
-					href={`${BASE_URL}${HomeworkData.homeworkSubmissionFiles[0]?.files}`}
-					download
-				>
-					<StyledButton>과제 다운로드</StyledButton>
-				</a>
-			)}
+			<ul>
+				{HomeworkData.homeworkSubmissionFiles?.length > 0 &&
+					Array.from(Array(HomeworkData.homeworkSubmissionFiles?.length).keys()).map(
+						i => (
+							<li key={i}>
+								<a
+									href={`${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${HomeworkData.homeworkSubmissionFiles[i]?.files}`}
+									download
+								>
+									<StyledButton>과제 {i} 다운로드</StyledButton>
+								</a>
+							</li>
+						)
+					)}
+			</ul>
 
 			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
 				<StyledButton>목록</StyledButton>
