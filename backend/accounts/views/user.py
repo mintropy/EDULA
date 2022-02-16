@@ -31,7 +31,8 @@ from ..models import FriendRequest, User, Student, Teacher, SchoolAdmin
 from ..serializers.user import(
     UserBasicSerializer, UserCUDSerialzier, ResisterSerializer,
     FindUsernameSerializer, PasswordChangeSerializer, PasswordResetSerializer,
-    FriendSerializer
+    FriendSerializer,
+    UserProfileImageSerializer, UserInformationSerializer,
 )
 
 
@@ -489,6 +490,39 @@ class UserCUDView(ViewSet):
             status=status.HTTP_204_NO_CONTENT,
         )
 
+    @extend_schema(
+        tags=['학교 관리자',],
+        examples=[
+            *swagger_schema.examples['UserCUDView']['request_update']
+        ]
+    )
+    def update(self, request):
+        user = decode_JWT(request)
+        if user is None or user.status != 'SA':
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        target_user = get_object_or_404(
+            User, pk=request.data.get('user', None)
+        )
+        data = {
+            'first_name': request.data.get('first_name', target_user.first_name),
+            'email': request.data.get('email', target_user.email),
+            'phone': request.data.get('phone', target_user.phone),
+        }
+        serializer = UserInformationSerializer(target_user, data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
 
 class FindUsernameView(APIView):
     """Find username
@@ -496,6 +530,8 @@ class FindUsernameView(APIView):
     """
     model = User
     serializer_class = FindUsernameSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
@@ -559,6 +595,8 @@ class PasswordChangeView(APIView):
     """
     model = User
     serializer_class = PasswordChangeSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
     
@@ -848,3 +886,30 @@ class FriendSearchViewSet(ViewSet):
             data,
             status=status.HTTP_200_OK,
         )
+
+
+class UserProfileImageView(APIView):
+    model = User
+    queryset = User.objects.all()
+    serializer_class = UserProfileImageSerializer
+    renderer_classes = [CamelCaseJSONRenderer]
+    parser_classes = [CamelCaseJSONParser]
+
+    @extend_schema(
+        tags=['유저',]
+    )
+    def post(self, request):
+        user = decode_JWT(request)
+        if user == None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        data = {'profile_image': request.FILES.get('profile_image')}
+        serializer = UserProfileImageSerializer(user, data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )

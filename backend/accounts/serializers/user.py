@@ -4,10 +4,17 @@ from ..models import User, SchoolAdmin
 from schools.models import School
 
 
+class UserProfileImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('profile_image',)
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'email', 'phone', 'status')
+        fields = ('id', 'username', 'first_name', 'email', 'phone', 'status', 'profile_image',)
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
@@ -15,7 +22,7 @@ class UserBasicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'status')
+        fields = ('id', 'username', 'first_name', 'status', 'profile_image',)
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
@@ -41,6 +48,13 @@ class UserCUDSerialzier(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'status')
+
+
+class UserInformationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'email', 'phone',)
 
 
 class FindUsernameSerializer(serializers.ModelSerializer):

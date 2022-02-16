@@ -4,7 +4,7 @@ from django import forms
 
 from .models import (
     School, Classroom, Lecture, 
-    Homework, HomeworkSubmission,
+    Homework, HomeworkSubmission, HomeworkSubmissionFiles,
     Article
 )
 from accounts.models import SchoolAdmin, Teacher, Student
@@ -21,6 +21,11 @@ class TeacherInline(admin.TabularInline):
 
 class StudentInline(admin.TabularInline):
     model = Student
+    extra = 1
+
+
+class HomeWorkSubmissionFilesInline(admin.TabularInline):
+    model = HomeworkSubmissionFiles
     extra = 1
 
 
@@ -77,12 +82,21 @@ class HomeworkAdmin(ModelAdmin):
 class HomeworkSubmissionAdmin(ModelAdmin):
     list_display = ('id', 'title', 'homework', 'writer', 'file_exist',)
     list_display_links = ('title',)
-    
+    inlines = [
+        HomeWorkSubmissionFilesInline
+    ]
+
     @admin.display(
         boolean=True,
     )
     def file_exist(self, homework_submission):
-        return True if homework_submission.file else False
+        return True if homework_submission.homework_submission_files.all() else False
+
+
+@admin.register(HomeworkSubmissionFiles)
+class HomeworkSubmissionFilesAdmin(ModelAdmin):
+    list_display = ('id', 'homework_submission', 'files',)
+    list_display_link = ('homwork_submission',)
 
 
 @admin.register(Article)
