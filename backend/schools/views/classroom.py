@@ -9,9 +9,10 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from accounts.views.user import decode_JWT
-from accounts.models import User
+from accounts.models import User, Teacher, Student
 from server import basic_swagger_schema
 from . import swagger_schema
+from .school import school_validation
 from ..models import School, Classroom
 from ..serializers import ClassroomSerializer, ClassroomDetailSerializer
 
@@ -274,23 +275,34 @@ class ClassroomViewSet(ViewSet):
             'class_grade': request.data.get('class_grade', classroom.class_grade),
             'class_num': request.data.get('class_num', classroom.class_num),
             'school': school_pk,
-            'teacher': request.data.get(
+            'teacher_pk': request.data.get(
                 'teacher',
-                classroom.get_teacher()
+                classroom.get_teacher().pk
             ),
-            'student_list': request.data.get(
+            'student_pk_list': request.data.get(
                 'student_list',
                 classroom.student_list.all()
             ),
         }
-        serializer = ClassroomSerializer(instance=classroom, data=data)
+        if (
+            not school_validation(school_pk, data['teacher_pk']) or
+            not school_validation(school_pk, data['student_pk_list'], many=True)
+        ):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ClassroomDetailSerializer(instance=classroom, data=data)
         if serializer.is_valid():
-            class_grade, class_num = data['class_grade'], data['class_num']
+            class_grade_before, class_num_before = classroom.class_grade, classroom.class_num
+            class_grade_after, class_num_after = data['class_grade'], data['class_num']
             if (
+                    not (class_grade_before == class_grade_after and
+                        class_num_before == class_num_after) and
                     Classroom.objects.filter(
                         school=school_pk,
-                        class_grade=class_grade,
-                        class_num=class_num
+                        class_grade=class_grade_after,
+                        class_num=class_num_after
                     ).exists()
                 ):
                 return Response(
@@ -298,15 +310,12 @@ class ClassroomViewSet(ViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer.save()
-            serializer = ClassroomDetailSerializer(
-                Classroom.objects.get(pk=classroom_pk)
-            )
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED,
             )
         return Response(
-            {'error': 'Bad Request'},
+            serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
 

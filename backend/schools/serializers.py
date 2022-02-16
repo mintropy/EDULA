@@ -68,6 +68,8 @@ class LectrueDetailSerializer(serializers.ModelSerializer):
 class ClassroomSerializer(serializers.ModelSerializer):
     """Classroom Serializer
     """
+    teacher = serializers.IntegerField(write_only=True)
+    student_list = serializers.ListField(write_only=True)
 
     class Meta:
         model = Classroom
@@ -79,11 +81,27 @@ class ClassroomDetailSerializer(serializers.ModelSerializer):
     """
     school = SchoolSerializer(read_only=True)
     student_list = StudentBasciSerializer(many=True, read_only=True)
+    student_pk_list = serializers.ListField(write_only=True)
     teacher = TeacherBasicSerialzier(read_only=True)
+    teacher_pk = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Classroom
         fields = '__all__'
+
+    def update(self, instance, validated_data):
+        teacher_data = validated_data.get('teacher_pk', None)
+        student_list_data = validated_data.get('student_pk_list', None)
+        if teacher_data:
+            teacher = Teacher.objects.get(pk=teacher_data)
+            instance.teacher = teacher
+        if student_list_data:
+            student_list = []
+            for student_pk in student_list_data:
+                student = Student.objects.get(pk=student_pk)
+                student_list.append(student)
+            instance.student_list.set(student_list)
+        return super().update(instance, validated_data)
 
 
 class HomeworkSerializer(serializers.ModelSerializer):
