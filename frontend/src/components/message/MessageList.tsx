@@ -128,6 +128,24 @@ function MessageList() {
 									>
 										읽음
 									</StyledReadBtn>
+									<StyledMessageDeleteBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiDeleteMessage(
+													message.fromUser?.id.toString(),
+													message.id.toString()
+												).then(() => {
+													window.location.reload();
+												});
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										삭제
+									</StyledMessageDeleteBtn>
 								</p>
 							)}
 							{!message.send && message.read && (
@@ -135,26 +153,26 @@ function MessageList() {
 									{message.time.slice(0, 10)} {message.time.slice(11, 18)}| |{' '}
 									{message.fromUser?.username} (
 									{message.fromUser?.firstName || '이름 없음'}) : {message.content}
+									<StyledMessageDeleteBtn
+										onClick={e => {
+											e.preventDefault();
+
+											try {
+												apiDeleteMessage(
+													message.fromUser?.id.toString(),
+													message.id.toString()
+												).then(() => {
+													window.location.reload();
+												});
+											} catch (error) {
+												// console.log(error);
+											}
+										}}
+									>
+										삭제
+									</StyledMessageDeleteBtn>
 								</ReadMessage>
 							)}
-							<StyledMessageDeleteBtn
-								onClick={e => {
-									e.preventDefault();
-
-									try {
-										apiDeleteMessage(
-											message.fromUser?.id.toString(),
-											message.id.toString()
-										).then(() => {
-											window.location.reload();
-										});
-									} catch (error) {
-										// console.log(error);
-									}
-								}}
-							>
-								삭제
-							</StyledMessageDeleteBtn>
 						</>
 					))}
 				{messages.length === 0 && (
