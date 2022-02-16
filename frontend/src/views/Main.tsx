@@ -16,11 +16,10 @@ function Home() {
 	return (
 		<StyledContainer>
 			<StyledTitle>오늘도 화이팅! </StyledTitle>
-
+			<ScheduleContainer />
 			<button type='button' onClick={() => navigate(routes.conference)}>
 				수업 입장
 			</button>
-			<ScheduleContainer />
 		</StyledContainer>
 	);
 }
