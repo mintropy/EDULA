@@ -28,10 +28,17 @@ const ReadNotification = styled.p`
 	opacity: 0.5;
 `;
 
-const StyleRefuseBtn = styled(StyledDeleteBtn)`
+const StyleReadBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
 	box-shadow: 0 1px 3px black;
+	font-size: 1rem;
+`;
+const StyledDelBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.pointColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+	font-size: 1rem;
 `;
 interface NotificationDataType {
 	id: number;
@@ -94,7 +101,7 @@ function Alarm() {
 		getTotalCnt();
 		getUnreadCnt();
 	}, []);
-	
+
 	return (
 		<>
 			<StyledTitle>새 소식</StyledTitle>
@@ -116,21 +123,7 @@ function Alarm() {
 							<option value='20'>20</option>
 						</select>
 					</label>
-					<StyleRefuseBtn
-						onClick={e => {
-							e.preventDefault();
-
-							try {
-								apiDeleteNotification('0');
-								window.location.reload();
-							} catch (error) {
-								// console.log(error);
-							}
-						}}
-					>
-						모두 삭제
-					</StyleRefuseBtn>
-					<StyleRefuseBtn
+					<StyleReadBtn
 						onClick={e => {
 							e.preventDefault();
 
@@ -143,7 +136,21 @@ function Alarm() {
 						}}
 					>
 						모두 읽음
-					</StyleRefuseBtn>
+					</StyleReadBtn>
+					<StyledDelBtn
+						onClick={e => {
+							e.preventDefault();
+
+							try {
+								apiDeleteNotification('0');
+								window.location.reload();
+							} catch (error) {
+								// console.log(error);
+							}
+						}}
+					>
+						모두 삭제
+					</StyledDelBtn>
 				</>
 			)}
 
@@ -162,7 +169,7 @@ function Alarm() {
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
 									)에게 친구 요청을 받았어요! 😊
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -175,7 +182,7 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
 							{noti.content === 'AC' && noti.read && (
@@ -188,7 +195,7 @@ function Alarm() {
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
 									)가(이) 친구 요청을 수락했어요! 😁
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -201,7 +208,7 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
 							{noti.content === 'RF' && noti.read && (
@@ -214,7 +221,7 @@ function Alarm() {
 								<p>
 									{noti.fromUser?.username}({noti.fromUser?.firstName || '이름 없음'}
 									)가(이) 친구 요청을 거절했어요. 😥
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -227,11 +234,11 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
 
-							<StyleRefuseBtn
+							<StyledDelBtn
 								onClick={e => {
 									e.preventDefault();
 
@@ -244,7 +251,7 @@ function Alarm() {
 								}}
 							>
 								삭제
-							</StyleRefuseBtn>
+							</StyledDelBtn>
 						</StyledLink>
 					))}
 			{notifications &&
@@ -260,7 +267,7 @@ function Alarm() {
 							{!noti.read && (
 								<p>
 									{noti.lecture?.name}과목의 {noti.content} 과제 선물이 도착했어요!
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -273,10 +280,10 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
-							<StyleRefuseBtn
+							<StyledDelBtn
 								onClick={e => {
 									e.preventDefault();
 
@@ -289,7 +296,7 @@ function Alarm() {
 								}}
 							>
 								삭제
-							</StyleRefuseBtn>
+							</StyledDelBtn>
 						</StyledLink>
 					))}
 			{notifications &&
@@ -305,7 +312,7 @@ function Alarm() {
 							{!noti.read && (
 								<p>
 									{noti.lecture?.name}과목의 {noti.content} 과제가 변경되었어요!
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -318,10 +325,10 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
-							<StyleRefuseBtn
+							<StyledDelBtn
 								onClick={e => {
 									e.preventDefault();
 
@@ -334,7 +341,7 @@ function Alarm() {
 								}}
 							>
 								삭제
-							</StyleRefuseBtn>
+							</StyledDelBtn>
 						</StyledLink>
 					))}
 			{notifications &&
@@ -354,7 +361,7 @@ function Alarm() {
 									{noti.lecture?.name} 과목의 {noti.fromUser?.username}(
 									{noti.fromUser?.firstName || '이름 없음'})가(이) {noti.content}
 									과제를 제출했어요!
-									<StyleRefuseBtn
+									<StyleReadBtn
 										onClick={e => {
 											e.preventDefault();
 
@@ -367,10 +374,10 @@ function Alarm() {
 										}}
 									>
 										읽음
-									</StyleRefuseBtn>
+									</StyleReadBtn>
 								</p>
 							)}
-							<StyleRefuseBtn
+							<StyledDelBtn
 								onClick={e => {
 									e.preventDefault();
 
@@ -383,7 +390,7 @@ function Alarm() {
 								}}
 							>
 								삭제
-							</StyleRefuseBtn>
+							</StyledDelBtn>
 						</StyledLink>
 					))}
 			{notifications.length === 0 && (

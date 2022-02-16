@@ -23,7 +23,7 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledContainer = styled.div`
-	margin: 0px 5em 0px 0px;
+	margin: 0 3em;
 `;
 
 interface BoardProps {

@@ -6,6 +6,7 @@ import StyledContent from '../components/class/StyledContent';
 import StyledButton from '../components/class/StyledButton';
 import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
 import UserContext from '../context/user';
+import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 
 const StyledContainer = styled.div`
 	position: absolute;
@@ -18,6 +19,27 @@ const StyledContainer = styled.div`
 	padding: 1em 1em 1em 2em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
+`;
+
+const StyleUpdateBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.borderColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const StyleDeleteBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.warningColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const StyleSubmitBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.subBgColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
+const StyledLink = styled(Link)`
+	text-decoration: none;
+	font-size: 1em;
+	color: ${props => props.theme.fontColor};
 `;
 
 interface ArticleDataType {
@@ -62,10 +84,10 @@ function ArticleDetail() {
 			<StyledContent>{articleData.content}</StyledContent>
 			{articleData.writer?.id === parseInt(userId, 10) && (
 				<div>
-					<Link to={`/${lectureId}/articleUpdate/${articleId}`}>
-						<StyledButton>수정</StyledButton>
-					</Link>
-					<StyledButton
+					<StyledLink to={`/${lectureId}/articleUpdate/${articleId}`}>
+						<StyleUpdateBtn>수정</StyleUpdateBtn>
+					</StyledLink>
+					<StyleDeleteBtn
 						type='button'
 						value='삭제'
 						onClick={e => {
@@ -84,12 +106,17 @@ function ArticleDetail() {
 						}}
 					>
 						삭제
-					</StyledButton>
+					</StyleDeleteBtn>
+					<StyledLink to={`/lecture/${lectureId}/`}>
+						<StyleSubmitBtn>목록</StyleSubmitBtn>
+					</StyledLink>
 				</div>
 			)}
-			<Link to={`/lecture/${lectureId}/`}>
-				<StyledButton>목록</StyledButton>
-			</Link>
+			{articleData.writer?.id !== parseInt(userId, 10) && (
+				<StyledLink to={`/lecture/${lectureId}/`}>
+					<StyleSubmitBtn>목록</StyleSubmitBtn>
+				</StyledLink>
+			)}
 		</StyledContainer>
 	);
 }

@@ -12,6 +12,8 @@ const StyledNav = styled.nav`
 	border: 1px solid ${props => props.theme.borderColor};
 	color: ${props => props.theme.subBgColor};
 	font-size: 3rem;
+	width: 100vw;
+
 	background-color: ${props => props.theme.mainBlue};
 `;
 

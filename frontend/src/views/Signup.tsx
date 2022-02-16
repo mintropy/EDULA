@@ -1,5 +1,4 @@
 import { useContext, useEffect } from 'react';
-import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/user';
