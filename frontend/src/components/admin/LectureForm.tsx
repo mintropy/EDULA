@@ -1,10 +1,25 @@
 import { useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { MdCancel } from 'react-icons/md';
+import styled from 'styled-components';
 import { apiPostLecture, apiPutLectureDetail } from '../../api/lecture';
+import Btn from '../../common/Btn';
+import IconBtn from '../../common/IconBtn';
 import UserContext from '../../context/user';
 import FormBox from '../auth/FormBox';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
+
+const ListContainer = styled.div`
+	display: flex;
+
+	& > div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 3px;
+	}
+`;
 
 type LectureList = {
 	day: string;
@@ -141,16 +156,18 @@ function LectureForm({ targetLecture, getLectures }: PropType) {
 				<FormInput htmlFor='teacher'>
 					<input {...register('teacher')} placeholder='교사 pk' />
 				</FormInput>
-				{timeList?.lectures?.map((e, idx) => (
-					<div key={e.day + e.st + e.end}>
-						<span>{e.day}</span>
-						<span>{e.st}</span>
-						<span>{e.end}</span>
-						<button type='button' onClick={() => removeTime(idx)}>
-							x
-						</button>
-					</div>
-				))}
+				<ListContainer>
+					{timeList?.lectures?.map((e, idx) => (
+						<div key={e.day + e.st + e.end}>
+							<span>{e.day}</span>
+							<span>{e.st}</span>
+							<span>{e.end}</span>
+							<IconBtn onClick={() => removeTime(idx)}>
+								<MdCancel />
+							</IconBtn>
+						</div>
+					))}
+				</ListContainer>
 				<div>
 					시간표
 					<input type='text' id='day' placeholder='요일' />
@@ -160,14 +177,16 @@ function LectureForm({ targetLecture, getLectures }: PropType) {
 						추가
 					</button>
 				</div>
-				{studentList.map((e, idx) => (
-					<div id={`${e}`} key={e}>
-						<span>{e}</span>
-						<button type='button' onClick={() => removeStudent(idx)}>
-							x
-						</button>
-					</div>
-				))}
+				<ListContainer>
+					{studentList.map((e, idx) => (
+						<div id={`${e}`} key={e}>
+							<span>{e}</span>
+							<IconBtn onClick={() => removeStudent(idx)}>
+								<MdCancel />
+							</IconBtn>
+						</div>
+					))}
+				</ListContainer>
 				<div>
 					학생
 					<input type='text' id='student' placeholder='학생 PK' />
@@ -176,6 +195,7 @@ function LectureForm({ targetLecture, getLectures }: PropType) {
 					</button>
 				</div>
 				<FormBtn value={targetLecture?.id ? '수정' : '생성'} disabled={!isValid} />
+				<Btn onClick={() => getLectures()}>취소</Btn>
 			</form>
 		</FormBox>
 	);

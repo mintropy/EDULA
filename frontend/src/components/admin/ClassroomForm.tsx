@@ -1,6 +1,8 @@
+import { AxiosError } from 'axios';
 import { useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { apiPostClassroom, apiPutClassroomDetail } from '../../api/classroom';
+import Btn from '../../common/Btn';
 import UserContext from '../../context/user';
 import FormBox from '../auth/FormBox';
 import FormBtn from '../auth/FormBtn';
@@ -53,8 +55,8 @@ function ClassroomForm({ targetClassroom, getClassrooms }: PropType) {
 			}
 			getClassrooms();
 		} catch (e) {
-			// const error = e as AxiosError;
-			// console.log(error.response);
+			const error = e as AxiosError;
+			console.log(error.response);
 		}
 	};
 
@@ -83,6 +85,7 @@ function ClassroomForm({ targetClassroom, getClassrooms }: PropType) {
 					value={targetClassroom?.id ? '수정' : '생성'}
 					disabled={!isValid}
 				/>
+				<Btn onClick={() => getClassrooms()}>취소</Btn>
 			</form>
 		</FormBox>
 	);

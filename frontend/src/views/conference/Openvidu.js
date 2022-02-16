@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components';
 import { createSession, createToken } from '../../api/conference';
 import AuthLayout from '../../components/auth/AuthLayout';
+import FormInput from '../../components/auth/FormInput';
 import UserVideoComponent from '../../components/conference/UserVideoComponent';
 import UserContext from '../../context/user';
 
@@ -57,12 +58,13 @@ const ChatContents = styled.div`
 	flex-direction: column-reverse;
 	overflow-y: scroll;
 
-	div {
+	& > div {
 		display: flex;
+		flex-direction: column-reverse;
 		justify-content: end;
 		padding: 0.6em;
 
-		p {
+		& > div {
 			margin: 0.1em;
 			font-size: 1.2em;
 		}
@@ -81,10 +83,12 @@ const ChatInputContainer = styled.div`
 
 		input,
 		button {
-			border-radius: 1px;
+			border-radius: 3px;
 			padding: 0.2em;
 		}
+
 		button {
+			background-color: inherit;
 		}
 	}
 `;
@@ -95,7 +99,42 @@ const Main = styled.div`
 	height: 100%;
 `;
 
-const VideoContainer = styled.div``;
+const SessionContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 90%;
+`;
+
+const ScreenContainer = styled.div`
+	width: 300px;
+	height: 200px;
+	video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+`;
+
+const VideoContainer = styled.div`
+	width: 300px;
+	height: 200px;
+	button {
+		width: 300px;
+		height: 200px;
+		border: 0;
+		padding: 0;
+		background-color: inherit;
+	}
+	button > video,
+	video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+`;
 
 const BottomFns = styled.div`
 	position: absolute;
@@ -466,44 +505,48 @@ function Openvidu() {
 										.slice()
 										.reverse()
 										.map(data => (
-											<p key={data.id}>{`${data.user} : ${data.msg}`}</p>
+											<div key={data.id}>{`${data.user} : ${data.msg}`}</div>
 										))}
 								</div>
 							</ChatContents>
 							<ChatInputContainer>
 								<form onSubmit={sendMessage}>
-									<input
-										type='text'
-										id='message'
-										placeholder='Message'
-										value={myMessage}
-										onChange={handleChangeMyMessage}
-										required
-									/>
-									<SButton type='submit' name='commit'>
+									<FormInput>
+										<input
+											type='text'
+											id='message'
+											placeholder='Message'
+											value={myMessage}
+											onChange={handleChangeMyMessage}
+											required
+										/>
+									</FormInput>
+									<button type='submit' name='commit'>
 										<MdSend />
-									</SButton>
+									</button>
 								</form>
 							</ChatInputContainer>
 						</ChatContainer>
 					</SideBar>
 					<Main>
-						<div id='session'>
+						<SessionContainer videoCount={subscribers.length}>
 							{mainStreamManager && (
-								<div id='main-video'>
+								<VideoContainer>
 									<UserVideoComponent streamManager={mainStreamManager} />
-								</div>
+								</VideoContainer>
 							)}
-							<div id='container-screens' />
-							<div id='video-container'>
-								{publisher && (
+							<ScreenContainer id='container-screens' />
+							{publisher && (
+								<VideoContainer>
 									<button onClick={() => handleMainVideoStream(publisher)} type='button'>
 										<UserVideoComponent streamManager={publisher} />
 									</button>
-								)}
-								{subscribers.map(
-									sub =>
-										sub !== publisher && (
+								</VideoContainer>
+							)}
+							{subscribers.map(
+								sub =>
+									sub !== publisher && (
+										<VideoContainer>
 											<button
 												key={sub}
 												onClick={() => handleMainVideoStream(sub)}
@@ -511,10 +554,10 @@ function Openvidu() {
 											>
 												<UserVideoComponent streamManager={sub} />
 											</button>
-										)
-								)}
-							</div>
-						</div>
+										</VideoContainer>
+									)
+							)}
+						</SessionContainer>
 						<BottomFns>
 							<SButton type='button' id='buttonSwitchCamera' onClick={switchCamera}>
 								<MdCameraswitch />

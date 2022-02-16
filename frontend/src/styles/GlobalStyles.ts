@@ -11,6 +11,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   button,
+  input,
   ::placeholder {
     font-family:'GangwonEdu_OTFBoldA', Times, Arial, Helvetica, sans-serif, serif;
   }

@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 const SButton = styled.input`
-	background-color: grey;
-	color: white;
+	color: ${props => props.theme.fontColor};
 	padding: 3px;
 	border-radius: 3px;
 	font-size: 1rem;

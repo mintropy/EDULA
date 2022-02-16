@@ -14,6 +14,7 @@ import {
 import UserContext from '../context/user';
 import EditProfileForm from '../components/profile/EditProfileForm';
 import EditPasswordForm from '../components/profile/EditPasswordForm';
+import ScheduleContainer from '../components/schedule/ScheduleContainer';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -77,15 +78,6 @@ const UserDataContainer = styled.div`
 		font-size: 3rem;
 		font-weight: 600;
 	}
-`;
-
-const ScheduleContainer = styled.div`
-	margin-left: 50px;
-	width: 600px;
-	min-height: 300px;
-	background-color: white;
-	padding: 20px;
-	border-radius: 3px;
 `;
 
 interface UserDataType {
@@ -239,9 +231,7 @@ function Profile() {
 				</UserProfileContainer>
 				<UserDataContainer>{contents(editMode)}</UserDataContainer>
 			</UserInfoContainer>
-			<ScheduleContainer>
-				<span>오늘의 일정</span>
-			</ScheduleContainer>
+			<ScheduleContainer />
 		</UserContainer>
 	);
 }

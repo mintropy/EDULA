@@ -27,11 +27,11 @@ function ContextProvider({ children }: PropType) {
 	const [userStat, setUserStat] = useState('');
 	const [schoolId, setSchoolId] = useState('');
 	const [currentLecture, setCurrentLecture] = useState('Entrance');
+	const [profileImg, setProfile] = useState('');
 
 	const changeCurrentLecture = (lecture: string) => {
 		setCurrentLecture(lecture);
 	};
-	const [profileImg, setProfile] = useState('');
 
 	const changeTheme = (themename: string): void => {
 		setMainTheme((theme as any)[themename] || theme.base);

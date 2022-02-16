@@ -1,6 +1,7 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { MdCancel, MdModeEdit } from 'react-icons/md';
 import {
 	apiDeleteClassroomDetail,
 	apiGetClassrooms,
@@ -11,8 +12,12 @@ import Tbody from '../../components/table/Tbody';
 import Tel from '../../components/table/Tel';
 import UserContext from '../../context/user';
 import routes from '../../routes';
-
-const Container = styled.div``;
+import IconBtn from '../../common/IconBtn';
+import Container from '../../components/admin/Container';
+import TIContainer from '../../components/admin/TopInputContainer';
+import TIWrapper from '../../components/admin/TopInputWrapper';
+import TITitle from '../../components/admin/TopInputTitle';
+import Btn from '../../common/Btn';
 
 const SLink = styled(Link)`
 	text-decoration: none;
@@ -56,18 +61,25 @@ function ClassManager() {
 
 	return (
 		<Container>
-			<button
-				type='button'
-				onClick={() => {
-					setEditMode(true);
-					setEditTarget({} as Classroom);
-				}}
-			>
-				학급 생성
-			</button>
-			{editMode && !editTarget?.id && (
-				<ClassroomForm targetClassroom={editTarget} getClassrooms={getClassrooms} />
-			)}
+			<TIContainer>
+				<TIWrapper>
+					<TITitle>학급 생성</TITitle>{!editMode &&
+					<Btn
+						onClick={() => {
+							setEditMode(true);
+							setEditTarget({} as Classroom);
+						}}
+					>
+						생성
+					</Btn>}
+					{editMode && !editTarget?.id && (
+						<ClassroomForm
+							targetClassroom={editTarget}
+							getClassrooms={getClassrooms}
+						/>
+					)}
+				</TIWrapper>
+			</TIContainer>
 			<Table>
 				<Tbody>
 					<Tel value='학년' />
@@ -80,18 +92,17 @@ function ClassManager() {
 							<SLink key={e.id} to={`${routes.classroom}/${e.id}`}>
 								<Tel value={e.classNum} />
 							</SLink>
-							<button
-								type='button'
+							<IconBtn
 								onClick={() => {
 									setEditTarget(e);
 									setEditMode(true);
 								}}
 							>
-								modify
-							</button>
-							<button type='button' onClick={() => deleteClassroom(e.id.toString())}>
-								x
-							</button>
+								<MdModeEdit />
+							</IconBtn>
+							<IconBtn onClick={() => deleteClassroom(e.id.toString())}>
+								<MdCancel />
+							</IconBtn>
 						</Tbody>
 						{editTarget === e && (
 							<ClassroomForm targetClassroom={e} getClassrooms={getClassrooms} />

@@ -1,14 +1,19 @@
 import { Fragment, useEffect, useState } from 'react';
+import { MdCancel, MdModeEdit } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { apiDeleteLectureDetail, apiGetLectures } from '../../api/lecture';
+import Btn from '../../common/Btn';
+import IconBtn from '../../common/IconBtn';
+import Container from '../../components/admin/Container';
 import LectureForm from '../../components/admin/LectureForm';
+import TIContainer from '../../components/admin/TopInputContainer';
+import TITitle from '../../components/admin/TopInputTitle';
+import TIWrapper from '../../components/admin/TopInputWrapper';
 import Table from '../../components/table/Table';
 import Tbody from '../../components/table/Tbody';
 import Tel from '../../components/table/Tel';
 import routes from '../../routes';
-
-const Container = styled.div``;
 
 const SLink = styled(Link)`
 	text-decoration: none;
@@ -69,16 +74,22 @@ function LectureManager() {
 
 	return (
 		<Container>
-			<button
-				type='button'
-				onClick={() => {
-					setEditMode(true);
-					setEditTarget({} as Lecture);
-				}}
-			>
-				수업 생성
-			</button>
-			{editMode && !editTarget?.id && <LectureForm getLectures={getLectures} />}
+			<TIContainer>
+				<TIWrapper>
+					<TITitle>수업 생성</TITitle>
+					{!editMode && (
+						<Btn
+							onClick={() => {
+								setEditMode(true);
+								setEditTarget({} as Lecture);
+							}}
+						>
+							생성
+						</Btn>
+					)}
+					{editMode && !editTarget?.id && <LectureForm getLectures={getLectures} />}
+				</TIWrapper>
+			</TIContainer>
 			<Table>
 				<Tbody>
 					<Tel value='이름' />
@@ -95,17 +106,16 @@ function LectureManager() {
 								<Tel value={e.teacher?.firstName} />
 							</SLink>
 							<Tel value={e?.timeList.lectures.map(el => el.day).join(' ')} />
-							<button
-								type='button'
+							<IconBtn
 								onClick={() => {
 									setEditTarget(e);
 								}}
 							>
-								modify
-							</button>
-							<button type='button' onClick={() => deleteLecture(e.id.toString())}>
-								x
-							</button>
+								<MdModeEdit />
+							</IconBtn>
+							<IconBtn onClick={() => deleteLecture(e.id.toString())}>
+								<MdCancel />
+							</IconBtn>
 						</Tbody>
 						{editTarget === e && (
 							<LectureForm targetLecture={e} getLectures={getLectures} />

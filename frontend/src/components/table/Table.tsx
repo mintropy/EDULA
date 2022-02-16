@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 const STable = styled.div`
 	width: 100%;
-	margin: 50px;
 	box-sizing: border-box;
+	margin-top: 20px;
 `;
 
 type PropType = {

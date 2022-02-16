@@ -22,7 +22,8 @@ const BodyContent = styled.div`
 	flex: 1;
 `;
 const Container = styled.div`
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr 6fr;
 `;
 
 function Main() {

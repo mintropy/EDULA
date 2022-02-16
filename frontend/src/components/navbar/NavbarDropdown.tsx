@@ -48,7 +48,7 @@ const StyledMenu = styled.nav<MenuProp>`
 	position: absolute;
 	top: 3.5rem;
 	right: 0;
-	width: 18rem;
+	width: 10rem;
 	box-shadow: 0 1px 8px ${props => props.theme.fontColor};
 	opacity: 0;
 	visibility: hidden;
@@ -69,15 +69,27 @@ const StyledMenu = styled.nav<MenuProp>`
 	}
 
 	li {
+		display: flex;
+		justify-content: center;
 		border-bottom: 1px solid ${props => props.theme.subBgColor};
+		border-radius: 50%;
 	}
 
 	li a {
+		text-align: center;
 		font-size: 1rem;
 		text-decoration: none;
 		color: ${props => props.theme.fontColor};
 		padding: 0.4rem 1rem;
 		display: block;
+	}
+
+	button {
+		text-align: center;
+		border: none;
+		background-color: inherit;
+		cursor: pointer;
+		padding: 0.4rem 1rem;
 	}
 `;
 

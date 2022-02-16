@@ -9,6 +9,7 @@ const UserContext = createContext({
 	userStat: '',
 	schoolId: '',
 	currentLecture: '',
+	changeCurrentLecture: (_: string) => {},
 	profileImg: '',
 });
 

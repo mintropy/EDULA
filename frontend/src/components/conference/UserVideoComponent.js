@@ -5,18 +5,12 @@ function UserVideoComponent({ streamManager }) {
 	const getNicknameTag = () =>
 		JSON.parse(streamManager.stream.connection.data).clientData;
 
-	return (
-		<div>
-			{streamManager !== undefined ? (
-				<div>
-					<OpenViduVideoComponent streamManager={streamManager} />
-					<div>
-						<p>{getNicknameTag()}</p>
-					</div>
-				</div>
-			) : null}
-		</div>
-	);
+	return streamManager !== undefined ? (
+		<>
+			<OpenViduVideoComponent streamManager={streamManager} />
+			<div>{getNicknameTag()}</div>
+		</>
+	) : null;
 }
 
 export default UserVideoComponent;
