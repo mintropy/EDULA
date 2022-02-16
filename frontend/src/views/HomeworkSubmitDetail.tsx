@@ -5,14 +5,19 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledContainer from '../components/schedule/StyledContainer';
 import StyledButton from '../components/class/StyledButton';
+import { BASE_URL } from '../api/utils';
 
 interface HomeworkDataType {
 	id: number;
 	title: string;
 	content: string;
 	cretedAt: string;
-	file: null;
-	homework: number;
+
+	homeworkSubmissionFiles: {
+		files: string;
+		homeworkSubmission: number;
+		id: number;
+	}[];
 	writer: number;
 }
 
@@ -24,6 +29,7 @@ function HomeworkSubmitDetail() {
 		useEffect(() => {
 			apiGetHomeworkSubmissionDetail(lectureId, homeworkId, userId).then(res => {
 				setHomeworkData(res.data);
+				console.log(res.data);
 			});
 		}, []);
 	}
@@ -37,6 +43,14 @@ function HomeworkSubmitDetail() {
 				{HomeworkData.cretedAt?.slice(11, 19)}
 			</StyledContent>
 			<StyledContent>{HomeworkData.content}</StyledContent>
+			{HomeworkData.homeworkSubmissionFiles && (
+				<a
+					href={`${BASE_URL}${HomeworkData.homeworkSubmissionFiles[0]?.files}`}
+					download
+				>
+					<StyledButton>과제 다운로드</StyledButton>
+				</a>
+			)}
 
 			<Link to={`/${lectureId}/homework/${homeworkId}/submit`}>
 				<StyledButton>목록</StyledButton>

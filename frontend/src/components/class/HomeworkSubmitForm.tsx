@@ -38,28 +38,21 @@ function HomeworkSubmitForm({ isSubmit }: Props) {
 		const { title, content, file } = getValues();
 
 		if (lectureId && homeworkId) {
-			console.log(file);
 			const formData = new FormData();
 
 			formData.append('files', file[0]);
 			formData.append('enctype', 'multipart/form-data');
+			formData.append('title', title);
+			formData.append('content', content);
+			formData.append('userId', userId);
 			try {
-				await apiPostHomeworkSubmission(
-					lectureId,
-					homeworkId,
-					title,
-					content,
-					// formData,
-					file[0],
-					userId
-				)
+				await apiPostHomeworkSubmission(lectureId, homeworkId, formData)
 					.then(() => {})
 					.catch(() => {});
 				navigate(`/lecture/${lectureId}`);
 			} catch (error) {
 				// console.log(error);
 			}
-			console.log(formData);
 		}
 	};
 
