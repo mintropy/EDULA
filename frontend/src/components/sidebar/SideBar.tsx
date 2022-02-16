@@ -2,6 +2,8 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { BsFillHouseDoorFill, BsTable, BsPeopleFill } from 'react-icons/bs';
+import { FaChalkboardTeacher, FaUsers, FaUserTie } from 'react-icons/fa';
+import { SiGoogleclassroom } from 'react-icons/si';
 import routes from '../../routes';
 import UserContext from '../../context/user';
 
@@ -17,7 +19,9 @@ const StyledList = styled.li`
 
 const StyledContainer = styled.div`
 	padding: 1em;
-	width: 4em;
+	width: 150px;
+	min-height: 500px;
+	height: 100%;
 	background-color: ${props => props.theme.subBgColor};
 `;
 
@@ -31,17 +35,17 @@ function SideBar() {
 					<>
 						<StyledList>
 							<StyledLink to={routes.main}>
-								<BsFillHouseDoorFill />
+								<BsFillHouseDoorFill /> 메인
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.schedule}>
-								<BsTable />
+								<BsTable /> 시간표
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.friend}>
-								<BsPeopleFill />
+								<BsPeopleFill /> 친구
 							</StyledLink>
 						</StyledList>
 					</>
@@ -51,12 +55,12 @@ function SideBar() {
 					<>
 						<StyledList>
 							<StyledLink to={routes.main}>
-								<BsFillHouseDoorFill />
+								<BsFillHouseDoorFill /> 메인
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.schedule}>
-								<BsTable />
+								<BsTable /> 시간표
 							</StyledLink>
 						</StyledList>
 					</>
@@ -66,27 +70,27 @@ function SideBar() {
 					<>
 						<StyledList>
 							<StyledLink to={routes.admin}>
-								<BsFillHouseDoorFill />
+								<BsFillHouseDoorFill /> 메인
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.studentManager}>
-								<BsTable />
+								<FaUsers /> 학생 관리
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.teacherManager}>
-								<BsTable />
+								<FaUserTie /> 교사 관리
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.classManager}>
-								<BsTable />
+								<SiGoogleclassroom /> 학급 관리
 							</StyledLink>
 						</StyledList>
 						<StyledList>
 							<StyledLink to={routes.lectureManager}>
-								<BsTable />
+								<FaChalkboardTeacher /> 수업 관리
 							</StyledLink>
 						</StyledList>
 					</>

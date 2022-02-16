@@ -6,7 +6,6 @@ import {
 	apiGetAdminInfo,
 	apiGetStudentInfo,
 	apiGetTeacherInfo,
-	apiGetUserStatus,
 } from './api/user';
 import ThemeContext from './context/theme';
 import UserContext from './context/user';
@@ -28,6 +27,10 @@ function ContextProvider({ children }: PropType) {
 	const [schoolId, setSchoolId] = useState('');
 	const [currentLecture, setCurrentLecture] = useState('Entrance');
 	const [profileImg, setProfile] = useState('');
+
+	const changeProfileImg = (path: string) => {
+		setProfile(path);
+	};
 
 	const changeCurrentLecture = (lecture: string) => {
 		setCurrentLecture(lecture);
@@ -56,6 +59,7 @@ function ContextProvider({ children }: PropType) {
 				setUserId(res.data.id);
 				setUserName(res.data.firstName);
 				setUserStat(res.data.status);
+				setProfile(res.data.profileImage || '');
 			});
 		} else {
 			setUserId('');
@@ -120,6 +124,7 @@ function ContextProvider({ children }: PropType) {
 			currentLecture,
 			changeCurrentLecture,
 			profileImg,
+			changeProfileImg,
 		}),
 		[
 			isLoggedIn,
@@ -132,6 +137,7 @@ function ContextProvider({ children }: PropType) {
 			currentLecture,
 			changeCurrentLecture,
 			profileImg,
+			changeProfileImg,
 		]
 	);
 

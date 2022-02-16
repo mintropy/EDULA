@@ -11,6 +11,7 @@ const UserContext = createContext({
 	currentLecture: '',
 	changeCurrentLecture: (_: string) => {},
 	profileImg: '',
+	changeProfileImg: (_: string) => {},
 });
 
 export default UserContext;

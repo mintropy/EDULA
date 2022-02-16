@@ -161,3 +161,15 @@ export const apiFindId = (name: string, email: string) =>
 			email,
 		},
 	});
+
+export const apiPostProfileImg = (formData: FormData) =>
+	axios({
+		method: 'post',
+		url: `${BASE_URL}/accounts/profile-image/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			...formData,
+		},
+	});

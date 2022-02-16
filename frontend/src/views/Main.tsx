@@ -9,6 +9,7 @@ import StyledTitle from '../components/class/StyledTitle';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
 import UserContext from '../context/user';
 import routes from '../routes';
+import Btn from '../common/Btn';
 
 const StyledContainer = styled.div`
 	position: absolute;
@@ -40,19 +41,15 @@ function Home() {
 		getLectures();
 	}, []);
 
-	useEffect(() => {
-		console.log(lectures);
-	}, [lectures]);
-
 	console.log(currentDate.getHours(), currentDate.getMinutes());
 
 	return (
 		<StyledContainer>
 			<StyledTitle>오늘도 화이팅! </StyledTitle>
 			<ScheduleContainer />
-			<button type='button' onClick={() => navigate(routes.conference)}>
+			<Btn onClick={() => navigate(routes.conference)}>
 				{currentLecture} 수업 입장
-			</button>
+			</Btn>
 		</StyledContainer>
 	);
 }

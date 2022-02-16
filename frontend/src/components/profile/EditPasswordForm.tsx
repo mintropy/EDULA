@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { BiUser } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import { apiChangePassword } from '../../api/user';
+import Btn from '../../common/Btn';
 import routes from '../../routes';
 import FormBox from '../auth/FormBox';
+import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
 
 type EditPasswordInput = {
@@ -110,10 +112,8 @@ function EditPasswordForm({ toggleMode }: PropType) {
 						onInput={() => clearErrors()}
 					/>
 				</FormInput>
-				<button type='submit'>수정</button>
-				<button onClick={() => toggleMode('profile')} type='button'>
-					취소
-				</button>
+				<FormBtn value='수정' disabled={false} />
+				<Btn onClick={() => toggleMode('profile')}>취소</Btn>
 			</form>
 		</FormBox>
 	);

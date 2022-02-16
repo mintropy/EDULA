@@ -9,11 +9,11 @@ const StyledNav = styled.nav`
 	justify-content: space-between;
 	padding: 0.375rem 0.75rem;
 	line-height: 1.5;
-	border: 1px solid ${props => props.theme.borderColor};
+	border-bottom: 1px solid ${props => props.theme.borderColor};
 	color: ${props => props.theme.subBgColor};
 	font-size: 3rem;
-	width: 100vw;
-
+	width: 100%;
+	box-sizing: border-box;
 	background-color: ${props => props.theme.mainBlue};
 `;
 

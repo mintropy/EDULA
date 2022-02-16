@@ -15,6 +15,7 @@ import UserContext from '../context/user';
 import EditProfileForm from '../components/profile/EditProfileForm';
 import EditPasswordForm from '../components/profile/EditPasswordForm';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
+import EditImgForm from '../components/profile/EditImgForm';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -44,7 +45,7 @@ const UserProfileContainer = styled.div`
 `;
 
 const UserDataContainer = styled.div`
-	div {
+	& > div {
 		margin-top: 15px;
 		display: flex;
 		align-items: center;
@@ -181,6 +182,14 @@ function Profile() {
 			</button>
 		) : null;
 
+	const imgEditBtn =
+		loggedInUserId.toString() === userId ? (
+			<button className='edit' type='button' onClick={() => toggleMode('editImg')}>
+				<FaUserEdit />
+				프로필 사진 수정
+			</button>
+		) : null;
+
 	const contents = (mode: string) => {
 		switch (mode) {
 			case 'editProfile':
@@ -189,6 +198,8 @@ function Profile() {
 				);
 			case 'editPassword':
 				return <EditPasswordForm toggleMode={toggleMode} />;
+			case 'editImg':
+				return <EditImgForm toggleMode={toggleMode} />;
 			default:
 				return (
 					<>
@@ -215,6 +226,7 @@ function Profile() {
 						)}
 						{editBtn}
 						{pwEditBtn}
+						{imgEditBtn}
 					</>
 				);
 		}
