@@ -1,4 +1,3 @@
-from tkinter import N
 from django.urls import path, include
 from .views import QuizViewSet, QuizDetailViewSet, QuizSubmissionViewSet
 
