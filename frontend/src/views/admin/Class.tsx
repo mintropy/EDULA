@@ -1,16 +1,11 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import {
 	apiDeleteClassroomDetail,
 	apiGetClassrooms,
-	apiPostClassroom,
 } from '../../api/classroom';
 import ClassroomForm from '../../components/admin/ClassroomForm';
-import FormBox from '../../components/auth/FormBox';
-import FormBtn from '../../components/auth/FormBtn';
-import FormInput from '../../components/auth/FormInput';
 import Table from '../../components/table/Table';
 import Tbody from '../../components/table/Tbody';
 import Tel from '../../components/table/Tel';
@@ -30,11 +25,6 @@ interface Classroom {
 	classNum: number;
 	school: number;
 }
-
-type ClassroomInput = {
-	classGrade: number;
-	classNum: number;
-};
 
 function ClassManager() {
 	const { schoolId } = useContext(UserContext);
