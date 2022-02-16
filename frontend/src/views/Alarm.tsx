@@ -12,6 +12,9 @@ import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import routes from '../routes';
 import Pagination from '../components/class/ArticlePagination';
 
+const StyledUpContainer = styled.div`
+	margin: 0px 0px 0px 10em;
+`;
 const StyledTitle = styled.h1`
 	font-size: 2em;
 	text-align: center;
@@ -103,7 +106,7 @@ function Alarm() {
 	}, []);
 
 	return (
-		<>
+		<StyledUpContainer>
 			<StyledTitle>새 소식</StyledTitle>
 			<p>
 				안 읽은 소식: {unreadCnt}/ 전체 소식: {totalCnt}
@@ -402,7 +405,7 @@ function Alarm() {
 					<Pagination total={total} limit={limit} page={page} setPage={setPage} />
 				</footer>
 			)}
-		</>
+		</StyledUpContainer>
 	);
 }
 

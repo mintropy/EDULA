@@ -21,7 +21,20 @@ const StyledListItem = styled.li`
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
 `;
+const StyledUpContainer = styled.div`
+	border: solid ${props => props.theme.subBgColor};
+	padding: 2rem;
+	margin: 1rem 10rem;
+	position: absolute;
+	top: 20%;
+	left: 40%;
+`;
 
+const StyledSubmitNotification = styled(StyledContent)`
+	font-size: 1.5rem;
+	padding: 0.5rem 0;
+	background: ${props => props.theme.subBgColor};
+`;
 interface submissionHomeworkData {
 	id: number;
 	title: string;
@@ -69,11 +82,11 @@ function HomeworkSubmit() {
 
 	if (userStat === 'ST') {
 		return (
-			<>
-				<StyledTitle>과제 제출</StyledTitle>
+			<StyledUpContainer>
+				<StyledTitle>과제 제출 💌</StyledTitle>
 
 				{isSubmit === true ? (
-					<StyledContent>
+					<StyledSubmitNotification>
 						과제 제출함!{' '}
 						<StyledDeleteBtn
 							type='button'
@@ -95,13 +108,13 @@ function HomeworkSubmit() {
 						>
 							삭제
 						</StyledDeleteBtn>
-					</StyledContent>
+					</StyledSubmitNotification>
 				) : (
-					<StyledContent>과제 제출 안함!</StyledContent>
+					<StyledSubmitNotification>과제 제출 안함!</StyledSubmitNotification>
 				)}
 
 				<HomeworkSubmitForm isSubmit={isSubmit} />
-			</>
+			</StyledUpContainer>
 		);
 	}
 	return (

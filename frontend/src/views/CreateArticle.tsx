@@ -4,21 +4,22 @@ import StyledTitle from '../components/class/StyledTitle';
 
 const StyledContainer = styled.div`
 	margin: 1rem 10rem;
+	position: absolute;
+	top: 20%;
+	left: 40%;
 `;
 
 function CreateArticle() {
 	return (
-		<div>
-			<StyledContainer>
-				<StyledTitle>게시물 쓰기</StyledTitle>
-				<ArticleForm
-					type='new'
-					originTitle=''
-					originContent=''
-					originNotice={false}
-				/>
-			</StyledContainer>
-		</div>
+		<StyledContainer>
+			<StyledTitle>게시물 쓰기</StyledTitle>
+			<ArticleForm
+				type='new'
+				originTitle=''
+				originContent=''
+				originNotice={false}
+			/>
+		</StyledContainer>
 	);
 }
 

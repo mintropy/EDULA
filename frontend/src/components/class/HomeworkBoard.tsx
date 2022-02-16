@@ -12,7 +12,7 @@ const StyledListItem = styled.li`
 	margin: 1em;
 	background: ${props => props.theme.subBgColor};
 	color: ${props => props.theme.fontColor};
-	padding: 1em;
+	padding: 1em 2em;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
 `;

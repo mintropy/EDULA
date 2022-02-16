@@ -29,7 +29,6 @@ function HomeworkSubmitDetail() {
 		useEffect(() => {
 			apiGetHomeworkSubmissionDetail(lectureId, homeworkId, userId).then(res => {
 				setHomeworkData(res.data);
-				console.log(res.data);
 			});
 		}, []);
 	}

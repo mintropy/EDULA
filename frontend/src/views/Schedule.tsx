@@ -3,8 +3,9 @@ import ScheduleAllContainer from '../components/schedule/ScheduleAllContainer';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
 
 const Container = styled.div`
-	display: flex;
-	flex-wrap: wrap;
+	position: absolute;
+	top: 20%;
+	left: 40%;
 `;
 
 function Schedule() {
