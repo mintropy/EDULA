@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'schools',
     'notifications',
     'message',
+    'quiz',
 
     'rest_framework',
     'django_extensions',
