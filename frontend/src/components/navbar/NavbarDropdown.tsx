@@ -100,6 +100,7 @@ function NavbarDropdown() {
 			<StyledMenuContainer>
 				<StyledMenuTrigger type='button' onClick={onClick}>
 					<img
+						width='50px'
 						src={
 							profileImg ||
 							'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
