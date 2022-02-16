@@ -5,17 +5,17 @@ import { FaEarlybirds } from 'react-icons/fa';
 import styled from 'styled-components';
 import { BiKey, BiLock, BiUser } from 'react-icons/bi';
 import { AxiosError } from 'axios';
-import AuthLayout from '../components/auth/AuthLayout';
-import ErrorMsg from '../components/auth/ErrorMsg';
-import FormBox from '../components/auth/FormBox';
-import FormBtn from '../components/auth/FormBtn';
-import EmptyMsg from '../components/auth/EmptyMsg';
-import routes from '../routes';
-import { apiLogin } from '../api/user';
-import PageTitle from '../components/PageTitle';
-import FormInput from '../components/auth/FormInput';
-import LinkBox from '../components/auth/LinkBox';
-import UserContext from '../context/user';
+import { apiLogin } from '../../api/user';
+import ErrorMsg from '../../components/auth/ErrorMsg';
+import EmptyMsg from '../../components/auth/EmptyMsg';
+import AuthLayout from '../../components/auth/AuthLayout';
+import PageTitle from '../../components/PageTitle';
+import FormBox from '../../components/auth/FormBox';
+import FormInput from '../../components/auth/FormInput';
+import FormBtn from '../../components/auth/FormBtn';
+import LinkBox from '../../components/auth/LinkBox';
+import routes from '../../routes';
+import UserContext from '../../context/user';
 
 const HeaderContainer = styled.div`
 	display: flex;

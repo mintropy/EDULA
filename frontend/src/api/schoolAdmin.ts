@@ -56,3 +56,16 @@ export const apiDeleteUser = (studentId: string) =>
 			...setToken(),
 		},
 	});
+
+export const apiPutUser = (userId: number, user: object) =>
+	axios({
+		method: 'put',
+		url: `${BASE_URL}/accounts/user/`,
+		headers: {
+			...setToken(),
+		},
+		data: {
+			user: userId,
+			...user,
+		},
+	});

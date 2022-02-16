@@ -2,17 +2,17 @@ import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import UserContext from '../context/user';
-import routes from '../routes';
-import ErrorMsg from '../components/auth/ErrorMsg';
-import FormBox from '../components/auth/FormBox';
-import FormBtn from '../components/auth/FormBtn';
-import FormInput from '../components/auth/FormInput';
-import EmptyMsg from '../components/auth/EmptyMsg';
-import StyledTitle from '../components/class/StyledTitle';
-import StyledContent from '../components/class/StyledContent';
-import { apiSignup } from '../api/schoolAdmin';
-import AuthLayout from '../components/auth/AuthLayout';
+import UserContext from '../../context/user';
+import routes from '../../routes';
+import ErrorMsg from '../../components/auth/ErrorMsg';
+import FormBox from '../../components/auth/FormBox';
+import FormBtn from '../../components/auth/FormBtn';
+import FormInput from '../../components/auth/FormInput';
+import EmptyMsg from '../../components/auth/EmptyMsg';
+import StyledTitle from '../../components/class/StyledTitle';
+import StyledContent from '../../components/class/StyledContent';
+import { apiSignup } from '../../api/schoolAdmin';
+import AuthLayout from '../../components/auth/AuthLayout';
 
 type SignupInput = {
 	result: string;

@@ -1,8 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { apiGetClassrooms, apiPostClassroom } from '../../api/classroom';
+import {
+	apiDeleteClassroomDetail,
+	apiGetClassrooms,
+	apiPostClassroom,
+} from '../../api/classroom';
+import ClassroomForm from '../../components/admin/ClassroomForm';
 import FormBox from '../../components/auth/FormBox';
 import FormBtn from '../../components/auth/FormBtn';
 import FormInput from '../../components/auth/FormInput';
@@ -34,21 +39,18 @@ type ClassroomInput = {
 function ClassManager() {
 	const { schoolId } = useContext(UserContext);
 	const [classrooms, setClassrooms] = useState([] as Classroom[]);
-	const {
-		register,
-		handleSubmit,
-		formState: { errors, isValid },
-		getValues,
-		setError,
-		clearErrors,
-	} = useForm<ClassroomInput>({
-		mode: 'onChange',
-	});
+	const [editTarget, setEditTarget] = useState({} as Classroom);
+	const [editMode, setEditMode] = useState(false);
 
 	const getClassrooms = () => {
 		apiGetClassrooms(schoolId).then(res => {
 			setClassrooms(res.data);
 		});
+	};
+
+	const deleteClassroom = async (classroomId: string) => {
+		await apiDeleteClassroomDetail(schoolId, classroomId);
+		getClassrooms();
 	};
 
 	useEffect(() => {
@@ -57,54 +59,54 @@ function ClassManager() {
 		}
 	}, [schoolId]);
 
-	const onValidSubmit: SubmitHandler<ClassroomInput> = async () => {
-		const classroom = getValues();
-		try {
-			await apiPostClassroom(schoolId, classroom);
-			getClassrooms();
-		} catch (e) {
-			// const error = e as AxiosError;
-			// console.log(error.response);
-		}
-	};
+	useEffect(() => {
+		setEditMode(false);
+		setEditTarget({} as Classroom);
+	}, [classrooms]);
 
 	return (
 		<Container>
-			<FormBox>
-				<form onSubmit={handleSubmit(onValidSubmit)}>
-					<FormInput htmlFor='classGrade'>
-						<input
-							{...register('classGrade')}
-							min='1'
-							max='6'
-							type='number'
-							placeholder='학년'
-						/>
-					</FormInput>
-					<FormInput htmlFor='classNum'>
-						<input
-							{...register('classNum')}
-							min='1'
-							max='99'
-							type='number'
-							placeholder='반'
-						/>
-					</FormInput>
-					<FormBtn value='생성' disabled={!isValid} />
-				</form>
-			</FormBox>
+			<button
+				type='button'
+				onClick={() => {
+					setEditMode(true);
+					setEditTarget({} as Classroom);
+				}}
+			>
+				수업 생성
+			</button>
+			{editMode && !editTarget?.id && (
+				<ClassroomForm targetClassroom={editTarget} getClassrooms={getClassrooms} />
+			)}
 			<Table>
 				<Tbody>
 					<Tel value='학년' />
 					<Tel value='반' />
 				</Tbody>
 				{classrooms.map(e => (
-					<SLink key={e.id} to={`${routes.classroom}/${e.id}`}>
+					<Fragment key={e.id}>
 						<Tbody>
 							<Tel value={e.classGrade} />
-							<Tel value={e.classNum} />
+							<SLink key={e.id} to={`${routes.classroom}/${e.id}`}>
+								<Tel value={e.classNum} />
+							</SLink>
+							<button
+								type='button'
+								onClick={() => {
+									setEditTarget(e);
+									setEditMode(true);
+								}}
+							>
+								modify
+							</button>
+							<button type='button' onClick={() => deleteClassroom(e.id.toString())}>
+								x
+							</button>
 						</Tbody>
-					</SLink>
+						{editTarget === e && (
+							<ClassroomForm targetClassroom={e} getClassrooms={getClassrooms} />
+						)}
+					</Fragment>
 				))}
 			</Table>
 		</Container>

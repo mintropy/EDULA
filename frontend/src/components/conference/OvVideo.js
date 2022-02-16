@@ -2,7 +2,7 @@
 import { createRef, useEffect } from 'react';
 import styled from 'styled-components';
 
-function OpenVideoCompnent({ streamManager }) {
+function OpenVideoComponent({ streamManager }) {
 	const videoRef = createRef();
 
 	useEffect(() => {
@@ -14,4 +14,4 @@ function OpenVideoCompnent({ streamManager }) {
 	return <video autoPlay ref={videoRef} />;
 }
 
-export default OpenVideoCompnent;
+export default OpenVideoComponent;

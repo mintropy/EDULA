@@ -1,19 +1,19 @@
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { FaUserTag } from 'react-icons/fa';
 import { VscMail } from 'react-icons/vsc';
 import { ImEnter } from 'react-icons/im';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import AuthLayout from '../components/auth/AuthLayout';
-import EmptyMsg from '../components/auth/EmptyMsg';
-import ErrorMsg from '../components/auth/ErrorMsg';
-import FormBox from '../components/auth/FormBox';
-import FormBtn from '../components/auth/FormBtn';
-import FormInput from '../components/auth/FormInput';
-import LinkBox from '../components/auth/LinkBox';
-import PageTitle from '../components/PageTitle';
-import routes from '../routes';
-import { apiResetPassword } from '../api/user';
+import { apiResetPassword } from '../../api/user';
+import ErrorMsg from '../../components/auth/ErrorMsg';
+import EmptyMsg from '../../components/auth/EmptyMsg';
+import AuthLayout from '../../components/auth/AuthLayout';
+import PageTitle from '../../components/PageTitle';
+import FormBox from '../../components/auth/FormBox';
+import FormInput from '../../components/auth/FormInput';
+import FormBtn from '../../components/auth/FormBtn';
+import LinkBox from '../../components/auth/LinkBox';
+import routes from '../../routes';
 
 const HeaderContainer = styled.div`
 	width: 100%;
