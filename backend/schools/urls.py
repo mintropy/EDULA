@@ -1,3 +1,5 @@
+"""urls for schools app
+"""
 from django.urls import path, include
 from .views import (
     school, classroom, lecture, student, teacher, 

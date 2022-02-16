@@ -1,3 +1,5 @@
+"""Model for schools app
+"""
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
@@ -97,8 +99,7 @@ class Homework(models.Model):
 
 
 class HomeworkSubmission(models.Model):
-    """
-    Homework submission model
+    """Homework submission model
     """
 
     homework = models.ForeignKey(
@@ -120,6 +121,9 @@ class HomeworkSubmission(models.Model):
 
 
 class HomeworkSubmissionFiles(models.Model):
+    """Homework Submission Files Model
+    """
+
     def homework_submission_path(instance, filename):
         """Make homework submission media file path
         """

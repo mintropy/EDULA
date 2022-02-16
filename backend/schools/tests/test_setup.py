@@ -183,13 +183,13 @@ class TestSetUp(APITestCase):
             'password': cls.test_password,
         }
         cls.school_admin1_info_json = json.dumps(cls.school_admin1_info)
-        
+
         cls.teacher1_info = {
             'username': cls.teacher1.user.username,
             'password': cls.test_password,
         }
         cls.teacher1_info_json = json.dumps(cls.teacher1_info)
-        
+
         cls.lecture_data = {
             'name': 'test',#cls.lecture1_1.name,
             'time_list': {'test':'test'},#cls.lecture1_1.time_list,
