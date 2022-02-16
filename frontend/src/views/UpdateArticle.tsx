@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ArticleForm from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetArticleDetail } from '../api/article';

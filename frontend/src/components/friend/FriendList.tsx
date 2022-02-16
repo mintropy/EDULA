@@ -14,6 +14,11 @@ interface FriendDataType {
 	firstname: string;
 	status: string;
 }
+const StyledSendBtn = styled(StyledDeleteBtn)`
+	background: ${props => props.theme.pointColor};
+	color: ${props => props.theme.fontColor};
+	box-shadow: 0 1px 3px black;
+`;
 const StyledLink = styled(Link)`
 	text-decoration: none;
 	font-size: 1em;
@@ -25,6 +30,16 @@ const StyledMessageBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.bgColor};
 	color: ${props => props.theme.fontColor};
 	box-shadow: 0 1px 3px black;
+`;
+
+const StyledInput = styled.input`
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 3px solid ${props => props.theme.mainBlue};
+	width: 16rem;
+	height: 2rem;
+	border-radius: 4px;
 `;
 
 function FriendList() {
@@ -49,13 +64,13 @@ function FriendList() {
 				<StyledTitle>친구 목록</StyledTitle>
 				{isModalOn && (
 					<form>
-						<input
+						<StyledInput
 							type='text'
 							name='text'
 							ref={inputRef}
 							placeholder={`${pickedFriendName || '친구'}에게 예쁜 말을 보내줘요.`}
 						/>
-						<button
+						<StyledSendBtn
 							type='submit'
 							onClick={e => {
 								e.preventDefault();
@@ -70,7 +85,7 @@ function FriendList() {
 							}}
 						>
 							쪽지 보내기
-						</button>
+						</StyledSendBtn>
 					</form>
 				)}
 				{friendList &&
