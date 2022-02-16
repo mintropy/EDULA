@@ -11,7 +11,6 @@ import StyledDiv from './StyledDiv';
 import StyledContainer from './StyledContainer';
 import StyledDeleteBtn from './StyledDeleteBtn';
 
-
 interface FriendRequestDataType {
 	requsetSend: {
 		id: number;
@@ -92,7 +91,7 @@ function FriendRequest() {
 				<StyledTitle>받은 친구 신청</StyledTitle>
 				{friendRequestList.requsetReceive &&
 					friendRequestList.requsetReceive.map(request => (
-						<StyledDiv>
+						<StyledDiv key={request.id}>
 							<StyledLink to={`/profile/${request.fromUser?.id}`}>
 								<StyledSpan key={request.id}>
 									{request.fromUser?.username}: {request.fromUser?.firstName}
@@ -139,7 +138,7 @@ function FriendRequest() {
 				<StyledTitle>보낸 친구 신청</StyledTitle>
 				{friendRequestList.requsetSend &&
 					friendRequestList.requsetSend.map(request => (
-						<StyledDiv>
+						<StyledDiv key={request.id}>
 							<StyledLink to={`/profile/${request.toUser}`}>
 								<StyledSpan key={request.id}>
 									{request.toUser?.username}: {request.toUser?.firstName}

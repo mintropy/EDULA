@@ -90,7 +90,7 @@ function FriendList() {
 				)}
 				{friendList &&
 					friendList.map(friend => (
-						<StyledLink to={`/profile/${friend.id}`}>
+						<StyledLink to={`/profile/${friend.id}`} key={friend.id}>
 							<StyledDiv key={friend.id}>
 								<StyledSpan>{friend.username}</StyledSpan>
 								<StyledMessageBtn

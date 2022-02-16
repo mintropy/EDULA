@@ -124,6 +124,7 @@ function HomeworkSubmit() {
 				{submissionList &&
 					submissionList?.map(submission => (
 						<StyledLink
+							key={submission.id}
 							to={`/${lectureId}/homework/${homeworkId}/submit/${submission.writer}`}
 						>
 							<StyledListItem key={submission.id}>

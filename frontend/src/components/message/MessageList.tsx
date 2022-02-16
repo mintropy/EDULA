@@ -105,7 +105,7 @@ function MessageList() {
 
 				{messages &&
 					messages.map(message => (
-						<>
+						<div key={message.id}>
 							{!message.send && !message.read && (
 								<p key={message.id}>
 									{message.time.slice(0, 10)} {message.time.slice(11, 18)}|{' '}
@@ -173,7 +173,7 @@ function MessageList() {
 									</StyledMessageDeleteBtn>
 								</ReadMessage>
 							)}
-						</>
+						</div>
 					))}
 				{messages.length === 0 && (
 					<StyledTitle>새로운 메시지가 없어요~</StyledTitle>

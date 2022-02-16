@@ -35,7 +35,7 @@ function StudentList({ students }: Props) {
 				students.map(
 					student =>
 						student.user?.status === 'ST' && (
-							<StyledLink to={`/profile/${student.user?.id}`}>
+							<StyledLink to={`/profile/${student.user?.id}`} key={student.user?.id}>
 								<StyledP>
 									{student?.user?.username} | {student?.user?.firstName || '이름 없음'}{' '}
 								</StyledP>

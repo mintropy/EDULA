@@ -337,7 +337,7 @@ function Alarm() {
 				notifications
 					.filter(notification => notification.notificationType === 'HC')
 					.map(noti => (
-						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
+						<StyledLink to={`/lecture/${noti.lecture?.id}`} key={noti.id}>
 							{noti.read && (
 								<p>
 									<ReadNotification>
@@ -398,7 +398,7 @@ function Alarm() {
 				notifications
 					.filter(notification => notification.notificationType === 'HU')
 					.map(noti => (
-						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
+						<StyledLink to={`/lecture/${noti.lecture?.id}`} key={noti.id}>
 							{noti.read && (
 								<p>
 									<ReadNotification>
@@ -459,7 +459,7 @@ function Alarm() {
 				notifications
 					.filter(notification => notification.notificationType === 'HS')
 					.map(noti => (
-						<StyledLink to={`/lecture/${noti.lecture?.id}`}>
+						<StyledLink to={`/lecture/${noti.lecture?.id}`} key={noti.id}>
 							{noti.read && (
 								<p>
 									<ReadNotification>

@@ -50,7 +50,7 @@ function HomeworkSubmitDetail() {
 									href={`${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${HomeworkData.homeworkSubmissionFiles[i]?.files}`}
 									download
 								>
-									<StyledButton>과제 {i} 다운로드</StyledButton>
+									<StyledButton>과제 {i + 1}번 파일 다운로드</StyledButton>
 								</a>
 							</li>
 						)
