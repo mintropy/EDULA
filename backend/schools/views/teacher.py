@@ -7,18 +7,18 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from accounts.views.user import decode_JWT
-from . import swagger_schema
 from accounts.models import Teacher
 from accounts.serializers.teacher import TeacherSerializer
 from server import basic_swagger_schema
-
+from . import swagger_schema
 
 class TeacherView(APIView):
+    '''Teacher
+    '''
     model = Teacher
     serializer_class = TeacherSerializer
     renderer_classes = [CamelCaseJSONRenderer]
-    parser_classes = [CamelCaseJSONParser]
-    
+    parser_classes = [CamelCaseJSONParser]    
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -41,7 +41,7 @@ class TeacherView(APIView):
         Use school_pk, return total teacher of school infromation
         """
         user = decode_JWT(request)
-        if user == None:
+        if user is None:
             return Response(
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
