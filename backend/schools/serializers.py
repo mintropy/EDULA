@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from . models import (
     School, Lecture, Classroom,
-    Homework, HomeworkSubmission,
+    Homework, HomeworkSubmission, HomeworkSubmissionFiles,
     Article
 )
 from accounts.models import Student, Teacher, User
@@ -78,10 +78,38 @@ class HomeworkSerializer(serializers.ModelSerializer):
 
 
 class HomeworkSubmissionSerialzier(serializers.ModelSerializer):
-    
+
+    def __init__(self, *args, **kwargs):
+        file_fields = kwargs.pop('file_fields', None)
+        super().__init__(*args, **kwargs)
+        if file_fields:
+            field_update_dict = {
+                field: serializers.FileField(required=False, write_only=True)
+                for field in file_fields
+            }
+            self.fields.update(**field_update_dict)
+
+    class HomeworkSubmissionFilesSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = HomeworkSubmissionFiles
+            fields = '__all__'
+
+    homework_submission_files = HomeworkSubmissionFilesSerializer(many=True)
+
     class Meta:
         model = HomeworkSubmission
         fields = '__all__'
+
+    def update(self, instance, validated_data):
+        homework_submission_files_data = validated_data.pop('homework_submission_files', None)
+        homework_submission_files = []
+        for homework_submission_file_data in homework_submission_files_data:
+            homework_submission_file, _ = HomeworkSubmissionFiles.objects.get_or_create(
+                **homework_submission_file_data
+            )
+            homework_submission_files.append(homework_submission_file)
+        instance.homework_submission_files.set(homework_submission_files)
+        return super().update(instance, validated_data)
 
 
 class HomeworkDetailSerializer(serializers.ModelSerializer):

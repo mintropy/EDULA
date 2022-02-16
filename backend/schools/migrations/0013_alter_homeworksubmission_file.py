@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
         ('schools', '0012_homeworksubmission'),
     ]
 
-    operations = [
-        migrations.AlterField(
-            model_name='homeworksubmission',
-            name='file',
-            field=models.FileField(blank=True, null=True, upload_to=schools.models.HomeworkSubmission.homework_submission_path),
-        ),
-    ]
+    # operations = [
+    #     migrations.AlterField(
+    #         model_name='homeworksubmission',
+    #         name='file',
+    #         field=models.FileField(blank=True, null=True, upload_to=schools.models.HomeworkSubmission.homework_submission_path),
+    #     ),
+    # ]
