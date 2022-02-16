@@ -73,7 +73,7 @@ function ClassManager() {
 					setEditTarget({} as Classroom);
 				}}
 			>
-				수업 생성
+				학급 생성
 			</button>
 			{editMode && !editTarget?.id && (
 				<ClassroomForm targetClassroom={editTarget} getClassrooms={getClassrooms} />

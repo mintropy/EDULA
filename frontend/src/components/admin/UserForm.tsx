@@ -1,8 +1,17 @@
+import { useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import {
+	apiGetClassroomDetail,
+	apiGetClassrooms,
+	apiPutClassroomDetail,
+} from '../../api/classroom';
 import { apiPutUser } from '../../api/schoolAdmin';
+import { apiPutStudentInfo } from '../../api/user';
+import UserContext from '../../context/user';
 import FormBox from '../auth/FormBox';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
+import StudentList from '../class/StudentList';
 
 interface Classroom {
 	id: number;
@@ -48,6 +57,7 @@ type PropType = {
 };
 
 function UserForm({ targetUser, getUsers }: PropType) {
+	const { schoolId } = useContext(UserContext);
 	const {
 		register,
 		handleSubmit,
@@ -70,7 +80,55 @@ function UserForm({ targetUser, getUsers }: PropType) {
 	const onValidSubmit: SubmitHandler<StudentInput> = async () => {
 		const { classGrade, classNum, name, email, phone, guardianPhone } =
 			getValues();
-		await apiPutUser(targetUser.user.id, { firstName: name, email, phone });
+		try {
+			await apiPutUser(targetUser.user.id, { firstName: name, email, phone });
+			if (targetUser.user.status === 'ST') {
+				await apiPutStudentInfo(
+					targetUser.user.id.toString(),
+					{ email, phone },
+					guardianPhone
+				);
+			}
+			await apiGetClassrooms(schoolId).then(async res => {
+				const matchedClassroom = res.data.filter(
+					// eslint-disable-next-line eqeqeq
+					(e: Classroom) => e.classGrade == classGrade && e.classNum == classNum
+				);
+				if (matchedClassroom.length === 1) {
+					let teacher: number = 0;
+					let studentList = [] as Array<number>;
+					await apiGetClassroomDetail(schoolId, matchedClassroom[0].id).then(
+						response => {
+							teacher = response.data.teacher;
+							studentList = response.data.studentList.map((e: Student) => e.user.id);
+						}
+					);
+					if (targetUser.user.status === 'ST') {
+						studentList.push(targetUser.user.id);
+					} else if (targetUser.user.status === 'TE') {
+						teacher = targetUser.user.id;
+					}
+					console.log(teacher, studentList);
+					const classroom = {
+						classGrade,
+						classNum,
+						teacher,
+						studentList,
+					};
+					console.log(matchedClassroom[0], classroom);
+					await apiPutClassroomDetail(
+						schoolId,
+						matchedClassroom[0].id.toString(),
+						classroom
+					).then(res => console.log(res));
+				}
+			});
+		} catch (e) {
+			// const error = e as AxiosError;
+			// if (error?.response?.status === 401) {
+			// 	navigate(routes.login);
+			// }
+		}
 		getUsers();
 	};
 
