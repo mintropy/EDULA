@@ -8,6 +8,8 @@ from rest_framework.pagination import PageNumberPagination
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from drf_spectacular.utils import extend_schema
+
 from accounts.views.user import decode_JWT
 from .models import Notification
 from .serializers import NotificationSerializer
@@ -103,8 +105,8 @@ class NotificationViewSet(ViewSet):
         )
 
     @swagger_schema.notification_view_set_count
-    def count(self, request):
-        """알림 개수
+    def count_all(self, request):
+        """전체 알림 개수
         """
         user = decode_JWT(request)
         if user is None:
@@ -115,6 +117,25 @@ class NotificationViewSet(ViewSet):
         return Response(
             {
                 'count': Notification.objects.filter(user=user.pk).count()
+            },
+            status=status.HTTP_200_OK
+        )
+
+    @extend_schema(
+        tags=['알림',]
+    )
+    def count_none_read(self, request):
+        """읽지 않은 알림 개수
+        """
+        user = decode_JWT(request)
+        if user is None:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        return Response(
+            {
+                'count': Notification.objects.filter(user=user.pk, read=False).count()
             },
             status=status.HTTP_200_OK
         )

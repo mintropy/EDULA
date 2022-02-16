@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
@@ -32,6 +34,8 @@ urlpatterns = [
     path(base_api_url + api_version + 'accounts/', include('accounts.urls')),
     path(base_api_url + api_version + 'schools/', include('schools.urls')),
     path(base_api_url + api_version + 'notifications/', include('notifications.urls')),
+    path(base_api_url + api_version + 'messages/', include('message.urls')),
+    path(base_api_url + api_version + 'quiz/', include('quiz.urls')),
     # JWT
     path(
         base_api_url + api_version + 'token/',
@@ -52,4 +56,4 @@ urlpatterns = [
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     # silk
     path('silk/', include('silk.urls', namespace='silk')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
