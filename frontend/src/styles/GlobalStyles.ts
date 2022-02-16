@@ -17,7 +17,24 @@ const GlobalStyles = createGlobalStyle`
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-}
+  }
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: inherit;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${props => props.theme.borderColor};
+    border-radius: 10px;
+  }
+
+  html {
+    scrollbar-color: ${props => props.theme.borderColor};
+    scrollbar-width: 10px;
+  }
+
 `;
 
 export default GlobalStyles;

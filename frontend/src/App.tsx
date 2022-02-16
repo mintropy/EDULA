@@ -8,10 +8,11 @@ import Class from './views/Class';
 import GlobalStyles from './styles/GlobalStyles';
 import ContextProvider from './ContextProvider';
 import routes from './routes';
-import Login from './views/Login';
+import Login from './views/auth/Login';
+import Findid from './views/auth/Findid';
+import Findpw from './views/auth/Findpw';
+import Signup from './views/auth/Signup';
 import CreateArticle from './views/CreateArticle';
-import Findid from './views/Findid';
-import Findpw from './views/Findpw';
 import UpdateArticle from './views/UpdateArticle';
 import ArticleDetail from './views/ArticleDetail';
 import Home from './views/Home';
@@ -26,10 +27,9 @@ import CreateHomework from './views/CreateHomework';
 import UpdateHomework from './views/UpdateHomework';
 import HomeworkDetail from './views/HomeworkDetail';
 import HomeworkSubmitForm from './views/HomeworkSubmit';
-import Openvidu from './views/Openvidu';
 import Friend from './views/Friend';
 import HomeworkSubmitDetail from './views/HomeworkSubmitDetail';
-import Signup from './views/Signup';
+import Openvidu from './views/conference/Openvidu';
 
 function App() {
 	return (
@@ -40,7 +40,7 @@ function App() {
 					<Route path={routes.login} element={<Login />} />
 					<Route path={routes.findid} element={<Findid />} />
 					<Route path={routes.findpw} element={<Findpw />} />
-					<Route path='/con' element={<Openvidu />} />
+					<Route path={routes.conference} element={<Openvidu />} />
 					<Route path={routes.signup} element={<Signup />} />
 					<Route path={routes.main} element={<Home />}>
 						<Route index element={<Main />} />

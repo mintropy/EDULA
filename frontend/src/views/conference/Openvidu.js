@@ -1,17 +1,132 @@
-import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AiOutlineAudio, AiOutlineAudioMuted } from 'react-icons/ai';
+import { FiVideo, FiVideoOff } from 'react-icons/fi';
+import { ImExit } from 'react-icons/im';
+import {
+	MdCameraswitch,
+	MdOutlineScreenShare,
+	MdOutlineStopScreenShare,
+	MdSend,
+} from 'react-icons/md';
 import styled from 'styled-components';
-import UserVideoComponent from './UserVideoComponent';
+import { createSession, createToken } from '../../api/conference';
+import AuthLayout from '../../components/auth/AuthLayout';
+import UserVideoComponent from '../../components/conference/UserVideoComponent';
+import UserContext from '../../context/user';
 
-const OPENVIDU_SERVER_URL = `https://${window.location.hostname}:${process.env.REACT_APP_OPENVIDU_PORT}`;
-const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+const Container = styled.div`
+	width: 100vw;
+	height: 100vh;
+	box-sizing: border-box;
+`;
+
+const ConferenceContainer = styled.div`
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	grid-auto-rows: minmax(3em, auto);
+	grid-template-areas:
+		'top top top top top top top top top'
+		'sd sd main main main main main main main';
+`;
+
+const TopBar = styled.div`
+	grid-area: top;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+const SideBar = styled.div`
+	grid-area: sd;
+	height: calc(100vh - 3em);
+`;
+
+const ChatContainer = styled.div`
+	height: 100%;
+	padding: 0.5em;
+	box-sizing: border-box;
+`;
+
+const ChatContents = styled.div`
+	min-height: calc(100% - 3em);
+	max-height: calc(100% - 3em);
+	background-color: ${props => props.theme.subBgColor};
+	display: flex;
+	flex-direction: column-reverse;
+	overflow-y: scroll;
+
+	div {
+		display: flex;
+		justify-content: end;
+		padding: 0.6em;
+
+		p {
+			margin: 0.1em;
+			font-size: 1.2em;
+		}
+	}
+`;
+
+const ChatInputContainer = styled.div`
+	height: 3em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	form {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		input,
+		button {
+			border-radius: 1px;
+			padding: 0.2em;
+		}
+		button {
+		}
+	}
+`;
+
+const Main = styled.div`
+	grid-area: main;
+	width: 100%;
+	height: 100%;
+`;
+
+const VideoContainer = styled.div``;
+
+const BottomFns = styled.div`
+	position: absolute;
+	bottom: 2em;
+	left: 40%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	button {
+		border-radius: 50%;
+		padding: 0.25em;
+		font-size: 2em;
+		margin: 0 0.5em;
+	}
+`;
+
+const SButton = styled.button`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: inherit;
+`;
 
 function Openvidu() {
-	const [mySessionId, setMySessionId] = useState('SessionA');
-	const [myUserName, setMyUserName] = useState(
-		`Participant${Math.floor(Math.random() * 100)}`
-	);
+	const { currentLecture: mySessionId, userName: myUserName } =
+		useContext(UserContext);
+	// const [mySessionId, setMySessionId] = useState('SessionA');
+	// const [myUserName, setMyUserName] = useState(
+	// 	`Participant${Math.floor(Math.random() * 100)}`
+	// );
 	const [sessionCamera, setSessionCamera] = useState(undefined);
 	const [sessionScreen, setSessionScreen] = useState(undefined);
 	const [sessionChat, setSessionChat] = useState(undefined);
@@ -31,16 +146,12 @@ function Openvidu() {
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
-		return () => window.removeEventListener('beforeunload', onbeforeunload);
+		window.addEventListener('popstate', onBackButtonEvent);
+		return () => {
+			window.removeEventListener('beforeunload', onbeforeunload);
+			window.removeEventListener('popstate', onBackButtonEvent);
+		};
 	});
-
-	const handleChangeSessionId = e => {
-		setMySessionId(e.target.value);
-	};
-
-	const handleChangeUserName = e => {
-		setMyUserName(e.target.value);
-	};
 
 	const handleChangeMyMessage = e => {
 		setMyMessage(e.target.value);
@@ -50,6 +161,11 @@ function Openvidu() {
 		if (mainStreamManager !== stream) {
 			setMainStreamManager(stream);
 		}
+	};
+
+	const onBackButtonEvent = e => {
+		e.preventDefault();
+		leaveSession();
 	};
 
 	const onbeforeunload = () => {
@@ -62,8 +178,7 @@ function Openvidu() {
 		return tokenTmp;
 	};
 
-	const joinSession = e => {
-		e.preventDefault();
+	const joinSession = () => {
 		console.log(`mySessionId : ${mySessionId}`);
 		console.log(`myUserName : ${myUserName}`);
 		const OVCameraTmp = new OpenVidu();
@@ -275,8 +390,8 @@ function Openvidu() {
 		setSessionChat(undefined);
 		setSubscribers([]);
 		setMessages([]);
-		setMySessionId('SessionA');
-		setMyUserName(`Participant${Math.floor(Math.random() * 100)}`);
+		// setMySessionId('SessionA');
+		// setMyUserName(`Participant${Math.floor(Math.random() * 100)}`);
 		setMainStreamManager(undefined);
 		setPublisher(undefined);
 		setPublisherScreen(undefined);
@@ -337,195 +452,109 @@ function Openvidu() {
 		});
 	};
 
-	const createSession = async sessionId => {
-		const data = JSON.stringify({ customSessionId: sessionId });
-		try {
-			const response = await axios.post(
-				`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`,
-				data,
-				{
-					headers: {
-						Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
-						'Content-Type': 'application/json',
-					},
-				}
-			);
-			console.log('CREATE SESSION', response);
-			return response.data.id;
-		} catch (response) {
-			const error = { ...response };
-			if (error?.response?.status === 409) {
-				return sessionId;
-			}
-			console.log(error);
-			console.warn(
-				`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`
-			);
-			if (
-				window.confirm(
-					`No connection to OpenVidu Server. This may be a certificate error at "${OPENVIDU_SERVER_URL}"\n\nClick OK to navigate and accept it. ` +
-						`If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
-				)
-			) {
-				window.location.assign(
-					`${OPENVIDU_SERVER_URL}/openvidu/accept-certificate`
-				);
-			}
-			return new Error(error);
-		}
-	};
-
-	const createToken = async sessionId => {
-		const data = {};
-		try {
-			const response = await axios.post(
-				`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`,
-				data,
-				{
-					headers: {
-						Authorization: `Basic ${btoa(`OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`)}`,
-						'Content-Type': 'application/json',
-					},
-				}
-			);
-			console.log('TOKEN', response);
-			return response.data.token;
-		} catch (e) {
-			throw new Error(e);
-		}
-	};
-
 	return (
-		<div className='container'>
+		<Container>
 			{!sessionCamera && (
-				<div id='join'>
-					<div id='join-dialog'>
-						<h1> Join a video session </h1>
-						<form onSubmit={joinSession}>
-							<p>
-								<label htmlFor='userName'>
-									Participant:
+				<AuthLayout>
+					<h1> 수업 참여 </h1>
+					<SButton type='button' onClick={() => joinSession()}>
+						참여하기
+					</SButton>
+				</AuthLayout>
+			)}
+			{sessionCamera && (
+				<ConferenceContainer>
+					<TopBar>
+						<h1 id='session-title'>{mySessionId}</h1>
+					</TopBar>
+					<SideBar>
+						<ChatContainer>
+							<ChatContents>
+								<div>
+									{messages
+										.slice()
+										.reverse()
+										.map(data => (
+											<p key={data.id}>{`${data.user} : ${data.msg}`}</p>
+										))}
+								</div>
+							</ChatContents>
+							<ChatInputContainer>
+								<form onSubmit={sendMessage}>
 									<input
 										type='text'
-										id='userName'
-										value={myUserName}
-										onChange={handleChangeUserName}
+										id='message'
+										placeholder='Message'
+										value={myMessage}
+										onChange={handleChangeMyMessage}
 										required
 									/>
-								</label>
-							</p>
-							<p>
-								<label htmlFor='sessionId'>
-									{' '}
-									Session:
-									<input
-										type='text'
-										id='sessionId'
-										value={mySessionId}
-										onChange={handleChangeSessionId}
-										required
-									/>{' '}
-								</label>
-							</p>
-							<p>
-								<input name='commit' type='submit' value='JOIN' />
-							</p>
-						</form>
-					</div>
-				</div>
-			)}
-
-			{sessionCamera && (
-				<div id='session'>
-					<div id='session-header'>
-						<h1 id='session-title'>{mySessionId}</h1>
-						<input
-							type='button'
-							id='buttonLeaveSession'
-							onClick={leaveSession}
-							value='Leave session'
-						/>
-						{!screensharing ? (
-							<input
-								type='button'
-								id='buttonScreenShare'
-								onClick={publishScreenShare}
-								value='Screen share'
-							/>
-						) : (
-							<input
-								type='button'
-								id='buttonScreenShare'
-								onClick={stopScreenShare}
-								value='Stop Screen share'
-							/>
-						)}
-						<input
-							type='button'
-							id='buttonAudioOnOff'
-							onClick={audioOnOFF}
-							value={audioEnabled ? 'audio OFF' : 'audio ON'}
-						/>
-						<input
-							type='button'
-							id='buttonVideoOnOff'
-							onClick={videoOnOFF}
-							value={videoEnabled ? 'video OFF' : 'video ON'}
-						/>
-						<form onSubmit={sendMessage}>
-							<p>
-								<input
-									type='text'
-									id='message'
-									placeholder='Message'
-									value={myMessage}
-									onChange={handleChangeMyMessage}
-									required
-								/>
-								<input name='commit' type='submit' value='Send' />
-							</p>
-						</form>
-					</div>
-
-					<div id='session-chat'>
-						<ul>
-							{messages.map(data => (
-								<li key={data.id}>{`${data.user} : ${data.msg}`}</li>
-							))}
-						</ul>
-					</div>
-
-					{mainStreamManager && (
-						<div id='main-video'>
-							<UserVideoComponent streamManager={mainStreamManager} />
-							<input
-								type='button'
-								id='buttonSwitchCamera'
-								onClick={switchCamera}
-								value='Switch Camera'
-							/>
+									<SButton type='submit' name='commit'>
+										<MdSend />
+									</SButton>
+								</form>
+							</ChatInputContainer>
+						</ChatContainer>
+					</SideBar>
+					<Main>
+						<div id='session'>
+							{mainStreamManager && (
+								<div id='main-video'>
+									<UserVideoComponent streamManager={mainStreamManager} />
+								</div>
+							)}
+							<div id='container-screens' />
+							<div id='video-container'>
+								{publisher && (
+									<button onClick={() => handleMainVideoStream(publisher)} type='button'>
+										<UserVideoComponent streamManager={publisher} />
+									</button>
+								)}
+								{subscribers.map(
+									sub =>
+										sub !== publisher && (
+											<button
+												key={sub}
+												onClick={() => handleMainVideoStream(sub)}
+												type='button'
+											>
+												<UserVideoComponent streamManager={sub} />
+											</button>
+										)
+								)}
+							</div>
 						</div>
-					)}
-					<div id='container-screens' />
-					<div id='video-container'>
-						{publisher && (
-							<button onClick={() => handleMainVideoStream(publisher)} type='button'>
-								<UserVideoComponent streamManager={publisher} />
-							</button>
-						)}
-						{subscribers.map(sub => (
-							<button
-								key={sub}
-								onClick={() => handleMainVideoStream(sub)}
-								type='button'
-							>
-								<UserVideoComponent streamManager={sub} />
-							</button>
-						))}
-					</div>
-				</div>
+						<BottomFns>
+							<SButton type='button' id='buttonSwitchCamera' onClick={switchCamera}>
+								<MdCameraswitch />
+							</SButton>
+							<SButton type='button' id='buttonLeaveSession' onClick={leaveSession}>
+								<ImExit />
+							</SButton>
+							{!screensharing ? (
+								<SButton
+									type='button'
+									id='buttonScreenShare'
+									onClick={publishScreenShare}
+								>
+									<MdOutlineScreenShare />
+								</SButton>
+							) : (
+								<SButton type='button' id='buttonScreenShare' onClick={stopScreenShare}>
+									<MdOutlineStopScreenShare />
+								</SButton>
+							)}
+							<SButton type='button' id='buttonAudioOnOff' onClick={audioOnOFF}>
+								{audioEnabled ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
+							</SButton>
+							<SButton type='button' id='buttonVideoOnOff' onClick={videoOnOFF}>
+								{videoEnabled ? <FiVideoOff /> : <FiVideo />}
+							</SButton>
+						</BottomFns>
+					</Main>
+				</ConferenceContainer>
 			)}
-		</div>
+		</Container>
 	);
 }
 

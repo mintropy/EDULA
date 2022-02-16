@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
+import routes from '../routes';
 
 const StyledContainer = styled.div`
 	position: absolute;
@@ -9,9 +11,15 @@ const StyledContainer = styled.div`
 `;
 
 function Home() {
+	const navigate = useNavigate();
+
 	return (
 		<StyledContainer>
 			<StyledTitle>오늘도 화이팅! </StyledTitle>
+
+			<button type='button' onClick={() => navigate(routes.conference)}>
+				수업 입장
+			</button>
 			<ScheduleContainer />
 		</StyledContainer>
 	);

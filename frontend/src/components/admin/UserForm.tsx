@@ -1,4 +1,5 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { apiPutUser } from '../../api/schoolAdmin';
 import FormBox from '../auth/FormBox';
 import FormBtn from '../auth/FormBtn';
 import FormInput from '../auth/FormInput';
@@ -42,7 +43,7 @@ type StudentInput = {
 };
 
 type PropType = {
-	targetUser?: Student;
+	targetUser: Student;
 	getUsers: () => void;
 };
 
@@ -69,6 +70,8 @@ function UserForm({ targetUser, getUsers }: PropType) {
 	const onValidSubmit: SubmitHandler<StudentInput> = async () => {
 		const { classGrade, classNum, name, email, phone, guardianPhone } =
 			getValues();
+		await apiPutUser(targetUser.user.id, { firstName: name, email, phone });
+		getUsers();
 	};
 
 	return (

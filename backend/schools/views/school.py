@@ -8,8 +8,24 @@ from drf_spectacular.utils import extend_schema
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+from accounts.models import Student, Teacher
 from ..models import School
 from . import swagger_schema
+
+
+def school_validation(school_pk, user_pk, many=False):
+    if many:
+        for student_pk in user_pk:
+            student = Student.objects.filter(pk=student_pk)
+            if not student or student[0].school.pk != school_pk:
+                return False
+        else:
+            return True
+    else:
+        teacher = Teacher.objects.filter(pk=user_pk)
+        if (teacher and teacher[0].school.pk == school_pk):
+            return True
+    return False
 
 
 class SchoolAbbreviationViewSet(ViewSet):

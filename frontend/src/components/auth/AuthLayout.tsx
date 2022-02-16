@@ -14,6 +14,10 @@ const Wrapper = styled.div`
 	padding: 10px;
 	background-color: ${props => props.theme.subBgColor};
 	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;
 
 type PropType = {

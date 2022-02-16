@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
     model = User
     list_display = ('id', 'username', 'first_name', 'school_name', 'status')
     fieldsets = UserAdmin.fieldsets + (
-        ('Custom fields', {'fields': ('status', 'friend_list',)}),
+        ('Custom fields', {'fields': ('status', 'friend_list', 'profile_image',)}),
     )
     list_display_links = ('username',)
     list_filter = ('status',)

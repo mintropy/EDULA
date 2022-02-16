@@ -23,8 +23,14 @@ function ContextProvider({ children }: PropType) {
 	const [mainTheme, setMainTheme] = useState(theme[storedTheme] || theme.base);
 	const [isLoggedIn, setIsLoggedIn] = useState(storedIsLoggedIn);
 	const [userId, setUserId] = useState('');
+	const [userName, setUserName] = useState('');
 	const [userStat, setUserStat] = useState('');
 	const [schoolId, setSchoolId] = useState('');
+	const [currentLecture, setCurrentLecture] = useState('Entrance');
+
+	const changeCurrentLecture = (lecture: string) => {
+		setCurrentLecture(lecture);
+	};
 	const [profileImg, setProfile] = useState('');
 
 	const changeTheme = (themename: string): void => {
@@ -48,6 +54,7 @@ function ContextProvider({ children }: PropType) {
 		if (isLoggedIn) {
 			apiDecodeToken().then(res => {
 				setUserId(res.data.id);
+				setUserName(res.data.firstName);
 				setUserStat(res.data.status);
 			});
 		} else {
@@ -107,11 +114,25 @@ function ContextProvider({ children }: PropType) {
 			login,
 			logout,
 			userId,
+			userName,
 			userStat,
 			schoolId,
+			currentLecture,
+			changeCurrentLecture,
 			profileImg,
 		}),
-		[isLoggedIn, login, logout, userId, userStat, schoolId, profileImg]
+		[
+			isLoggedIn,
+			login,
+			logout,
+			userId,
+			userName,
+			userStat,
+			schoolId,
+			currentLecture,
+			changeCurrentLecture,
+			profileImg,
+		]
 	);
 
 	return (
