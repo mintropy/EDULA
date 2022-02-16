@@ -32,7 +32,7 @@ class User(AbstractUser):
         symmetrical=True,
         blank=True,
     )
-    profile_image = models.ImageField(
+    profile_image = models.FileField(
         upload_to=profile_image_path,
         null=True,
         blank=True,

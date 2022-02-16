@@ -23,6 +23,7 @@ from drf_spectacular.utils import (
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
+import serect
 from server import basic_swagger_schema
 from schools.models import School
 from . import swagger_schema
@@ -33,7 +34,6 @@ from ..serializers.user import(
     FriendSerializer,
     UserProfileImageSerializer, UserInformationSerializer,
 )
-import serect
 
 
 def decode_JWT(request) -> User:
@@ -152,13 +152,11 @@ def check_friend_request(friend_requests: FriendRequest, from_user: int, to_user
 
 class UserView(APIView):
     """About user
-    
     """
     model = User
     serializer_class = UserBasicSerializer
     renderer_classes = [CamelCaseJSONRenderer]
     parser_classes = [CamelCaseJSONParser]
-    
     @extend_schema(
         responses={
             200: OpenApiResponse(
@@ -361,7 +359,7 @@ class UserCUDView(ViewSet):
 
         student_creation_count_list = request.data.get('student_creation_count_list',None)
         
-        if type(student_creation_count_list) == type(dict()): 
+        if isinstance(student_creation_count_list, dict): 
             for year, count in student_creation_count_list.items():
                 if count > accounts_available:
                     student_creation_count_list[year] = accounts_available
@@ -394,7 +392,7 @@ class UserCUDView(ViewSet):
             
         teacher_creation_count = request.data.get('teacher_creation_count',None)    
         
-        if type(teacher_creation_count) == int:
+        if isinstance(teacher_creation_count,int):
             if teacher_creation_count > accounts_available:
                 teacher_creation_count = accounts_available
             
@@ -725,8 +723,7 @@ class PasswordResetView(APIView):
 
 
 class FriendViewSet(ViewSet):
-    """About user friends list
-    
+    """About user friends list   
     """
     model = User
     queryset = User.objects.all()
