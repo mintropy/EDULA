@@ -146,7 +146,11 @@ function Openvidu() {
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', onbeforeunload);
-		return () => window.removeEventListener('beforeunload', onbeforeunload);
+		window.addEventListener('popstate', onBackButtonEvent);
+		return () => {
+			window.removeEventListener('beforeunload', onbeforeunload);
+			window.removeEventListener('popstate', onBackButtonEvent);
+		};
 	});
 
 	const handleChangeMyMessage = e => {
@@ -157,6 +161,11 @@ function Openvidu() {
 		if (mainStreamManager !== stream) {
 			setMainStreamManager(stream);
 		}
+	};
+
+	const onBackButtonEvent = e => {
+		e.preventDefault();
+		leaveSession();
 	};
 
 	const onbeforeunload = () => {
