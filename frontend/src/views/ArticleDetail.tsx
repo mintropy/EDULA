@@ -9,9 +9,11 @@ import UserContext from '../context/user';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 
 const StyledContainer = styled.div`
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 20px;
 	font-size: 1em;
 	text-align: center;
 	border: solid 2px ${props => props.theme.subBgColor};

@@ -22,17 +22,17 @@ const StyledListItem = styled.li`
 	border-radius: 10px;
 `;
 const StyledUpContainer = styled.div`
-	border: solid ${props => props.theme.subBgColor};
-	padding: 2rem;
-	margin: 1rem 10rem;
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
 `;
 
 const StyledSubmitNotification = styled(StyledContent)`
-	font-size: 1.5rem;
-	padding: 0.5rem 0;
+	font-size: 1rem;
+	padding: 0.1rem 0.1rem;
 	background: ${props => props.theme.subBgColor};
 `;
 interface submissionHomeworkData {

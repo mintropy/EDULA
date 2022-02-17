@@ -3,9 +3,11 @@ import HomeworkForm from '../components/class/HomeworkForm';
 import StyledTitle from '../components/class/StyledTitle';
 
 const StyledUpContainer = styled.div`
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 20px;
 `;
 
 const StyledContainer = styled.div`

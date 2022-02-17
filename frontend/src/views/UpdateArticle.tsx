@@ -6,9 +6,12 @@ import StyledTitle from '../components/class/StyledTitle';
 import { apiGetArticleDetail } from '../api/article';
 
 const StyledUpContainer = styled.div`
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
 `;
 const StyledContainer = styled.div`
 	margin: 3em;
