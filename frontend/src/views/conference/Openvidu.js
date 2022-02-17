@@ -111,9 +111,6 @@ const SessionContainer = styled.div`
 `;
 
 const ScreenContainer = styled.div`
-	width: 300px;
-	height: 200px;
-	margin: 10px;
 	video {
 		width: 100%;
 		height: 100%;
@@ -544,9 +541,8 @@ function Openvidu() {
 					</SideBar>
 					<Main>
 						<SessionContainer videoCount={subscribers.length}>
-							{screensharing ? (
-								<ScreenContainer id='container-screens' />
-							) : (
+							<ScreenContainer id='container-screens' />
+							{!screensharing && (
 								// mainStreamManager && (
 								// 	<VideoContainer>
 								// 		<UserVideoComponent streamManager={mainStreamManager} />
@@ -598,10 +594,10 @@ function Openvidu() {
 								</SButton>
 							)}
 							<SButton type='button' id='buttonAudioOnOff' onClick={audioOnOFF}>
-								{audioEnabled ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
+								{audioEnabled ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}
 							</SButton>
 							<SButton type='button' id='buttonVideoOnOff' onClick={videoOnOFF}>
-								{videoEnabled ? <FiVideoOff /> : <FiVideo />}
+								{videoEnabled ? <FiVideo /> : <FiVideoOff />}
 							</SButton>
 						</BottomFns>
 					</Main>
