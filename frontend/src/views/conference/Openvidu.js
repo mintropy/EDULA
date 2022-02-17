@@ -84,6 +84,7 @@ const ChatContainer = styled.div`
 	background-color: ${props => props.theme.subBgColor};
 	border: 1px solid ${props => props.theme.borderColor};
 	border-radius: 3px;
+	overflow-y: hidden;
 `;
 
 const ChatContents = styled.div`
@@ -553,13 +554,15 @@ function Openvidu() {
 						<MemberContainer>
 							<p>참여자 목록</p>
 							<MemberContents>
-								{publisher && (
-									<p>{JSON.parse(publisher.stream.connection.data).clientData}</p>
-								)}
-								{subscribers &&
-									subscribers.map(sub => (
-										<p key={sub}>{JSON.parse(sub.stream.connection.data).clientData}</p>
-									))}
+								<div>
+									{publisher && (
+										<p>{JSON.parse(publisher.stream.connection.data).clientData}</p>
+									)}
+									{subscribers &&
+										subscribers.map(sub => (
+											<p key={sub}>{JSON.parse(sub.stream.connection.data).clientData}</p>
+										))}
+								</div>
 							</MemberContents>
 						</MemberContainer>
 						<ChatContainer>
