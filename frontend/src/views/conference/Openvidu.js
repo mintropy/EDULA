@@ -42,22 +42,59 @@ const TopBar = styled.div`
 
 const SideBar = styled.div`
 	grid-area: sd;
-	height: calc(100vh - 3em);
+	height: calc(100vh - 4em);
+	display: grid;
+	grid-template-rows: 3fr 7fr;
+	margin-left: 5px;
+`;
+
+const MemberContainer = styled.div`
+	height: 100%;
+	padding: 0.25em;
+	margin: 0.25em;
+	box-sizing: border-box;
+	background-color: ${props => props.theme.subBgColor};
+	border-radius: 3px;
+	border: 1px solid ${props => props.theme.borderColor};
+	overflow-y: hidden;
+	& > p {
+		padding: 0.5em;
+		font-size: 1.2em;
+	}
+`;
+
+const MemberContents = styled.div`
+	background-color: ${props => props.theme.subBgColor};
+	border: 1px solid ${props => props.theme.borderColor};
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	border-radius: 3px;
+	padding: 0.5em;
+	box-sizing: border-box;
+	overflow-y: scroll;
 `;
 
 const ChatContainer = styled.div`
 	height: 100%;
-	padding: 0.5em;
+	padding: 0.25em;
+	margin: 0.25em;
 	box-sizing: border-box;
+	background-color: ${props => props.theme.subBgColor};
+	border: 1px solid ${props => props.theme.borderColor};
+	border-radius: 3px;
 `;
 
 const ChatContents = styled.div`
 	min-height: calc(100% - 3em);
 	max-height: calc(100% - 3em);
 	background-color: ${props => props.theme.subBgColor};
+	border: 1px solid ${props => props.theme.borderColor};
 	display: flex;
 	flex-direction: column-reverse;
 	overflow-y: scroll;
+	border-radius: 3px;
 
 	& > div {
 		display: flex;
@@ -75,9 +112,12 @@ const ChatContents = styled.div`
 
 const ChatInputContainer = styled.div`
 	height: 3em;
+	background-color: ${props => props.theme.subBgColor};
+	border: 1px solid ${props => props.theme.borderColor};
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border-radius: 3px;
 	form {
 		display: flex;
 		justify-content: center;
@@ -108,6 +148,7 @@ const SessionContainer = styled.div`
 	flex-wrap: wrap;
 	width: 100%;
 	height: 90%;
+	overflow-y: scroll;
 `;
 
 const ScreenContainer = styled.div`
@@ -509,6 +550,18 @@ function Openvidu() {
 						<h1 id='session-title'>{mySessionId}</h1>
 					</TopBar>
 					<SideBar>
+						<MemberContainer>
+							<p>참여자 목록</p>
+							<MemberContents>
+								{publisher && (
+									<p>{JSON.parse(publisher.stream.connection.data).clientData}</p>
+								)}
+								{subscribers &&
+									subscribers.map(sub => (
+										<p key={sub}>{JSON.parse(sub.stream.connection.data).clientData}</p>
+									))}
+							</MemberContents>
+						</MemberContainer>
 						<ChatContainer>
 							<ChatContents>
 								<div>
@@ -539,14 +592,6 @@ function Openvidu() {
 							</ChatInputContainer>
 						</ChatContainer>
 					</SideBar>
-					<ul>
-						{publisher && (
-							<li>{JSON.parse(publisher.stream.connection.data).clientData}</li>
-						)}
-						{subscribers.map(sub => (
-							<li key={sub}>{JSON.parse(sub.stream.connection.data).clientData}</li>
-						))}
-					</ul>
 					<Main>
 						<SessionContainer videoCount={subscribers.length}>
 							<ScreenContainer id='container-screens' />
