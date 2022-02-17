@@ -539,6 +539,14 @@ function Openvidu() {
 							</ChatInputContainer>
 						</ChatContainer>
 					</SideBar>
+					<ul>
+						{publisher && (
+							<li>{JSON.parse(publisher.stream.connection.data).clientData}</li>
+						)}
+						{subscribers.map(sub => (
+							<li key={sub}>{JSON.parse(sub.stream.connection.data).clientData}</li>
+						))}
+					</ul>
 					<Main>
 						<SessionContainer videoCount={subscribers.length}>
 							<ScreenContainer id='container-screens' />
