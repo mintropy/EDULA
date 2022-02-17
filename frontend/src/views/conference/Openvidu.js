@@ -14,6 +14,7 @@ import { createSession, createToken } from '../../api/conference';
 import AuthLayout from '../../components/auth/AuthLayout';
 import FormInput from '../../components/auth/FormInput';
 import UserVideoComponent from '../../components/conference/UserVideoComponent';
+import PageTitle from '../../components/PageTitle';
 import UserContext from '../../context/user';
 
 const Container = styled.div`
@@ -496,6 +497,7 @@ function Openvidu() {
 
 	return (
 		<Container>
+			<PageTitle title={`${mySessionId} 교실`} />
 			{!sessionCamera && (
 				<AuthLayout>
 					<h1> 수업 참여 </h1>

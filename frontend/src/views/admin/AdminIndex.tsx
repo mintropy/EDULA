@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { apiGetClassrooms } from '../../api/classroom';
 import { apiGetLectures } from '../../api/lecture';
 import { apiGetStudents, apiGetTeachers } from '../../api/school';
+import PageTitle from '../../components/PageTitle';
 import UserContext from '../../context/user';
 import routes from '../../routes';
 
@@ -147,6 +148,7 @@ function AdminIndex() {
 
 	return (
 		<Container>
+			<PageTitle title='관리자 페이지' />
 			<Title>관리자 페이지입니다.</Title>
 			<Contents>
 				<SLink to={routes.studentManager}>

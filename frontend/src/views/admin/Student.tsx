@@ -16,6 +16,7 @@ import TITitle from '../../components/admin/TopInputTitle';
 import TIWrapper from '../../components/admin/TopInputWrapper';
 import UserForm from '../../components/admin/UserForm';
 import FormInput from '../../components/auth/FormInput';
+import PageTitle from '../../components/PageTitle';
 import MediumTel from '../../components/table/MTel';
 import SmallTel from '../../components/table/STel';
 import Table from '../../components/table/Table';
@@ -107,6 +108,7 @@ function StudentManager() {
 
 	return (
 		<Container>
+			<PageTitle title='학생 관리' />
 			<TIContainer>
 				<TIWrapper>
 					<TITitle>학생 생성</TITitle>

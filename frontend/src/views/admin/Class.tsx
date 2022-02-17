@@ -18,6 +18,7 @@ import TIContainer from '../../components/admin/TopInputContainer';
 import TIWrapper from '../../components/admin/TopInputWrapper';
 import TITitle from '../../components/admin/TopInputTitle';
 import Btn from '../../common/Btn';
+import PageTitle from '../../components/PageTitle';
 
 const SLink = styled(Link)`
 	text-decoration: none;
@@ -61,17 +62,20 @@ function ClassManager() {
 
 	return (
 		<Container>
+			<PageTitle title='학급 관리' />
 			<TIContainer>
 				<TIWrapper>
-					<TITitle>학급 생성</TITitle>{!editMode &&
-					<Btn
-						onClick={() => {
-							setEditMode(true);
-							setEditTarget({} as Classroom);
-						}}
-					>
-						생성
-					</Btn>}
+					<TITitle>학급 생성</TITitle>
+					{!editMode && (
+						<Btn
+							onClick={() => {
+								setEditMode(true);
+								setEditTarget({} as Classroom);
+							}}
+						>
+							생성
+						</Btn>
+					)}
 					{editMode && !editTarget?.id && (
 						<ClassroomForm
 							targetClassroom={editTarget}

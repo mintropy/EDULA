@@ -10,6 +10,7 @@ import LectureForm from '../../components/admin/LectureForm';
 import TIContainer from '../../components/admin/TopInputContainer';
 import TITitle from '../../components/admin/TopInputTitle';
 import TIWrapper from '../../components/admin/TopInputWrapper';
+import PageTitle from '../../components/PageTitle';
 import Table from '../../components/table/Table';
 import Tbody from '../../components/table/Tbody';
 import Tel from '../../components/table/Tel';
@@ -74,6 +75,7 @@ function LectureManager() {
 
 	return (
 		<Container>
+			<PageTitle title='수업 관리' />
 			<TIContainer>
 				<TIWrapper>
 					<TITitle>수업 생성</TITitle>
