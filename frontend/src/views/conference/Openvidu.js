@@ -56,7 +56,7 @@ const MemberContainer = styled.div`
 	background-color: ${props => props.theme.subBgColor};
 	border-radius: 3px;
 	border: 1px solid ${props => props.theme.borderColor};
-	overflow-y: hidden;
+	overflow: hidden;
 	& > p {
 		padding: 0.5em;
 		font-size: 1.2em;
@@ -74,6 +74,10 @@ const MemberContents = styled.div`
 	padding: 0.5em;
 	box-sizing: border-box;
 	overflow-y: scroll;
+
+	p {
+		margin: 0.1em;
+	}
 `;
 
 const ChatContainer = styled.div`
@@ -84,7 +88,7 @@ const ChatContainer = styled.div`
 	background-color: ${props => props.theme.subBgColor};
 	border: 1px solid ${props => props.theme.borderColor};
 	border-radius: 3px;
-	overflow-y: hidden;
+	overflow: hidden;
 `;
 
 const ChatContents = styled.div`
@@ -104,7 +108,7 @@ const ChatContents = styled.div`
 		padding: 0.6em;
 
 		& > div {
-			margin: 0.1em;
+			margin: 0.2em;
 			font-size: 1.2em;
 			overflow-wrap: break-word;
 		}
@@ -154,8 +158,8 @@ const SessionContainer = styled.div`
 
 const ScreenContainer = styled.div`
 	video {
-		width: 100%;
-		height: 100%;
+		width: 95%;
+		height: 95%;
 		object-fit: cover;
 	}
 `;
@@ -173,8 +177,8 @@ const VideoContainer = styled.div`
 	}
 	button > video,
 	video {
-		width: 100%;
-		height: 100%;
+		width: 95%;
+		height: 95%;
 		object-fit: cover;
 	}
 `;
@@ -186,12 +190,19 @@ const BottomFns = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: ${props => props.theme.subBgColor};
+	padding: 0.5em;
+	border-radius: 1em;
 
 	button {
 		border-radius: 50%;
 		padding: 0.25em;
 		font-size: 2em;
 		margin: 0 0.5em;
+	}
+
+	#buttonLeaveSession {
+		color: ${props => props.theme.warningColor};
 	}
 `;
 
@@ -595,43 +606,33 @@ function Openvidu() {
 					<Main>
 						<SessionContainer videoCount={subscribers.length}>
 							<ScreenContainer id='container-screens' />
-							{!screensharing && (
-								// mainStreamManager && (
-								// 	<VideoContainer>
-								// 		<UserVideoComponent streamManager={mainStreamManager} />
-								// 	</VideoContainer>
-								// )
-								<>
-									{publisher && (
-										<VideoContainer className='publisher'>
-											<button
-												onClick={() => handleMainVideoStream(publisher)}
-												type='button'
-											>
-												<UserVideoComponent streamManager={publisher} />
-											</button>
-										</VideoContainer>
-									)}
-									{subscribers.map(sub => (
-										<VideoContainer className='subscriber'>
-											<button
-												key={sub}
-												onClick={() => handleMainVideoStream(sub)}
-												type='button'
-											>
-												<UserVideoComponent streamManager={sub} />
-											</button>
-										</VideoContainer>
-									))}
-								</>
-							)}
+							<>
+								{publisher && (
+									<VideoContainer className='publisher'>
+										<button
+											onClick={() => handleMainVideoStream(publisher)}
+											type='button'
+										>
+											<UserVideoComponent streamManager={publisher} />
+										</button>
+									</VideoContainer>
+								)}
+								{subscribers.map(sub => (
+									<VideoContainer className='subscriber'>
+										<button
+											key={sub}
+											onClick={() => handleMainVideoStream(sub)}
+											type='button'
+										>
+											<UserVideoComponent streamManager={sub} />
+										</button>
+									</VideoContainer>
+								))}
+							</>
 						</SessionContainer>
 						<BottomFns>
 							<SButton type='button' id='buttonSwitchCamera' onClick={switchCamera}>
 								<MdCameraswitch />
-							</SButton>
-							<SButton type='button' id='buttonLeaveSession' onClick={leaveSession}>
-								<ImExit />
 							</SButton>
 							{!screensharing ? (
 								<SButton
@@ -651,6 +652,9 @@ function Openvidu() {
 							</SButton>
 							<SButton type='button' id='buttonVideoOnOff' onClick={videoOnOFF}>
 								{!videoEnabled ? <FiVideoOff /> : <FiVideo />}
+							</SButton>
+							<SButton type='button' id='buttonLeaveSession' onClick={leaveSession}>
+								<ImExit />
 							</SButton>
 						</BottomFns>
 					</Main>
