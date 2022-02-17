@@ -92,13 +92,13 @@ const ChatContents = styled.div`
 	background-color: ${props => props.theme.subBgColor};
 	border: 1px solid ${props => props.theme.borderColor};
 	display: flex;
-	flex-direction: column-reverse;
+	flex-direction: column;
 	overflow-y: scroll;
 	border-radius: 3px;
 
 	& > div {
 		display: flex;
-		flex-direction: column-reverse;
+		flex-direction: column;
 		justify-content: end;
 		padding: 0.6em;
 
@@ -565,12 +565,9 @@ function Openvidu() {
 						<ChatContainer>
 							<ChatContents>
 								<div>
-									{messages
-										.slice()
-										.reverse()
-										.map(data => (
-											<div key={data.id}>{`${data.user} : ${data.msg}`}</div>
-										))}
+									{messages.slice().map(data => (
+										<div key={data.id}>{`${data.user} : ${data.msg}`}</div>
+									))}
 								</div>
 							</ChatContents>
 							<ChatInputContainer>
