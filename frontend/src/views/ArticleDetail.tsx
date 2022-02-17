@@ -7,6 +7,7 @@ import StyledButton from '../components/class/StyledButton';
 import { apiGetArticleDetail, apiDeleteArticle } from '../api/article';
 import UserContext from '../context/user';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
+import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.div`
 	position: absolute;
@@ -75,6 +76,7 @@ function ArticleDetail() {
 
 	return (
 		<StyledContainer>
+			<PageTitle title={articleData.title} />
 			<StyledTitle>{articleData.title}</StyledTitle>
 			<StyledContent>
 				글쓴 날: {articleData.createdAt?.slice(0, 10)}/ 최종 수정일:{' '}

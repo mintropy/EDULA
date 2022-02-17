@@ -3,6 +3,7 @@ import FriendList from '../components/friend/FriendList';
 import FriendGivenRequest from '../components/friend/FriendRequest';
 import FriendSearch from '../components/friend/FriendSearch';
 import MessageList from '../components/message/MessageList';
+import PageTitle from '../components/PageTitle';
 
 const Container = styled.div`
 	display: flex;
@@ -11,6 +12,7 @@ const Container = styled.div`
 function Friend() {
 	return (
 		<Container>
+			<PageTitle title='친구~~' />
 			<FriendList />
 			<FriendSearch />
 			<FriendGivenRequest />

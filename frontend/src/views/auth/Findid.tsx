@@ -78,7 +78,7 @@ function Findid() {
 	);
 	return (
 		<AuthLayout>
-			<PageTitle title='Find Id' />
+			<PageTitle title='아이디 찾기' />
 			<HeaderContainer>
 				<h1>아이디 찾기</h1>
 			</HeaderContainer>

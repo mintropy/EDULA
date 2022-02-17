@@ -97,9 +97,9 @@ function Login() {
 
 	return (
 		<AuthLayout>
-			<PageTitle title='login' />
+			<PageTitle title='로그인' />
 			<HeaderContainer>
-				<FaEarlybirds />
+				<img src='images/logo.png' alt='' />
 				<span>Edula</span>
 			</HeaderContainer>
 			<FormBox>

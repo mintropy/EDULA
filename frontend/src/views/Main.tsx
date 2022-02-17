@@ -10,6 +10,7 @@ import ScheduleContainer from '../components/schedule/ScheduleContainer';
 import UserContext from '../context/user';
 import routes from '../routes';
 import Btn from '../common/Btn';
+import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.div`
 	position: absolute;
@@ -19,7 +20,7 @@ const StyledContainer = styled.div`
 
 function Home() {
 	const navigate = useNavigate();
-	const { currentLecture, changeCurrentLecture, userStat, userId } =
+	const { currentLecture, changeCurrentLecture, userStat, userId, userName } =
 		useContext(UserContext);
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [lectures, setLectures] = useState();
@@ -45,6 +46,7 @@ function Home() {
 
 	return (
 		<StyledContainer>
+			<PageTitle title={`${userName || '회원'}님 환영합니다`} />
 			<StyledTitle>오늘도 화이팅! </StyledTitle>
 			<ScheduleContainer />
 			<Btn onClick={() => navigate(routes.conference)}>

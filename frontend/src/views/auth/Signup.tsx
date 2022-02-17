@@ -12,6 +12,7 @@ import StyledTitle from '../../components/class/StyledTitle';
 import StyledContent from '../../components/class/StyledContent';
 import { apiSignup } from '../../api/schoolAdmin';
 import AuthLayout from '../../components/auth/AuthLayout';
+import PageTitle from '../../components/PageTitle';
 
 type SignupInput = {
 	result: string;
@@ -112,6 +113,7 @@ function Signup() {
 	};
 	return (
 		<AuthLayout>
+			<PageTitle title='관리자 회원가입' />
 			<StyledTitle> Edula 학교 관리자 회원가입</StyledTitle>
 			<StyledContent>
 				Edula 서비스를 사용하시려면, 학교 관리자만 회원 가입을 하면 됩니다 !

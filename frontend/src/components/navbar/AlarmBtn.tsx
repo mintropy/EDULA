@@ -9,7 +9,8 @@ interface InnerAlarm {
 }
 
 const StyledAlarmBtn = styled.span<InnerAlarm>`
-	width: 50px;
+	width: 30px;
+	margin-right: 20px;
 	height: inherit;
 	color: white;
 	display: flex;

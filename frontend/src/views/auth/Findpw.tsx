@@ -79,7 +79,7 @@ function Findpw() {
 
 	return (
 		<AuthLayout>
-			<PageTitle title='Find Id' />
+			<PageTitle title='비밀번호 찾기' />
 			<HeaderContainer>
 				<h1>비밀번호 찾기</h1>
 			</HeaderContainer>

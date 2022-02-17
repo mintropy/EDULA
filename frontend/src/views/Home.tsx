@@ -11,6 +11,8 @@ const OutletContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	min-height: 500px;
+	height: 100%;
 `;
 
 const BodyWrapper = styled.div`

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PageTitle from '../components/PageTitle';
 import SettingTheme from '../components/setting/SettingTheme';
 
 const StyledTitle = styled.h1`
@@ -11,6 +12,7 @@ const StyledTitle = styled.h1`
 function Setting() {
 	return (
 		<>
+			<PageTitle title='설정' />
 			<StyledTitle>설정</StyledTitle>
 			<SettingTheme />
 		</>

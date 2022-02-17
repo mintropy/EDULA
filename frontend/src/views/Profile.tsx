@@ -16,6 +16,7 @@ import EditProfileForm from '../components/profile/EditProfileForm';
 import EditPasswordForm from '../components/profile/EditPasswordForm';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
 import EditImgForm from '../components/profile/EditImgForm';
+import PageTitle from '../components/PageTitle';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -234,6 +235,7 @@ function Profile() {
 
 	return (
 		<UserContainer>
+			<PageTitle title={`${userData.user.firstName || '회원'}님의 프로필`} />
 			<UserInfoContainer>
 				<UserProfileContainer>
 					<img

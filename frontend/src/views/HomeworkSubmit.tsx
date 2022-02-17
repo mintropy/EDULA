@@ -11,6 +11,7 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContainer from '../components/friend/StyledContainer';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import StyledContent from '../components/class/StyledContent';
+import PageTitle from '../components/PageTitle';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -119,6 +120,7 @@ function HomeworkSubmit() {
 	}
 	return (
 		<StyledContainer>
+			<PageTitle title='과제 제출' />
 			<StyledTitle>과제 제출 현황</StyledTitle>
 			<ul>
 				{submissionList &&

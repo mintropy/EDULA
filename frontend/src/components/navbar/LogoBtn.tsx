@@ -7,8 +7,8 @@ const StyledTitle = styled.p`
 `;
 
 const StyledLogoImg = styled.img`
-	width: 1em;
-	height: 1em;
+	width: 1.2em;
+	height: 1.2em;
 	margin: 0 0.3rem 0 0;
 `;
 
@@ -22,8 +22,7 @@ const StyledLink = styled(Link)`
 	align-items: center;
 	padding: 0.375rem 0.75rem;
 	line-height: 1.5;
-	border: 1px solid ${props => props.theme.iconColor};
-	font-size: 3rem;
+	font-size: 2.5rem;
 	text-decoration: none;
 `;
 

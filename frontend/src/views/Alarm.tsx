@@ -11,6 +11,7 @@ import {
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import routes from '../routes';
 import Pagination from '../components/class/ArticlePagination';
+import PageTitle from '../components/PageTitle';
 
 const StyledUpContainer = styled.div`
 	margin: 0px 0px 0px 10em;
@@ -107,6 +108,7 @@ function Alarm() {
 
 	return (
 		<StyledUpContainer>
+			<PageTitle title={`${unreadCnt}개의 소식이 있습니다`} />
 			<StyledTitle>새 소식</StyledTitle>
 			<p>
 				안 읽은 소식: {unreadCnt}/ 전체 소식: {totalCnt}

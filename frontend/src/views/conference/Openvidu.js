@@ -67,6 +67,7 @@ const ChatContents = styled.div`
 		& > div {
 			margin: 0.1em;
 			font-size: 1.2em;
+			overflow-wrap: break-word;
 		}
 	}
 `;
@@ -111,6 +112,7 @@ const SessionContainer = styled.div`
 const ScreenContainer = styled.div`
 	width: 300px;
 	height: 200px;
+	margin: 10px;
 	video {
 		width: 100%;
 		height: 100%;
@@ -121,6 +123,7 @@ const ScreenContainer = styled.div`
 const VideoContainer = styled.div`
 	width: 300px;
 	height: 200px;
+	text-align: center;
 	button {
 		width: 300px;
 		height: 200px;
@@ -539,23 +542,27 @@ function Openvidu() {
 					</SideBar>
 					<Main>
 						<SessionContainer videoCount={subscribers.length}>
-							{mainStreamManager && (
-								<VideoContainer>
-									<UserVideoComponent streamManager={mainStreamManager} />
-								</VideoContainer>
-							)}
-							<ScreenContainer id='container-screens' />
-							{publisher && (
-								<VideoContainer>
-									<button onClick={() => handleMainVideoStream(publisher)} type='button'>
-										<UserVideoComponent streamManager={publisher} />
-									</button>
-								</VideoContainer>
-							)}
-							{subscribers.map(
-								sub =>
-									sub !== publisher && (
-										<VideoContainer>
+							{screensharing ? (
+								<ScreenContainer id='container-screens' />
+							) : (
+								// mainStreamManager && (
+								// 	<VideoContainer>
+								// 		<UserVideoComponent streamManager={mainStreamManager} />
+								// 	</VideoContainer>
+								// )
+								<>
+									{publisher && (
+										<VideoContainer className='publisher'>
+											<button
+												onClick={() => handleMainVideoStream(publisher)}
+												type='button'
+											>
+												<UserVideoComponent streamManager={publisher} />
+											</button>
+										</VideoContainer>
+									)}
+									{subscribers.map(sub => (
+										<VideoContainer className='subscriber'>
 											<button
 												key={sub}
 												onClick={() => handleMainVideoStream(sub)}
@@ -564,7 +571,8 @@ function Openvidu() {
 												<UserVideoComponent streamManager={sub} />
 											</button>
 										</VideoContainer>
-									)
+									))}
+								</>
 							)}
 						</SessionContainer>
 						<BottomFns>

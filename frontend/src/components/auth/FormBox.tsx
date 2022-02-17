@@ -7,6 +7,7 @@ const Container = styled.div`
 	align-items: center;
 	flex-direction: column;
 	min-width: 200px;
+	width: 100%;
 
 	form {
 		display: flex;

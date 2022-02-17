@@ -5,6 +5,7 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContent from '../components/class/StyledContent';
 import StyledContainer from '../components/schedule/StyledContainer';
 import StyledButton from '../components/class/StyledButton';
+import PageTitle from '../components/PageTitle';
 
 interface HomeworkDataType {
 	id: number;
@@ -34,6 +35,7 @@ function HomeworkSubmitDetail() {
 
 	return (
 		<StyledContainer>
+			<PageTitle title={HomeworkData.title} />
 			<StyledTitle>{HomeworkData.title}</StyledTitle>
 			<StyledContent>{HomeworkData.writer}번 학생</StyledContent>
 			<StyledContent>

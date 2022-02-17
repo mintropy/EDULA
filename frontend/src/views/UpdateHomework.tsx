@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetHomeworkDetail } from '../api/homework';
 import HomeworkForm from '../components/class/HomeworkForm';
+import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.div`
 	margin: 3em;
@@ -40,6 +41,7 @@ function UpdateHomework() {
 
 	return (
 		<StyledUpContainer>
+			<PageTitle title={`${homeworkData.title} 수정`} />
 			<StyledTitle>과제 수정</StyledTitle>
 			<StyledContainer>
 				<HomeworkForm

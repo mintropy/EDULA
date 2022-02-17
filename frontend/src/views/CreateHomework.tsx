@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import HomeworkForm from '../components/class/HomeworkForm';
 import StyledTitle from '../components/class/StyledTitle';
+import PageTitle from '../components/PageTitle';
 
 const StyledUpContainer = styled.div`
 	position: absolute;
@@ -16,6 +17,7 @@ const StyledContainer = styled.div`
 function CreateHomework() {
 	return (
 		<StyledUpContainer>
+			<PageTitle title='과제 생성' />
 			<StyledContainer>
 				<StyledTitle>과제 만들기 📑</StyledTitle>
 				<HomeworkForm

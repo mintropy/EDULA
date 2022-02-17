@@ -6,6 +6,7 @@ import StyledContent from '../components/class/StyledContent';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
 import UserContext from '../context/user';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
+import PageTitle from '../components/PageTitle';
 
 const StyleUpdateBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.borderColor};
@@ -69,6 +70,7 @@ function HomeworkDetail() {
 
 	return (
 		<StyledContainer>
+			<PageTitle title={homeworkData.title} />
 			<StyledTitle>{homeworkData.title}</StyledTitle>
 			<StyledContent>
 				마감 기한: {homeworkData.deadline?.slice(0, 10)}{' '}

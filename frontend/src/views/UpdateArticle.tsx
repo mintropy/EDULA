@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import ArticleForm from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetArticleDetail } from '../api/article';
+import PageTitle from '../components/PageTitle';
 
 const StyledUpContainer = styled.div`
 	position: absolute;
@@ -45,6 +46,7 @@ function UpdateArticle() {
 
 	return (
 		<StyledUpContainer>
+			<PageTitle title={`${homeworkData.title} 수정`} />
 			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
 				<ArticleForm
