@@ -4,10 +4,12 @@ import StyledTitle from '../components/class/StyledTitle';
 import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.div`
-	margin: 1rem 10rem;
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
 `;
 
 function CreateArticle() {

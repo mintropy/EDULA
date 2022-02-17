@@ -4,9 +4,12 @@ import ScheduleAllContainer from '../components/schedule/ScheduleAllContainer';
 import ScheduleContainer from '../components/schedule/ScheduleContainer';
 
 const Container = styled.div`
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
 `;
 
 function Schedule() {
