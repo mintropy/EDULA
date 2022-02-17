@@ -647,10 +647,10 @@ function Openvidu() {
 								</SButton>
 							)}
 							<SButton type='button' id='buttonAudioOnOff' onClick={audioOnOFF}>
-								{audioEnabled ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}
+								{!audioEnabled ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}
 							</SButton>
 							<SButton type='button' id='buttonVideoOnOff' onClick={videoOnOFF}>
-								{videoEnabled ? <FiVideo /> : <FiVideoOff />}
+								{!videoEnabled ? <FiVideoOff /> : <FiVideo />}
 							</SButton>
 						</BottomFns>
 					</Main>
