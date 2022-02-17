@@ -42,6 +42,7 @@ const UserProfileContainer = styled.div`
 		height: 100%;
 		width: 100%;
 		border-radius: 50%;
+		background-size: cover;
 	}
 `;
 
@@ -90,6 +91,7 @@ interface UserDataType {
 		username: string;
 		email: string;
 		phone: string;
+		profileImage: string;
 	};
 	classroom: {
 		id: number;
@@ -239,7 +241,11 @@ function Profile() {
 			<UserInfoContainer>
 				<UserProfileContainer>
 					<img
-						src='https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+						src={
+							userData.user.profileImage
+								? `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${userData.user.profileImage}`
+								: 'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+						}
 						alt=''
 					/>
 				</UserProfileContainer>

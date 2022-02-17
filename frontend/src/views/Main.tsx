@@ -45,7 +45,11 @@ function Home() {
 		getLectures();
 	}, []);
 
-	console.log(currentDate.getHours(), currentDate.getMinutes());
+	console.log(
+		currentDate.getHours(),
+		currentDate.getMinutes(),
+		currentDate.getDay()
+	);
 
 	return (
 		<StyledContainer>

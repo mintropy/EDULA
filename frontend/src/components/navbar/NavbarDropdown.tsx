@@ -5,6 +5,7 @@ import UserContext from '../../context/user';
 import routes from '../../routes';
 import { useDetectOutsideClick } from '../useDetectOutsideClick';
 import StyledDeleteBtn from '../friend/StyledDeleteBtn';
+import { BASE_URL } from '../../api/utils';
 
 const StyledContainer = styled.div`
 	box-sizing: border-box;
@@ -18,12 +19,12 @@ const StyledMenuContainer = styled.div`
 
 const StyledMenuTrigger = styled.button`
 	background: ${props => props.theme.subBgColor};
-	border-radius: 90px;
+	border-radius: 50%;
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 4px 6px;
+	padding: 3px;
 	box-shadow: 0 1px 3px ${props => props.theme.fontColor};
 	border: none;
 	vertical-align: middle;
@@ -35,7 +36,9 @@ const StyledMenuTrigger = styled.button`
 	}
 
 	img {
-		border-radius: 90px;
+		border-radius: 50%;
+		width: 50px;
+		height: 50px;
 	}
 `;
 
@@ -112,10 +115,10 @@ function NavbarDropdown() {
 			<StyledMenuContainer>
 				<StyledMenuTrigger type='button' onClick={onClick}>
 					<img
-						width='50px'
 						src={
-							profileImg ||
-							'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+							profileImg
+								? `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${profileImg}`
+								: 'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
 						}
 						alt='User avatar'
 					/>
