@@ -926,9 +926,13 @@ examples = {
                     "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
                     "school": 0,
                     "teacher": 0,
@@ -943,12 +947,18 @@ examples = {
             'input': OpenApiExample(
                 name='input example',
                 value={
+                    "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
+                    "school": 0,
                     "teacher": 0,
                     "student_list": [
                         0
@@ -963,9 +973,13 @@ examples = {
                     "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
                     "school": 0,
                     "teacher": 0,
@@ -986,9 +1000,13 @@ examples = {
                     "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
                     "school": 0,
                     "teacher": 0,
@@ -1003,11 +1021,16 @@ examples = {
             'input': OpenApiExample(
                 name='input example',
                 value={
+                    "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
                     "school": 0,
                     "teacher": 0,
@@ -1024,9 +1047,13 @@ examples = {
                     "id": 0,
                     "name": "string",
                     "time_list": {
-                        "additionalProp1": "string",
-                        "additionalProp2": "string",
-                        "additionalProp3": "string"
+                        "count": 1, 
+                        "lectures": 
+                            [{
+                                "day": "fri", 
+                             "st": "1200", 
+                             "end": "1330"
+                            }]
                     },
                     "school": 0,
                     "teacher": 0,
