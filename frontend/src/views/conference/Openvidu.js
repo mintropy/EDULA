@@ -97,7 +97,7 @@ const ChatContents = styled.div`
 	background-color: ${props => props.theme.subBgColor};
 	border: 1px solid ${props => props.theme.borderColor};
 	display: flex;
-	flex-direction: column;
+	flex-direction: column-reverse;
 	overflow-y: scroll;
 	border-radius: 3px;
 
