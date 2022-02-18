@@ -6,7 +6,6 @@ import {
 	apiGetAdminInfo,
 	apiGetStudentInfo,
 	apiGetTeacherInfo,
-	apiGetUserStatus,
 } from './api/user';
 import ThemeContext from './context/theme';
 import UserContext from './context/user';
@@ -23,8 +22,19 @@ function ContextProvider({ children }: PropType) {
 	const [mainTheme, setMainTheme] = useState(theme[storedTheme] || theme.base);
 	const [isLoggedIn, setIsLoggedIn] = useState(storedIsLoggedIn);
 	const [userId, setUserId] = useState('');
+	const [userName, setUserName] = useState('');
 	const [userStat, setUserStat] = useState('');
 	const [schoolId, setSchoolId] = useState('');
+	const [currentLecture, setCurrentLecture] = useState('Entrance');
+	const [profileImg, setProfile] = useState('');
+
+	const changeProfileImg = (path: string) => {
+		setProfile(path);
+	};
+
+	const changeCurrentLecture = (lecture: string) => {
+		setCurrentLecture(lecture);
+	};
 
 	const changeTheme = (themename: string): void => {
 		setMainTheme((theme as any)[themename] || theme.base);
@@ -47,7 +57,9 @@ function ContextProvider({ children }: PropType) {
 		if (isLoggedIn) {
 			apiDecodeToken().then(res => {
 				setUserId(res.data.id);
+				setUserName(res.data.firstName);
 				setUserStat(res.data.status);
+				setProfile(res.data.profileImage || '');
 			});
 		} else {
 			setUserId('');
@@ -60,16 +72,19 @@ function ContextProvider({ children }: PropType) {
 			case 'ST':
 				apiGetStudentInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			case 'TE':
 				apiGetTeacherInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			case 'SA':
 				apiGetAdminInfo(userId || '').then(res => {
 					setSchoolId(res.data.school.id);
+					setProfile(res.data.user.profileImage);
 				});
 				break;
 			default:
@@ -103,10 +118,27 @@ function ContextProvider({ children }: PropType) {
 			login,
 			logout,
 			userId,
+			userName,
 			userStat,
 			schoolId,
+			currentLecture,
+			changeCurrentLecture,
+			profileImg,
+			changeProfileImg,
 		}),
-		[isLoggedIn, login, logout, userId, userStat, schoolId]
+		[
+			isLoggedIn,
+			login,
+			logout,
+			userId,
+			userName,
+			userStat,
+			schoolId,
+			currentLecture,
+			changeCurrentLecture,
+			profileImg,
+			changeProfileImg,
+		]
 	);
 
 	return (

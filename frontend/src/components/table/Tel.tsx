@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const STel = styled.div`
+export const STel = styled.div`
 	padding: 0.25em;
 	font-size: 1em;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -8,6 +8,7 @@ const STel = styled.div`
 	min-height: 20px;
 	text-align: center;
 `;
+
 type PropType = {
 	value: string | number;
 };

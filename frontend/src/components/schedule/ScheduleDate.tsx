@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const StyledItem = styled.div`
 	font-size: 2em;
 	text-align: center;
-	color: ${props => props.theme.iconColor};
+	color: ${props => props.theme.fontColor};
 `;
 
 function ScheduleDate() {

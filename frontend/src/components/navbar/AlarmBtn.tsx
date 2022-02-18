@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AiFillBell } from 'react-icons/ai';
 import styled, { css } from 'styled-components';
+import { apiGetNotificationCnt } from '../../api/notice';
 
 interface InnerAlarm {
 	alarmCnt: string;
 }
 
 const StyledAlarmBtn = styled.span<InnerAlarm>`
-	width: 50px;
+	width: 30px;
+	margin-right: 20px;
 	height: inherit;
 	color: white;
 	display: flex;
@@ -25,7 +27,6 @@ const StyledAlarmBtn = styled.span<InnerAlarm>`
 				min-width: 20px;
 				height: 20px;
 				background-color: ${props.theme.pointColor};
-				font-family: monospace;
 				font-weight: bolt;
 				font-size: 14px;
 				display: flex;
@@ -51,15 +52,14 @@ const StyledSpan = styled.span`
 
 function Alarm() {
 	const [alarmCnt, setAlarmCnt] = useState(0);
-	function addAlarm() {
-		setAlarmCnt(cnt => cnt + 1);
-	}
+	useEffect(() => {
+		apiGetNotificationCnt().then(res => {
+			setAlarmCnt(res.data?.count);
+		});
+	}, []);
 
 	return (
 		<StyledSpan>
-			<button onClick={addAlarm} type='button'>
-				test
-			</button>
 			<Link to='/alarm'>
 				<StyledAlarmBtn alarmCnt={alarmCnt > 9 ? '9+' : alarmCnt.toString()}>
 					<AiFillBell />

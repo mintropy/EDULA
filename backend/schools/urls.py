@@ -1,6 +1,8 @@
+"""urls for schools app
+"""
 from django.urls import path, include
 from .views import (
-    classroom, lecture, student, teacher, 
+    school, classroom, lecture, student, teacher, 
     homework, homework_submission,
     article
 )
@@ -94,5 +96,9 @@ urlpatterns = [
                 ]),
             ),
         ]),
+    ),
+    path(
+        '<str:abbreviation>/',
+        school.SchoolAbbreviationViewSet.as_view({'get': 'retrieve'}),
     ),
 ]

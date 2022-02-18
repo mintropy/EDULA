@@ -12,6 +12,7 @@ from drf_spectacular.utils import (
 )
 
 from server import basic_swagger_schema
+from schools.models import School
 from . import swagger_schema
 from .user import decode_JWT
 from ..models import Student
@@ -87,11 +88,13 @@ class StudentView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         student = get_object_or_404(Student, pk=student_pk)
-        if student.user.pk != user.pk:
-            return Response(
-                {'error': 'Unauthorized'},
-                status=status.HTTP_401_UNAUTHORIZED
-            )
+        school = get_object_or_404(School, pk=student.get_school_pk())
+        if student.user.pk != user.pk\
+            and (user.status == 'SA' and user.school_admin.get_school_pk() != school.pk):
+                return Response(
+                    {'error': 'Unauthorized'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
         data = {
             'user': {
                 'id': user.pk,

@@ -6,12 +6,20 @@ const Container = styled.div`
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	min-width: 200px;
+	width: 100%;
 
 	form {
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
 		width: 100%;
+
+		input,
+		button {
+			width: 100%;
+			box-sizing: border-box;
+		}
 	}
 `;
 

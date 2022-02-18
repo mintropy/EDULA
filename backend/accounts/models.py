@@ -5,12 +5,17 @@ from schools.models import School, Classroom
 
 # Create your models here.
 class User(AbstractUser):
-    
+
     class Status(models.TextChoices):
         STUDENT = 'ST', _('Student')
         TEACHER = 'TE', _('Teacher')
         SCHOOLADMIN = 'SA', _('SchoolAdmin')
-    
+
+    def profile_image_path(instance, filename):
+        """path of profile image
+        """
+        return f'profile-image/{instance.pk}/{filename}'
+
     phone = models.CharField(
         max_length=13,
         null=True,
@@ -25,6 +30,11 @@ class User(AbstractUser):
     friend_list = models.ManyToManyField(
         'self',
         symmetrical=True,
+        blank=True,
+    )
+    profile_image = models.FileField(
+        upload_to=profile_image_path,
+        null=True,
         blank=True,
     )
 
@@ -55,9 +65,18 @@ class Student(models.Model):
         null=True,
         blank=True,
     )
-    
-    # def __str__(self):
-    #     return self.user.username
+
+    def __str__(self):
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
+
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
 
 
 class Teacher(models.Model):
@@ -81,12 +100,27 @@ class Teacher(models.Model):
         null=True,
         blank=True,
     )
-    
+
     def __str__(self):
-        return self.user.username
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
+
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
 
 
 class SchoolAdmin(models.Model):
+    
+    class account_type(models.TextChoices):
+        Free = 'F', _('Free')
+        Basic = 'B', _('Basic')
+        Every = 'E', _('Every')
+    
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -100,9 +134,23 @@ class SchoolAdmin(models.Model):
         null=True,
         blank=True,
     )
-    
+    account_type = models.CharField(
+        max_length=1,
+        choices=account_type.choices,
+        default='F',
+    )
+
     def __str__(self):
-        return self.user.username
+        try:
+            return f'{self.user.username}'
+        except:
+            return f'{self.user_id}'
+
+    def get_school_pk(self):
+        try:
+            return self.school.pk
+        except:
+            return None
 
 
 class FriendRequest(models.Model):

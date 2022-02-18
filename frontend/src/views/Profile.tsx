@@ -13,6 +13,10 @@ import {
 } from '../api/user';
 import UserContext from '../context/user';
 import EditProfileForm from '../components/profile/EditProfileForm';
+import EditPasswordForm from '../components/profile/EditPasswordForm';
+import ScheduleContainer from '../components/schedule/ScheduleContainer';
+import EditImgForm from '../components/profile/EditImgForm';
+import PageTitle from '../components/PageTitle';
 
 const UserContainer = styled.div`
 	display: flex;
@@ -38,11 +42,12 @@ const UserProfileContainer = styled.div`
 		height: 100%;
 		width: 100%;
 		border-radius: 50%;
+		background-size: cover;
 	}
 `;
 
 const UserDataContainer = styled.div`
-	div {
+	& > div {
 		margin-top: 15px;
 		display: flex;
 		align-items: center;
@@ -78,15 +83,6 @@ const UserDataContainer = styled.div`
 	}
 `;
 
-const ScheduleContainer = styled.div`
-	margin-left: 50px;
-	width: 600px;
-	min-height: 300px;
-	background-color: white;
-	padding: 20px;
-	border-radius: 3px;
-`;
-
 interface UserDataType {
 	user: {
 		id: number;
@@ -95,6 +91,7 @@ interface UserDataType {
 		username: string;
 		email: string;
 		phone: string;
+		profileImage: string;
 	};
 	classroom: {
 		id: number;
@@ -118,10 +115,10 @@ function Profile() {
 		school: {},
 		guardianPhone: '',
 	} as UserDataType);
-	const [isEditMode, setEditMode] = useState(false);
+	const [editMode, setEditMode] = useState('profile');
 
-	const toggleMode = () => {
-		setEditMode(!isEditMode);
+	const toggleMode = (newMode: string) => {
+		setEditMode(newMode);
 	};
 
 	const changeUserData = (newData: object) => {
@@ -166,58 +163,95 @@ function Profile() {
 
 	const editBtn =
 		loggedInUserId.toString() === userId ? (
-			<button className='edit' type='button' onClick={() => toggleMode()}>
+			<button
+				className='edit'
+				type='button'
+				onClick={() => toggleMode('editProfile')}
+			>
 				<FaUserEdit />
 				정보 수정
 			</button>
 		) : null;
 
+	const pwEditBtn =
+		loggedInUserId.toString() === userId ? (
+			<button
+				className='edit'
+				type='button'
+				onClick={() => toggleMode('editPassword')}
+			>
+				<FaUserEdit />
+				비밀번호 수정
+			</button>
+		) : null;
+
+	const imgEditBtn =
+		loggedInUserId.toString() === userId ? (
+			<button className='edit' type='button' onClick={() => toggleMode('editImg')}>
+				<FaUserEdit />
+				프로필 사진 수정
+			</button>
+		) : null;
+
+	const contents = (mode: string) => {
+		switch (mode) {
+			case 'editProfile':
+				return (
+					<EditProfileForm toggleMode={toggleMode} changeUserData={changeUserData} />
+				);
+			case 'editPassword':
+				return <EditPasswordForm toggleMode={toggleMode} />;
+			case 'editImg':
+				return <EditImgForm toggleMode={toggleMode} />;
+			default:
+				return (
+					<>
+						<div className='name'>{userData?.user?.firstName}</div>
+						<div className='class'>
+							<FiUser />
+							{userData?.school?.name}
+							{userData?.classroom &&
+								` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
+						</div>
+						<div className='email'>
+							<VscMail />
+							{userData?.user?.email}
+						</div>
+						<div className='phone'>
+							<BiPhone />
+							{userData?.user?.phone}
+						</div>
+						{userStat === 'ST' && (
+							<div className='guadianPhone'>
+								<BiPhone />
+								{userData?.guardianPhone}
+							</div>
+						)}
+						{editBtn}
+						{pwEditBtn}
+						{imgEditBtn}
+					</>
+				);
+		}
+	};
+
 	return (
 		<UserContainer>
+			<PageTitle title={`${userData.user.firstName || '회원'}님의 프로필`} />
 			<UserInfoContainer>
 				<UserProfileContainer>
 					<img
-						src='https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+						src={
+							userData.user.profileImage
+								? `${process.env.REACT_APP_PROTOCOL}://${window.location.hostname}:${process.env.REACT_APP_PORT}${userData.user.profileImage}`
+								: 'https://phinf.pstatic.net/contact/20201125_191/1606304847351yz0f4_JPEG/KakaoTalk_20201007_183735541.jpg?type=f130_130'
+						}
 						alt=''
 					/>
 				</UserProfileContainer>
-				<UserDataContainer>
-					{isEditMode ? (
-						<EditProfileForm
-							toggleMode={toggleMode}
-							changeUserData={changeUserData}
-						/>
-					) : (
-						<>
-							<div className='name'>{userData?.user?.firstName}</div>
-							<div className='class'>
-								<FiUser />
-								{userData?.school?.name}
-								{userData?.classroom &&
-									` ${userData?.classroom?.classGrade}학년 ${userData?.classroom?.classNum}반`}
-							</div>
-							<div className='email'>
-								<VscMail />
-								{userData?.user?.email}
-							</div>
-							<div className='phone'>
-								<BiPhone />
-								{userData?.user?.phone}
-							</div>
-							{userStat === 'ST' && (
-								<div className='guadianPhone'>
-									<BiPhone />
-									{userData?.guardianPhone}
-								</div>
-							)}
-							{editBtn}
-						</>
-					)}
-				</UserDataContainer>
+				<UserDataContainer>{contents(editMode)}</UserDataContainer>
 			</UserInfoContainer>
-			<ScheduleContainer>
-				<span>오늘의 일정</span>
-			</ScheduleContainer>
+			<ScheduleContainer />
 		</UserContainer>
 	);
 }

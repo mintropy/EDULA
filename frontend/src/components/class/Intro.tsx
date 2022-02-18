@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
 const StyledTitle = styled.h1`
@@ -15,7 +14,8 @@ const StyledIntro = styled.div`
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	width: 800px;
+	width: 100vw;
+	min-width: 900px;
 	height: 10em;
 `;
 interface IntroProps {

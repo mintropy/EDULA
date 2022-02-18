@@ -11,6 +11,7 @@ import StyledTitle from '../components/class/StyledTitle';
 import StyledContainer from '../components/friend/StyledContainer';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
 import StyledContent from '../components/class/StyledContent';
+import PageTitle from '../components/PageTitle';
 
 const StyledListItem = styled.li`
 	font-size: 1em;
@@ -21,7 +22,20 @@ const StyledListItem = styled.li`
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.125);
 	border-radius: 10px;
 `;
+const StyledUpContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
+`;
 
+const StyledSubmitNotification = styled(StyledContent)`
+	font-size: 1rem;
+	padding: 0.1rem 0.1rem;
+	background: ${props => props.theme.subBgColor};
+`;
 interface submissionHomeworkData {
 	id: number;
 	title: string;
@@ -69,11 +83,11 @@ function HomeworkSubmit() {
 
 	if (userStat === 'ST') {
 		return (
-			<>
-				<StyledTitle>과제 제출</StyledTitle>
+			<StyledUpContainer>
+				<StyledTitle>과제 제출 💌</StyledTitle>
 
 				{isSubmit === true ? (
-					<StyledContent>
+					<StyledSubmitNotification>
 						과제 제출함!{' '}
 						<StyledDeleteBtn
 							type='button'
@@ -95,22 +109,24 @@ function HomeworkSubmit() {
 						>
 							삭제
 						</StyledDeleteBtn>
-					</StyledContent>
+					</StyledSubmitNotification>
 				) : (
-					<StyledContent>과제 제출 안함!</StyledContent>
+					<StyledSubmitNotification>과제 제출 안함!</StyledSubmitNotification>
 				)}
 
 				<HomeworkSubmitForm isSubmit={isSubmit} />
-			</>
+			</StyledUpContainer>
 		);
 	}
 	return (
 		<StyledContainer>
+			<PageTitle title='과제 제출' />
 			<StyledTitle>과제 제출 현황</StyledTitle>
 			<ul>
 				{submissionList &&
 					submissionList?.map(submission => (
 						<StyledLink
+							key={submission.id}
 							to={`/${lectureId}/homework/${homeworkId}/submit/${submission.writer}`}
 						>
 							<StyledListItem key={submission.id}>

@@ -16,8 +16,15 @@ interface Props {
 
 const StyledLink = styled(Link)`
 	text-decoration: none;
-	font-size: 1em;
+	font-size: 1rem;
 	color: ${props => props.theme.fontColor};
+`;
+
+const StyledP = styled.p`
+	text-align: center;
+	font-size: 1rem;
+	margin: 0.3rem 0;
+	border-bottom: 0.1rem solid ${props => props.theme.bgColor};
 `;
 
 function StudentList({ students }: Props) {
@@ -28,8 +35,10 @@ function StudentList({ students }: Props) {
 				students.map(
 					student =>
 						student.user?.status === 'ST' && (
-							<StyledLink to={`/profile/${student.user?.id}`}>
-								<h1>{student?.user?.username}</h1>
+							<StyledLink to={`/profile/${student.user?.id}`} key={student.user?.id}>
+								<StyledP>
+									{student?.user?.username} | {student?.user?.firstName || '이름 없음'}{' '}
+								</StyledP>
 							</StyledLink>
 						)
 				)}

@@ -5,8 +5,13 @@ const UserContext = createContext({
 	login: (_: string, __: string) => {},
 	logout: () => {},
 	userId: '',
+	userName: '',
 	userStat: '',
 	schoolId: '',
+	currentLecture: '',
+	changeCurrentLecture: (_: string) => {},
+	profileImg: '',
+	changeProfileImg: (_: string) => {},
 });
 
 export default UserContext;

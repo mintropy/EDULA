@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ArticleForm from '../components/class/ArticleForm';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetArticleDetail } from '../api/article';
+import PageTitle from '../components/PageTitle';
 
+const StyledUpContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
+`;
 const StyledContainer = styled.div`
 	margin: 3em;
 `;
@@ -39,7 +48,8 @@ function UpdateArticle() {
 	}
 
 	return (
-		<div>
+		<StyledUpContainer>
+			<PageTitle title={`${homeworkData.title} 수정`} />
 			<StyledTitle>게시물 수정</StyledTitle>
 			<StyledContainer>
 				<ArticleForm
@@ -49,7 +59,7 @@ function UpdateArticle() {
 					originNotice={homeworkData.notice}
 				/>
 			</StyledContainer>
-		</div>
+		</StyledUpContainer>
 	);
 }
 

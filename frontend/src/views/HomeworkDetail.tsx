@@ -6,6 +6,7 @@ import StyledContent from '../components/class/StyledContent';
 import { apiDeleteHomework, apiGetHomeworkDetail } from '../api/homework';
 import UserContext from '../context/user';
 import StyledDeleteBtn from '../components/friend/StyledDeleteBtn';
+import PageTitle from '../components/PageTitle';
 
 const StyleUpdateBtn = styled(StyledDeleteBtn)`
 	background: ${props => props.theme.borderColor};
@@ -30,9 +31,11 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledContainer = styled.div`
-	position: absolute;
-	top: 20%;
-	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 20px;
 	font-size: 1em;
 	text-align: center;
 	border: solid 2px ${props => props.theme.subBgColor};
@@ -69,6 +72,7 @@ function HomeworkDetail() {
 
 	return (
 		<StyledContainer>
+			<PageTitle title={homeworkData.title} />
 			<StyledTitle>{homeworkData.title}</StyledTitle>
 			<StyledContent>
 				마감 기한: {homeworkData.deadline?.slice(0, 10)}{' '}

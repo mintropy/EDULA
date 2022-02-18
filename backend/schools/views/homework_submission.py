@@ -6,15 +6,16 @@ from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from rest_framework import status
-from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FileUploadParser
+from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
 
 from accounts.views.user import decode_JWT
+from accounts.models import User
 from server import basic_swagger_schema
+from notifications.models import Notification
 from . import swagger_schema
-from ..models import Homework, HomeworkSubmission
+from ..models import Homework, HomeworkSubmission, Lecture, HomeworkSubmissionFiles
 from ..serializers import HomeworkSubmissionSerialzier
 
 
@@ -26,7 +27,7 @@ class HomeworkSubmissionViewSet(ViewSet):
     queryset = Homework.objects.all()
     serializer_class = HomeworkSubmissionSerialzier
     renderer_classes = [CamelCaseJSONRenderer]
-    parser_classes = [CamelCaseJSONParser, MultiPartParser, FileUploadParser]
+    parser_classes = [CamelCaseJSONParser, MultiPartParser, FileUploadParser, FormParser]
     
     @extend_schema(
         responses={
@@ -115,21 +116,43 @@ class HomeworkSubmissionViewSet(ViewSet):
                 return Response(
                     status=status.HTTP_404_NOT_FOUND
                 )
+        lecture = get_object_or_404(Lecture, pk=lecture_pk)
+        homework_submission, _ = HomeworkSubmission.objects.get_or_create(
+            homework=Homework.objects.get(pk=homework_pk),
+            writer=user,
+        )
+        homework_submission_files = [
+            {
+                'homework_submission': homework_submission.pk,
+                'files':file_data
+            }
+            for file_data in request.FILES.values()
+        ]
         data = {
             'title': request.data.get('title', None),
             'content': request.data.get('content', None),
-            'file': request.FILES.get('file', None),
             'homework': homework_pk,
-            'writer': user.pk, 
+            'writer': user.pk,
+            'homework_submission_files': homework_submission_files,
         }
-        homework_submission = HomeworkSubmission.objects.\
-            filter(homework_id=homework_pk, writer=user.pk)
-        if homework_submission:
-            serializer = HomeworkSubmissionSerialzier(instance=homework_submission[0], data=data)
-        else:
-            serializer = HomeworkSubmissionSerialzier(data=data)
+        serializer = HomeworkSubmissionSerialzier(
+            instance=homework_submission, 
+            data=data,
+        )
         if serializer.is_valid():
+            HomeworkSubmissionFiles.objects.filter(
+                homework_submission=homework_submission
+            ).delete()
             serializer.save()
+            teacher = lecture.teacher
+            if teacher:
+                Notification.objects.create(
+                    user=User.objects.get(pk=teacher.pk),
+                    notification_type='HS',
+                    content=data['title'],
+                    from_user=user,
+                    lecture=lecture,
+                )
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED,

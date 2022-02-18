@@ -1,12 +1,20 @@
 from rest_framework import serializers
 
-from ..models import User
+from ..models import User, SchoolAdmin
+from schools.models import School
+
+
+class UserProfileImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('profile_image',)
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'email', 'phone', 'status')
+        fields = ('id', 'username', 'first_name', 'email', 'phone', 'status', 'profile_image',)
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
@@ -14,19 +22,39 @@ class UserBasicSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'status')
+        fields = ('id', 'username', 'first_name', 'status', 'profile_image',)
         read_only_fields = ('id', 'username', 'first_name', 'status')
 
 
-class UserCUDSerialzier(serializers.ModelSerializer):
-    # student_creation_count_list = serializers.JSONField(write_only=True)
-    # teacher_creation_count = serializers.IntegerField(write_only=True)
-    # students = serializers.JSONField(read_only=True)
-    # teachers = serializers.JSONField(read_only=True)
+class ResisterSerializer(serializers.ModelSerializer):
+
+    class SchoolAdminResisterSerializer(serializers.ModelSerializer):
+        from schools.serializers import SchoolSerializer
+        school = SchoolSerializer()
+
+        class Meta:
+            model = SchoolAdmin
+            fields = ('school', 'account_type')
+
+    school_admin = SchoolAdminResisterSerializer()
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'password','status')
-        # write_only_field = ('password',)
+        fields = ('id', 'username', 'first_name', 'school_admin')
+
+
+class UserCUDSerialzier(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'status')
+
+
+class UserInformationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'email', 'phone',)
 
 
 class FindUsernameSerializer(serializers.ModelSerializer):

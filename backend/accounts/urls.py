@@ -20,8 +20,8 @@ request_detail = friend_request.FriendRequestViewSet.as_view({
 
 user_C = user.UserCUDView.as_view({
     'post': 'create',
+    'put': 'update',
 })
-
 user_D = user.UserCUDView.as_view({
     'delete': 'destroy',
 })
@@ -29,12 +29,17 @@ user_D = user.UserCUDView.as_view({
 urlpatterns = [
     # User Information
     path('', user.UserView.as_view(), name='user_self_information'),
+    path('resister/',
+        user.ResisterViewSet.as_view({'post': 'create'}),
+        name='resister',
+    ),
     path('user/', user_C),
     path('user/<str:YS>/<int:num>/', user_D),
     path('<int:user_pk>/',
         user.UserSpecifyingView.as_view(),
         name='user_other_information',
     ),
+    path('profile-image/', user.UserProfileImageView.as_view()),
     # Friend
     path('friend/',
         friend_list,

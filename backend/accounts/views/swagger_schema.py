@@ -211,8 +211,11 @@ and get updated information
         'get': {
             'description':
     '''
-    Get school admin information
-school admin information using teacher_pk
+    학교 관리자 정보를 조회합니다
+accountType에따라 생성 가능한 유저의수가 달라집니다
+- F(free) : 10명
+- B(Basic) : 50명
+- E(Every) : 10,000명
     ''',
         200 : 
     '''
@@ -350,6 +353,24 @@ num : 연도일 경우 입학 4자리 연도, 학생일 경우 학생 pk
     ''',
         },
     },
+    'ResisterViewSet': {
+        'create': {
+            'description':
+    '''
+    학교 관리자로 회원가입
+다음의 경우 400을 반환하고, 각 값에 대한 설명입니다
+- school : 학교와 관련한 입력값이 없는 경우
+- abbreviation not exist : 학교 약어가 없는 경우
+- abbreviation length : 학교 약어 길이가 3~5자가 아닌 경우
+- abbreviation : 이미 사용되는 약어인 경우
+    ''',
+            201:
+    '''
+    학교 관리자 계정을 생성했습니다
+accountType은 기본적으로 F(free)로 생성됩니다
+    ''',
+        }
+    },
 }
 
 summaries = {
@@ -404,6 +425,9 @@ summaries = {
     'FriendSearchViewSet': {
         'list': '친구 찾기',
     },
+    'ResisterViewSet': {
+        'create': '학교 관리자 회원가입'
+    }
 }
 
 examples = {
@@ -762,6 +786,7 @@ examples = {
                         'id': 0,
                         'name': '싸피 초등학교',
                     },
+                    'accountType': 'F'
                 },
                 status_codes=['200'],
                 response_only=True,
@@ -900,6 +925,18 @@ examples = {
         },
     },
     'UserCUDView': {
+        'request_update': [
+            OpenApiExample(
+                name='request',
+                value={
+                    'user': 5,
+                    'firstName': 'new name',
+                    'email': 'new@email.com',
+                    'phone': '000-0000-0000',
+                },
+                request_only=True,
+            ),
+        ],
         'post': {
             'input': OpenApiExample(
                 name='request',
@@ -914,8 +951,18 @@ examples = {
             201: OpenApiExample(
                 name='user information',
                 value={
-                    'students' : [],
-                    'teachers' : [],
+                    'students' : [
+                        {
+                            'username': 'ABC30010',
+                            'password': 'test1234!',
+                        },
+                    ],
+                    'teachers' : [
+                        {
+                            'username': 'ABC00015',
+                            'password': 'apple234@',
+                        }
+                    ],
                 },
                 status_codes=['201'],
                 response_only=True,
@@ -965,6 +1012,44 @@ examples = {
                             },
                         ],
                     },
+                ),
+            ],
+        },
+    },
+    'ResisterViewSet': {
+        'request': [
+            OpenApiExample(
+                name='request',
+                value={
+                    'firstName': '김싸피',
+                    'password': 'ssafy1234!',
+                    'school': {
+                        'name': '싸피초등학교',
+                        'abbreviation': 'SFE'
+                    },
+                },
+                request_only=True
+            ),
+        ],
+        'create': {
+            201: [
+                OpenApiExample(
+                    name='user information',
+                    value={
+                        'id': 30,
+                        'username': 'ABC00000',
+                        'firstName': '김싸피',
+                        'schoolAdmin': {
+                            'school': {
+                                'id': 15,
+                                'name': '싸피초등학교',
+                                'abbreviation': 'ABC',
+                            },
+                            'accountType': 'F',
+                        },
+                    },
+                    status_codes=['200', '201'],
+                    response_only=True,
                 ),
             ],
         },

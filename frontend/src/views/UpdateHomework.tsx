@@ -4,9 +4,19 @@ import { useParams } from 'react-router-dom';
 import StyledTitle from '../components/class/StyledTitle';
 import { apiGetHomeworkDetail } from '../api/homework';
 import HomeworkForm from '../components/class/HomeworkForm';
+import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.div`
 	margin: 3em;
+`;
+
+const StyledUpContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin: 20px;
 `;
 interface HomeworkDataType {
 	content: string;
@@ -33,7 +43,8 @@ function UpdateHomework() {
 	}
 
 	return (
-		<div>
+		<StyledUpContainer>
+			<PageTitle title={`${homeworkData.title} 수정`} />
 			<StyledTitle>과제 수정</StyledTitle>
 			<StyledContainer>
 				<HomeworkForm
@@ -46,7 +57,7 @@ function UpdateHomework() {
 					)}
 				/>
 			</StyledContainer>
-		</div>
+		</StyledUpContainer>
 	);
 }
 

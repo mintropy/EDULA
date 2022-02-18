@@ -8,6 +8,7 @@ import ArticleBoard from '../components/class/ArticleBoard';
 import HomeworkBoard from '../components/class/HomeworkBoard';
 import StudentList from '../components/class/StudentList';
 import UserContext from '../context/user';
+import PageTitle from '../components/PageTitle';
 
 const StyledContainer = styled.section`
 	display: flex;
@@ -46,7 +47,7 @@ const StyledIntro = styled(Intro)``;
 function Class() {
 	const [lectureData, setLectureData] = useState({} as LectureDataType);
 	const [homeworkData, setHomeworkData] = useState(null);
-	const { schoolId, userStat } = useContext(UserContext);
+	const { userStat } = useContext(UserContext);
 	const { lectureId } = useParams();
 
 	useEffect(() => {
@@ -68,6 +69,7 @@ function Class() {
 	if (lectureData) {
 		return (
 			<>
+				<PageTitle title={`${lectureData.name} 페이지`} />
 				<StyledIntro id={lectureData.id} name={lectureData.name} />
 				<StyledContainer>
 					{homeworkData && <HomeworkBoard homeworks={homeworkData} />}

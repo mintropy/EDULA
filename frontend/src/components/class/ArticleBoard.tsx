@@ -23,7 +23,7 @@ const StyledLink = styled(Link)`
 	font-size: 1em;
 `;
 const StyledContainer = styled.div`
-	margin: 0px 0px 0px 5rem;
+	margin: 0 3em;
 `;
 interface ArticleDataType {
 	content: string;

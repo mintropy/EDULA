@@ -9,11 +9,15 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-	max-width: 300px;
+	max-width: 420px;
 	width: 100%;
-	padding: 10px;
+	padding: 20px;
 	background-color: ${props => props.theme.subBgColor};
 	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;
 
 type PropType = {

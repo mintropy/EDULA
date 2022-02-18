@@ -108,10 +108,7 @@ export const apiDeleteHomeworkSubmission = (
 export const apiPostHomeworkSubmission = (
 	lectureId: string,
 	homeworkId: string,
-	title: string,
-	content: string,
-	file: string,
-	writer: string
+	formData: FormData
 ) =>
 	axios({
 		method: 'post',
@@ -119,11 +116,8 @@ export const apiPostHomeworkSubmission = (
 		headers: {
 			...setToken(),
 		},
-		data: {
-			title,
-			content,
-			file,
-			homeworkId,
-			writer,
-		},
+		data: formData,
+	}).then(res => {
+		// console.log(res);
+		// console.log();
 	});
