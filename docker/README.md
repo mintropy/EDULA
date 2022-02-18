@@ -53,8 +53,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 ### dev mode
 
 ```bash
-docker-compose -f docker-compose-local.yml build
-docker-compose -f docker-compose-local.yml up
+docker-compose -f docker-compose-dev.yml build
+docker-compose -f docker-compose-dev.yml up
 ```
 
 ### production mode
